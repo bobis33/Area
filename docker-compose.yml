@@ -1,0 +1,13 @@
+services:
+  backend:
+    build:
+      context: ./back
+    container_name: backend
+    working_dir: /api
+    volumes:
+      - ./back:/api
+    command: python api/main.py
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
