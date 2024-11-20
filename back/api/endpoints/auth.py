@@ -62,7 +62,7 @@ def loginEndpoint():
             'description': 'User created',
             'examples': {
                 'application/json': {
-                    'message': 'user created'
+                    'token': 'your_access_token_here'
                 }
             }
         },
@@ -98,7 +98,8 @@ def registerEndpoint():
         return make_response(jsonify({'error': 'invalid username or password'}), 400)
 
     if register_user(username, password):
-        return make_response(jsonify({'message': 'user created'}), 201)
+        access_token = login_user(username, password)
+        return make_response(jsonify({'token': access_token}), 200)
     else:
         return make_response(jsonify({'error': 'username already exists'}), 400)
 
