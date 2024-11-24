@@ -1,20 +1,24 @@
-from flask import Flask
-from flask_jwt_extended import JWTManager
-from flasgger import Swagger
-
-from endpoints.auth import auth_bp
-from extensions import mongo
+from fastapi import FastAPI
+from fastapi_jwt_auth import AuthJWT
+from pydantic import BaseModel
+from motor.motor_asyncio import AsyncIOMotorClient
+from endpoints.auth import auth_router
 from config import JWT_SECRET_KEY, MONGO_URI
+import uvicorn
 
-app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = JWT_SECRET_KEY
-app.config["MONGO_URI"] = MONGO_URI
+class Settings(BaseModel):
+    authjwt_secret_key: str = JWT_SECRET_KEY
 
-mongo.init_app(app)
-jwt = JWTManager(app)
-swagger = Swagger(app)
+app = FastAPI()
 
-app.register_blueprint(auth_bp, url_prefix='/auth')
+@AuthJWT.load_config
+def get_config():
+    return Settings()
+
+client = AsyncIOMotorClient(MONGO_URI)
+db = client.get_default_database()
+
+app.include_router(auth_router, prefix="/auth")
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    uvicorn.run(app, host='0.0.0.0', port=5000, log_level="debug")
