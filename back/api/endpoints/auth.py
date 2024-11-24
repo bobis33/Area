@@ -1,122 +1,29 @@
-from flask import Blueprint, make_response, request, jsonify
-from flask_jwt_extended import jwt_required
-from flasgger import swag_from
-
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi_jwt_auth import AuthJWT
+from pydantic import BaseModel
 from services import login_user, register_user
 
-auth_bp = Blueprint('auth', __name__)
+auth_router = APIRouter()
 
-@auth_bp.route('/login', methods=['POST'])
-@swag_from({
-    'responses': {
-        200: {
-            'description': 'Login successful',
-            'examples': {
-                'application/json': {
-                    'token': 'your_access_token_here'
-                }
-            }
-        },
-        400: {
-            'description': 'Invalid username or password'
-        }
-    },
-    'parameters': [
-        {
-            'name': 'body',
-            'in': 'body',
-            'required': True,
-            'schema': {
-                'type': 'object',
-                'properties': {
-                    'username': {
-                        'type': 'string'
-                    },
-                    'password': {
-                        'type': 'string'
-                    }
-                },
-                'required': ['username', 'password']
-            }
-        }
-    ]
-})
-def loginEndpoint():
-    username = request.json.get('username')
-    password = request.json.get('password')
+class UserCredentials(BaseModel):
+    username: str
+    password: str
 
-    if not username or not password:
-        return make_response(jsonify({'error': 'invalid username or password'}), 400)
-
-    access_token = login_user(username, password)
+@auth_router.post('/login', response_model=dict)
+async def login_endpoint(credentials: UserCredentials, Authorize: AuthJWT = Depends()):
+    access_token = await login_user(credentials.username, credentials.password, Authorize)
     if access_token:
-        return make_response(jsonify({'token': access_token}), 200)
-    else:
-        return make_response(jsonify({'error': 'invalid username or password'}), 400)
+        return {"token": access_token}
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid username or password")
 
+@auth_router.post('/register', response_model=dict)
+async def register_endpoint(credentials: UserCredentials, Authorize: AuthJWT = Depends()):
+    if await register_user(credentials.username, credentials.password):
+        access_token = await login_user(credentials.username, credentials.password, Authorize)
+        return {"token": access_token}
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already exists")
 
-@auth_bp.route('/register', methods=['POST'])
-@swag_from({
-    'responses': {
-        201: {
-            'description': 'User created',
-            'examples': {
-                'application/json': {
-                    'token': 'your_access_token_here'
-                }
-            }
-        },
-        400: {
-            'description': 'Invalid username or password / Username already exists'
-        }
-    },
-    'parameters': [
-        {
-            'name': 'body',
-            'in': 'body',
-            'required': True,
-            'schema': {
-                'type': 'object',
-                'properties': {
-                    'username': {
-                        'type': 'string'
-                    },
-                    'password': {
-                        'type': 'string'
-                    }
-                },
-                'required': ['username', 'password']
-            }
-        }
-    ]
-})
-def registerEndpoint():
-    username = request.json.get('username')
-    password = request.json.get('password')
-
-    if not username or not password:
-        return make_response(jsonify({'error': 'invalid username or password'}), 400)
-
-    if register_user(username, password):
-        access_token = login_user(username, password)
-        return make_response(jsonify({'token': access_token}), 200)
-    else:
-        return make_response(jsonify({'error': 'username already exists'}), 400)
-
-
-@auth_bp.route('/protected')
-@jwt_required()
-@swag_from({
-    'responses': {
-        200: {
-            'description': 'Protected endpoint',
-            'examples': {
-                'application/json': {
-                    'message': 'protected endpoint'
-                }
-            }
-        }
-    }
-})
-def protectedEndpoint():
-    return make_response(jsonify({'message': 'protected endpoint'}), 200)
+@auth_router.get('/protected', response_model=dict)
+async def protected_endpoint(Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
+    return {"message": "protected endpoint"}
