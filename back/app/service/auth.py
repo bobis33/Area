@@ -1,6 +1,6 @@
 from passlib.context import CryptContext
 from fastapi_jwt_auth import AuthJWT
-from dao import UserDAO
+from app.database import UserDAO
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
