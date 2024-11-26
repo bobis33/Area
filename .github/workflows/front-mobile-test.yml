@@ -1,0 +1,35 @@
+name: Front Mobile Test
+run-name: ${{github.actor}} ${{github.branch}} | Front Mobile Test
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Install dependencies (jq and yq)
+        run: |
+          sudo apt update
+          sudo apt install -y wget xz-utils jq
+          sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+          sudo chmod +x /usr/bin/yq
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2.17.0
+        with:
+          channel: stable
+          flutter-version-file: './front/mobile/pubspec.yaml'
+      - run: flutter pub get
+        working-directory: ./front/mobile
+
+      - name: Launch tests
+        run: flutter test
+        working-directory: ./front/mobile
