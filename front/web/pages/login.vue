@@ -1,48 +1,66 @@
 <template>
-    <div>
-      <h1>Login</h1>
-      <form @submit.prevent="login">
-        <div>
-          <label for="username">Username</label>
-          <input id="username" v-model="username" type="text" />
-        </div>
-        <div>
-          <label for="password">Password</label>
-          <input id="password" v-model="password" type="password" />
-        </div>
-        <button type="submit">Login</button>
-      </form>
-      <p v-if="errorMessage">{{ errorMessage }}</p>
-    </div>
-  </template>
-  
-  <script setup>
-  import { ref } from 'vue'
-  import { useFetch } from '#app'
-  
-  const username = ref('')
-  const password = ref('')
-  const errorMessage = ref('')
-  
-  async function login() {
-    const { data, error } = await useFetch('localhost:5000/login', {
+  <div class="form-container">
+    <h1 class="form-title">Login</h1>
+    <form @submit.prevent="login">
+      <div class="mb-4">
+        <label for="username" class="block text-sm font-medium mb-1">Username</label>
+        <input id="username" v-model="username" type="text" class="input-field" placeholder="Enter your username" />
+      </div>
+      <div class="mb-4">
+        <label for="password" class="block text-sm font-medium mb-1">Password</label>
+        <input id="password" v-model="password" type="password" class="input-field" placeholder="Enter your password" />
+      </div>
+      <button type="submit" class="btn-primary">Login</button>
+    </form>
+    <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from '#app'
+
+const config = useRuntimeConfig()
+const router = useRouter()
+
+const username = ref('')
+const password = ref('')
+const errorMessage = ref('')
+
+async function login() {
+  try {
+    const response = await fetch(`${config.public.baseUrlApi}/auth/login`, {
       method: 'POST',
-      body: {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         username: username.value,
         password: password.value,
-      },
+      }),
     })
-  
-    if (error.value) {
-      errorMessage.value = error.value.data?.detail || 'Login failed'
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      errorMessage.value = errorData.detail || 'Login failed'
       return
     }
-  
-    const token = data.value?.token
+
+    const data = await response.json()
+    const token = data.token
     if (token) {
-      localStorage.setItem('token', token) // Store token
+      localStorage.setItem('token', token)
       alert('Login successful!')
+      await router.push({name: 'home'})
+      errorMessage.value = ''
     }
+  } catch (error) {
+    errorMessage.value = 'An error occurred. Please try again later.'
+    console.error(error)
   }
-  </script>
-  
+}
+</script>
+
+<style lang="scss" scoped>
+@use "~/assets/styles/forms.scss" as *;
+</style>

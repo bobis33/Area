@@ -1,8 +1,10 @@
 <template>
-    <div>
-      <AppHeader />
-      <slot />
-      <AppFooter />
-    </div>
-  </template>
+  <div>
+    <span>index</span>
+    <slot />
+  </div>
+</template>
+
+<script setup lang="ts">
+</script>
   
