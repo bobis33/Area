@@ -3,14 +3,14 @@ services:
     build:
       context: ./back
     container_name: backend
-    working_dir: /api
+    working_dir: /app
     volumes:
-      - ./back:/api
-    command: python api/main.py
+      - ./back:/app
+    command: python run.py
     ports:
       - "5000:5000"
     environment:
-      - MONGO_URI=mongodb://mongo:27017/蒙古将军
+      - MONGO_URI=mongodb://mongo:27017/AREAdatabase
     depends_on:
       - mongo
 

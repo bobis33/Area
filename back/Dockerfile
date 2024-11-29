@@ -6,6 +6,7 @@ WORKDIR /app
 
 # Copy requirements.txt and install dependencies
 COPY requirements.txt .
+
 RUN pip install -r requirements.txt
 
 # Copy the rest of the application code
@@ -15,4 +16,4 @@ COPY . .
 EXPOSE 5000
 
 # Define the command to run the app
-CMD ["python", "api/main.py"]
+CMD ["python", "run.py"]
