@@ -26,6 +26,8 @@
 import { ref } from 'vue'
 import { useCookie, useRouter } from '#app'
 
+import { useSnackbar } from '~/composables/useSnackBar'
+
 definePageMeta({
   middleware: 'auth',
 })
@@ -37,6 +39,8 @@ const tokenCookie = useCookie('token', { path: '/', maxAge: 60 * 60 * 24 * 7 })
 const username = ref('')
 const password = ref('')
 const errorMessage = ref('')
+const { showSnackbar } = useSnackbar()
+
 
 async function login() {
   try {
@@ -54,6 +58,7 @@ async function login() {
     if (!response.ok) {
       const errorData = await response.json()
       errorMessage.value = errorData.detail || 'Login failed'
+      console.error(errorData)
       return
     }
 
@@ -61,7 +66,7 @@ async function login() {
     const token = data.token
     if (token) {
       tokenCookie.value = token
-      alert('Login successful!')
+      showSnackbar('Login successful', 'success')
       await router.push({name: 'home'})
     }
   } catch (error) {
