@@ -1,13 +1,9 @@
 <template>
-  <div>
-    <NuxtLayout>
-      <Layouts>
-        <NuxtPage />
-      </Layouts>
-    </NuxtLayout>
-  </div>
+  <NuxtLayout :name="layout">
+    <NuxtPage />
+  </NuxtLayout>
 </template>
 
 <script setup lang="ts">
-import Layouts from "~/layouts/layouts.vue";
+const layout = "default";
 </script>
