@@ -1,12 +1,30 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  build: {
-    loaders: {
-      scss: {
-        implementation: require('sass')
+  compatibilityDate: '2024-11-01',
+  devtools: { enabled: true },
+  css: ['~/assets/styles/main.scss'],
+  devServer: {
+    port: 8081,
+  },
+  runtimeConfig: {
+    public: {
+      baseUrlApi: 'http://localhost:5000',
+    },
+  },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          implementation: require('sass'),
+          api: 'modern-compiler',
+        }
       }
     }
   },
-  compatibilityDate: '2024-11-01',
-  devtools: { enabled: true }
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
 })

@@ -1,0 +1,31 @@
+@use 'variables' as *;
+
+.btn-primary {
+  width: 100%;
+  background-color: $primary-color;
+  color: #ffffff;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 1.125rem;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: $primary-hover;
+  }
+}
+
+.btn-link {
+  background: none;
+  color: $link-color;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 1rem;
+
+  &:hover {
+    color: $link-hover-color;
+  }
+}
