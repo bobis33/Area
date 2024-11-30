@@ -1,12 +1,38 @@
 <template>
   <div>
     <span>Homepage</span>
+    <button @click="logout" class="btn-logout">Logout</button>
     <slot />
   </div>
 </template>
 
 <script setup lang="ts">
+import { useCookie, useRouter } from '#app'
+
+const router = useRouter()
+
+function logout() {
+  useCookie('token').value = undefined
+  router.push({ name: 'login' })
+}
+
 definePageMeta({
   middleware: 'auth',
 })
 </script>
+
+<style scoped>
+.btn-logout {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.btn-logout:hover {
+  background-color: #d32f2f;
+}
+</style>

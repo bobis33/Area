@@ -13,15 +13,26 @@
       <button type="submit" class="btn-primary">Login</button>
     </form>
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+    <div class="register-link mt-4">
+      <p>Don't have an account?
+        <button @click="router.push({name: 'register'})" class="btn-link">Register here</button>
+      </p>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+
 import { ref } from 'vue'
-import { useRouter } from '#app'
+import { useCookie, useRouter } from '#app'
+
+definePageMeta({
+  middleware: 'auth',
+})
 
 const config = useRuntimeConfig()
 const router = useRouter()
+const tokenCookie = useCookie('token', { path: '/', maxAge: 60 * 60 * 24 * 7 })
 
 const username = ref('')
 const password = ref('')
@@ -49,10 +60,9 @@ async function login() {
     const data = await response.json()
     const token = data.token
     if (token) {
-      localStorage.setItem('token', token)
+      tokenCookie.value = token
       alert('Login successful!')
       await router.push({name: 'home'})
-      errorMessage.value = ''
     }
   } catch (error) {
     errorMessage.value = 'An error occurred. Please try again later.'
@@ -63,4 +73,6 @@ async function login() {
 
 <style lang="scss" scoped>
 @use "~/assets/styles/forms.scss" as *;
+@use "~/assets/styles/buttons.scss" as *;
+@use "~/assets/styles/errors.scss" as *;
 </style>

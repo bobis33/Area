@@ -1,34 +1,49 @@
-import { defineNuxtRouteMiddleware, navigateTo } from '#app'
+import { defineNuxtRouteMiddleware, useCookie } from '#app'
 
 export default defineNuxtRouteMiddleware(async (to) => {
     const config = useRuntimeConfig()
 
     if (import.meta.client) {
-        const token = localStorage.getItem('token')
+        const token = useCookie('token').value
 
         if (!token) {
-            return navigateTo('/login')
+            if (to.path !== '/login' && to.path !== '/register') {
+                return window.location.href = '/login'
+            }
+            return
         }
 
         try {
             const response = await fetch(`${config.public.baseUrlApi}/auth/protected`, {
                 method: 'GET',
                 headers: {
+                    'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
                 },
             })
 
             if (!response.ok) {
-                console.log('Token invalide1:', response)
-                localStorage.removeItem('token')
-                return navigateTo('/login')
+                useCookie('token').value = undefined
+                if (to.path !== '/login') {
+                    return window.location.href = '/login'
+                }
+                return
+            }
+
+            if (to.path === '/login' || to.path === '/register') {
+                return window.location.href = '/home'
+            }
+
+            if (to.path === '/') {
+                return window.location.href = '/home'
             }
 
         } catch (error) {
-            console.log('Erreur lors de la validation du token:', error)
-            localStorage.removeItem('token')
-            return navigateTo('/login')
+            console.log('Error while validating token:', error)
+            useCookie('token').value = undefined
+            if (to.path !== '/login') {
+                return window.location.href = '/login'
+            }
         }
     }
 })

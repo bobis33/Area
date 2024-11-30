@@ -1,0 +1,7 @@
+@use 'variables' as *;
+
+.error-message {
+  color: $error-color;
+  text-align: center;
+  margin-top: 0.5rem;
+}

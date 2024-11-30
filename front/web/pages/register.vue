@@ -35,15 +35,26 @@
       <button type="submit" class="btn-primary">Register</button>
     </form>
     <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+    <div class="login-link mt-4">
+      <p>Already have an account?
+        <button @click="router.push({ name: 'login'})" class="btn-link">Login here</button>
+      </p>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+
 import { ref } from 'vue'
-import { useRouter } from '#app'
+import { useCookie, useRouter } from '#app'
+
+definePageMeta({
+  middleware: 'auth',
+})
 
 const config = useRuntimeConfig()
 const router = useRouter()
+const tokenCookie = useCookie('token', { path: '/', maxAge: 60 * 60 * 24 * 7 })
 
 const username = ref('')
 const password = ref('')
@@ -77,8 +88,7 @@ async function register() {
     const data = await response.json()
     const token = data.token
     if (token) {
-      errorMessage.value = ''
-      localStorage.setItem('token', token)
+      tokenCookie.value = token
       alert('Registration successful!')
       await router.push({name: 'login'})
       }
@@ -91,4 +101,6 @@ async function register() {
 
 <style lang="scss" scoped>
 @use "~/assets/styles/forms.scss" as *;
+@use "~/assets/styles/buttons.scss" as *;
+@use "~/assets/styles/errors.scss" as *;
 </style>
