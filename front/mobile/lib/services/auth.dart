@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginResponse {
   final String? token;
@@ -10,8 +11,40 @@ class LoginResponse {
 
 class AuthService {
   final String baseUrl;
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   AuthService({required this.baseUrl});
+
+  Future<void> storeToken(String token) async {
+    await secureStorage.write(key: 'authToken', value: token);
+  }
+
+  Future<String?> getToken() async {
+    return await secureStorage.read(key: 'authToken');
+  }
+
+  Future<void> clearToken() async {
+    await secureStorage.delete(key: 'authToken');
+  }
+
+  Future<bool> isLoggedIn() async {
+    final token = await getToken();
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/auth/protected'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+      } catch (e) {
+      print('An error occurred: $e');
+    }
+    return false;
+  }
 
   Future<LoginResponse> loginUser(String email, String password) async {
     try {
@@ -24,10 +57,9 @@ class AuthService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         return LoginResponse(token: data['token']);
-      } else if (response.statusCode == 401) {
-        return LoginResponse(error: 'Invalid email or password');
       } else {
-        return LoginResponse(error: 'Login failed: ${response.body}');
+        final errorDetails = _parseError(response);
+        return LoginResponse(error: 'Login failed: $errorDetails');
       }
     } catch (e) {
       print('An error occurred: $e');
@@ -35,7 +67,7 @@ class AuthService {
     }
   }
 
-  Future<String?> registerUser(String email, String password) async {
+  Future<LoginResponse> registerUser(String email, String password) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/auth/register'),
@@ -50,15 +82,16 @@ class AuthService {
       );
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        return null;
+        final Map<String, dynamic> data = json.decode(response.body);
+        return LoginResponse(token: data['token']);
       } else {
         final errorMessage = _parseError(response);
         print('Registration failed: $errorMessage');
-        return errorMessage;
+        return LoginResponse(error: errorMessage);
       }
     } catch (e) {
       print('An error occurred during registration: $e');
-      return 'An unexpected error occurred';
+      return LoginResponse(error: 'An unexpected error occurred: $e');
     }
   }
 

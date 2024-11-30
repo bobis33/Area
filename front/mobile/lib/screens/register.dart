@@ -16,14 +16,29 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController confirmPasswordController = TextEditingController();
 
   bool _isLoading = false;
+  String? emailError;
+  String? passwordError;
 
   Future<void> handleRegister() async {
+    final email = emailController.text.trim();
     final password = passwordController.text.trim();
+    final confirmPassword = confirmPasswordController.text.trim();
 
-    if (password != confirmPasswordController.text.trim()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
-      );
+    setState(() {
+      emailError = null;
+      passwordError = null;
+    });
+
+    if (email.isEmpty || !email.contains('@')) {
+      setState(() {
+        emailError = 'Please enter a valid email address.';
+      });
+      return;
+    }
+    if (password != confirmPassword) {
+      setState(() {
+        passwordError = 'Passwords do not match.';
+      });
       return;
     }
 
@@ -31,57 +46,122 @@ class _RegisterPageState extends State<RegisterPage> {
       _isLoading = true;
     });
 
-    final errorMessage = await widget.authService.registerUser(emailController.text.trim(), password);
+    final authResponse = await widget.authService.registerUser(email, password);
 
     setState(() {
       _isLoading = false;
     });
 
-    if (errorMessage == null) {
+    if (authResponse.token != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Registration successful!')),
       );
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage)),
+        SnackBar(content: Text(authResponse.error ?? 'An error occurred. Please try again.')),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Register')),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Register',
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.primary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            _buildTextField(
               controller: emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              label: 'Email',
+              errorText: emailError,
+              keyboardType: TextInputType.emailAddress,
             ),
-            TextField(
+            const SizedBox(height: 16),
+            _buildTextField(
               controller: passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
+              label: 'Password',
+              errorText: passwordError,
               obscureText: true,
             ),
-            TextField(
+            const SizedBox(height: 16),
+            _buildTextField(
               controller: confirmPasswordController,
-              decoration: const InputDecoration(labelText: 'Confirm Password'),
+              label: 'Confirm Password',
               obscureText: true,
             ),
-            const SizedBox(height: 20),
-            _isLoading
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-              onPressed: handleRegister,
-              child: const Text('Register'),
+            const SizedBox(height: 24),
+            if (_isLoading)
+              const Center(child: CircularProgressIndicator())
+            else
+              ElevatedButton(
+                onPressed: handleRegister,
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  backgroundColor: theme.colorScheme.primary,
+                ),
+                child: const Text(
+                  'Register',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Already have an account? '),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Login here'),
+                ),
+              ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    String? errorText,
+    bool obscureText = false,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        errorText: errorText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      ),
+      obscureText: obscureText,
+      keyboardType: keyboardType,
     );
   }
 }
