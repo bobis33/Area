@@ -11,11 +11,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
   flutter_localizations:
     sdk: flutter
   flutter_translate: ^4.1.0
   font_awesome_flutter: ^10.7.0
+  cupertino_icons: ^1.0.8
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:
