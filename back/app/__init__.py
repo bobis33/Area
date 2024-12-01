@@ -20,13 +20,12 @@ def get_config():
 
 app = FastAPI()
 
-# Configuration du middleware CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["POST", "OPTIONS", "GET"],
-    allow_headers=["Content-Type", "Authorization"],  # Autorise les headers
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 def create_app(config_class=Config):
