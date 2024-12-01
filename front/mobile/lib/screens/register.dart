@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '/services/auth.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -54,7 +55,16 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (authResponse.token != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Registration successful!')),
+        SnackBar(
+          content: Text(
+            'Registration successful!',
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          backgroundColor: Theme.of(context).colorScheme.secondary,
+          duration: const Duration(seconds: 3),
+        ),
       );
       Navigator.pop(context);
     } else {
@@ -75,6 +85,15 @@ class _RegisterPageState extends State<RegisterPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Center(
+              child: Image.asset(
+                'assets_shared/images/icon.png',
+                height: 120,
+                width: 120,
+                fit: BoxFit.contain,
+              ),
+            ),
+            const SizedBox(height: 24),
             Text(
               'Register',
               style: theme.textTheme.headlineMedium?.copyWith(

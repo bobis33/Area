@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/services/auth.dart';
+
+import '/services/auth.dart';
 
 class LoginPage extends StatefulWidget {
   final AuthService authService;
@@ -65,6 +66,15 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            Center(
+              child: Image.asset(
+                'assets_shared/images/icon.png',
+                height: 120,
+                width: 120,
+                fit: BoxFit.contain,
+              ),
+            ),
+            const SizedBox(height: 24),
             Text(
               'Login',
               style: theme.textTheme.headlineMedium?.copyWith(
@@ -119,11 +129,11 @@ class _LoginPageState extends State<LoginPage> {
                 backgroundColor: theme.colorScheme.primary,
               ),
               child: const Text(
-                  'Login',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
+                'Login',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
               ),
             ),
             const SizedBox(height: 16),

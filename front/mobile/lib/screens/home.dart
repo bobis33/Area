@@ -1,6 +1,7 @@
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/services/auth.dart';
+
+import '/services/auth.dart';
 
 class HomePage extends StatelessWidget {
   final AuthService authService;

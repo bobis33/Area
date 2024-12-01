@@ -1,24 +1,22 @@
 {
-  "name": "area",
-  "private": true,
+  "name": "area-front-web",
+  "version": "1.0.0",
+  "description": "Frontend in Nuxt",
   "type": "module",
+  "license": "MIT",
+  "private": true,
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "preview": "nuxt preview"
   },
   "dependencies": {
     "nuxt": "^3.14.1592",
     "sass": "^1.81.0",
-    "sass-loader": "^16.0.3",
-    "vue": "latest",
-    "vue-router": "latest"
+    "sass-loader": "^16.0.3"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.15"
+    "@nuxtjs/tailwindcss": "^6.12.2"
   }
 }

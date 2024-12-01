@@ -51,15 +51,15 @@ class AuthService {
       final response = await http.post(
         Uri.parse('$baseUrl/auth/login'),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({'username': email, 'password': password}),
+        body: json.encode({'email': email, 'password': password}),
       );
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         return LoginResponse(token: data['token']);
       } else {
-        final errorDetails = _parseError(response);
-        return LoginResponse(error: 'Login failed: $errorDetails');
+        final Map<String, dynamic> data = json.decode(response.body);
+        return LoginResponse(error: 'Login failed: ${data['detail']}');
       }
     } catch (e) {
       print('An error occurred: $e');
@@ -76,7 +76,7 @@ class AuthService {
           'Content-Type': 'application/json',
         },
         body: json.encode(<String, String>{
-          'username': email,
+          'email': email,
           'password': password,
         }),
       );

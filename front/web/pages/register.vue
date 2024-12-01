@@ -1,5 +1,6 @@
 <template>
   <div class="form-container">
+    <img src="@assets/images/icon.png" alt="AREA icon" class="register-logo" />
     <h1 class="form-title">Register</h1>
     <form @submit.prevent="register">
       <div class="mb-4">
@@ -103,4 +104,11 @@ async function register() {
 @use "~/assets/styles/forms.scss" as *;
 @use "~/assets/styles/buttons.scss" as *;
 @use "~/assets/styles/errors.scss" as *;
+
+.register-logo {
+  display: block;
+  width: 125px;
+  height: 125px;
+  margin: 0 auto 20px;
+}
 </style>

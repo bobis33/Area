@@ -1,5 +1,6 @@
 <template>
   <div class="form-container">
+    <img src="@assets/images/icon.png" alt="Area icon" class="login-logo" />
     <h1 class="form-title">Login</h1>
     <form @submit.prevent="login">
       <div class="mb-4">
@@ -80,4 +81,11 @@ async function login() {
 @use "~/assets/styles/forms.scss" as *;
 @use "~/assets/styles/buttons.scss" as *;
 @use "~/assets/styles/errors.scss" as *;
+
+.login-logo {
+  display: block;
+  width: 125px;
+  height: 125px;
+  margin: 0 auto 20px;
+}
 </style>

@@ -33,7 +33,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final LocalizationDelegate localizationDelegate = LocalizedApp.of(context).delegate;
-    final AuthService authService = AuthService(baseUrl: 'http://localhost:5000');
+    final AuthService authService = AuthService(baseUrl: 'http://10.0.2.2:5000');
 
     return LocalizationProvider(
       state: LocalizationProvider.of(context).state,
