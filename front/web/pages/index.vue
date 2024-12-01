@@ -1,10 +1,8 @@
-<template>
-  <slot />
-</template>
+<template></template>
 
 <script setup lang="ts">
-definePageMeta({
-  middleware: 'auth',
-})
+import { useRouter } from "#app";
+const router = useRouter();
+router.push("/login");
 </script>
   

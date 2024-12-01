@@ -1,64 +1,70 @@
 <template>
+  <LanguageSwitcher />
   <div class="form-container">
     <img src="@assets/images/icon.png" alt="Area icon" class="login-logo" />
-    <h1 class="form-title">Login</h1>
+    <h1 class="form-title">{{ $t('login') }}</h1>
     <form @submit.prevent="login">
       <div class="mb-4">
-        <label for="username" class="block text-sm font-medium mb-1">Username</label>
-        <input id="username" v-model="username" type="text" class="input-field" placeholder="Enter your username" />
+        <label for="username" class="block text-sm font-medium mb-1">{{ $t('email') }}</label>
+        <input id="username" v-model="email" type="text" class="input-field" :placeholder="$t('enterEmail')" />
       </div>
       <div class="mb-4">
-        <label for="password" class="block text-sm font-medium mb-1">Password</label>
-        <input id="password" v-model="password" type="password" class="input-field" placeholder="Enter your password" />
+        <label for="password" class="block text-sm font-medium mb-1">{{ $t('password') }}</label>
+        <input id="password" v-model="password" type="password" class="input-field" :placeholder="$t('enterPassword')" />
       </div>
-      <button type="submit" class="btn-primary">Login</button>
+      <button type="submit" class="btn-primary">{{ $t('login') }}</button>
     </form>
-    <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="error-message">{{ $t(errorMessage) }}</p>
     <div class="register-link mt-4">
-      <p>Don't have an account?
-        <button @click="router.push({name: 'register'})" class="btn-link">Register here</button>
+      <p>{{ $t('noAccount') }}
+        <button @click="router.push('/register')" class="btn-link">{{ $t('registerHere') }}</button>
       </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+definePageMeta({middleware: 'auth'})
 
 import { ref } from 'vue'
 import { useCookie, useRouter } from '#app'
 
 import { useSnackbar } from '~/composables/useSnackBar'
 
-definePageMeta({
-  middleware: 'auth',
-})
-
 const config = useRuntimeConfig()
-const router = useRouter()
 const tokenCookie = useCookie('token', { path: '/', maxAge: 60 * 60 * 24 * 7 })
-
-const username = ref('')
-const password = ref('')
-const errorMessage = ref('')
+const router = useRouter()
 const { showSnackbar } = useSnackbar()
 
+const email = ref('')
+const password = ref('')
+const errorMessage = ref('')
 
 async function login() {
   try {
+    if (!email.value || !password.value) {
+      errorMessage.value = 'fillInAllFields'
+      return
+    }
+    if (!email.value.includes('@') || !email.value.includes('.')) {
+      errorMessage.value = 'enterEmailValid'
+      return
+    }
+
     const response = await fetch(`${config.public.baseUrlApi}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        username: username.value,
+        email: email.value,
         password: password.value,
       }),
     })
 
     if (!response.ok) {
       const errorData = await response.json()
-      errorMessage.value = errorData.detail || 'Login failed'
+      errorMessage.value = 'invalidCredentials'
       console.error(errorData)
       return
     }
@@ -67,11 +73,11 @@ async function login() {
     const token = data.token
     if (token) {
       tokenCookie.value = token
-      showSnackbar('Login successful', 'success')
-      await router.push({name: 'home'})
+      await router.push('/home')
+      showSnackbar('loginSuccess', 'success')
     }
   } catch (error) {
-    errorMessage.value = 'An error occurred. Please try again later.'
+    errorMessage.value = 'anErrorOccurred'
     console.error(error)
   }
 }

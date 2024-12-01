@@ -1,6 +1,6 @@
 <template>
   <div v-if="visible" class="snackbar" :class="type" @click="hideSnackbar">
-    <span>{{ message }}</span>
+    <span>{{ $t(message) }}</span>
   </div>
 </template>
 

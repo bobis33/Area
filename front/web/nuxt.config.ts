@@ -1,5 +1,4 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
-import {resolve} from 'path'
+import { resolve } from 'path'
 
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -32,4 +31,10 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  i18n: {
+    locales: ['en', 'fr'],
+    defaultLocale: 'fr',
+    vueI18n: './i18n.config.ts',
+},
+  modules: ['@nuxtjs/i18n'],
 })

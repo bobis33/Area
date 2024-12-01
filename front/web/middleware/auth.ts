@@ -1,14 +1,15 @@
-import { defineNuxtRouteMiddleware, useCookie } from '#app'
+import { defineNuxtRouteMiddleware, useCookie, useRouter } from '#app'
 
 export default defineNuxtRouteMiddleware(async (to) => {
     const config = useRuntimeConfig()
+    const router = useRouter()
 
     if (import.meta.client) {
         const token = useCookie('token').value
 
         if (!token) {
             if (to.path !== '/login' && to.path !== '/register') {
-                return window.location.href = '/login'
+                return router.push('/login')
             }
             return
         }
@@ -25,24 +26,24 @@ export default defineNuxtRouteMiddleware(async (to) => {
             if (!response.ok) {
                 useCookie('token').value = undefined
                 if (to.path !== '/login') {
-                    return window.location.href = '/login'
+                    return router.push('/login')
                 }
                 return
             }
 
             if (to.path === '/login' || to.path === '/register') {
-                return window.location.href = '/home'
+                return router.push('/home')
             }
 
             if (to.path === '/') {
-                return window.location.href = '/home'
+                return router.push('/home')
             }
 
         } catch (error) {
             console.log('Error while validating token:', error)
             useCookie('token').value = undefined
             if (to.path !== '/login') {
-                return window.location.href = '/login'
+                return router.push('/login')
             }
         }
     }

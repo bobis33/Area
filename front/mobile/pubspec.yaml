@@ -1,8 +1,11 @@
-name: mobile
-description: "Area | Front mobile"
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
+name: area_front_mobile
+description: Area | Front mobile
 version: 0.0.0+1
+repository: https://github.com/EpitechPromo2027/B-DEV-500-BDX-5-2-area-yohan.decamps
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+platforms:
+  ios:
+  android:
 
 environment:
   sdk: ^3.5.3
@@ -32,7 +35,7 @@ flutter:
 
 flutter_launcher_icons:
   android: "launcher_icon"
-  ios: false
+  ios: true
   image_path: "assets_shared/images/icon.png"
   adaptive_icon_foreground: "assets_shared/images/icon.png"
   adaptive_icon_background: "#00000000"

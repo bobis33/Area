@@ -1,71 +1,82 @@
 <template>
+  <LanguageSwitcher />
   <div class="form-container">
     <img src="@assets/images/icon.png" alt="AREA icon" class="register-logo" />
-    <h1 class="form-title">Register</h1>
+    <h1 class="form-title">{{ $t('register') }}</h1>
     <form @submit.prevent="register">
       <div class="mb-4">
-        <label for="username" class="block text-sm font-medium mb-1">Username</label>
+        <label for="email" class="block text-sm font-medium mb-1">{{ $t('email') }}</label>
         <input
-            id="username"
-            v-model="username"
+            id="email"
+            v-model="email"
             type="text"
             class="input-field"
-            placeholder="Enter your username"
+            :placeholder="$t('enterEmail')"
         />
       </div>
       <div class="mb-4">
-        <label for="password" class="block text-sm font-medium mb-1">Password</label>
+        <label for="password" class="block text-sm font-medium mb-1">{{ $t('password') }}</label>
         <input
             id="password"
             v-model="password"
             type="password"
             class="input-field"
-            placeholder="Enter your password"
+            :placeholder="$t('enterPassword')"
         />
       </div>
       <div class="mb-4">
-        <label for="confirmPassword" class="block text-sm font-medium mb-1">Confirm Password</label>
+        <label for="confirmPassword" class="block text-sm font-medium mb-1">{{ $t('passwordConfirmation') }}</label>
         <input
             id="confirmPassword"
             v-model="confirmPassword"
             type="password"
             class="input-field"
-            placeholder="Confirm your password"
+            :placeholder="$t('passwordConfirmation')"
         />
       </div>
-      <button type="submit" class="btn-primary">Register</button>
+      <button type="submit" class="btn-primary">{{ $t('register') }}</button>
     </form>
-    <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+    <p v-if="errorMessage" class="error-message">{{ $t(errorMessage) }}</p>
     <div class="login-link mt-4">
-      <p>Already have an account?
-        <button @click="router.push({ name: 'login'})" class="btn-link">Login here</button>
+      <p>{{ $t('alreadyHaveAccount') }}
+        <button @click="router.push('login')" class="btn-link">{{ $t('loginHere') }}</button>
       </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+definePageMeta({middleware: 'auth'})
 
 import { ref } from 'vue'
-import { useCookie, useRouter } from '#app'
 
-definePageMeta({
-  middleware: 'auth',
-})
+import { useSnackbar } from "~/composables/useSnackBar";
 
 const config = useRuntimeConfig()
 const router = useRouter()
-const tokenCookie = useCookie('token', { path: '/', maxAge: 60 * 60 * 24 * 7 })
+const { showSnackbar } = useSnackbar()
 
-const username = ref('')
+const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const errorMessage = ref('')
 
 async function register() {
   try {
+    if (!email.value || !password.value || !confirmPassword.value) {
+      errorMessage.value = 'fillInAllFields'
+      return
+    }
+    if (!email.value.includes('@') || !email.value.includes('.')) {
+      errorMessage.value = 'enterEmailValid'
+      return
+    }
+    if (password.value.length < 8) {
+      errorMessage.value = 'passwordLength'
+      return
+    }
     if (password.value !== confirmPassword.value) {
-      errorMessage.value = "Passwords do not match"
+      errorMessage.value = 'passwordMismatch'
       return
     }
 
@@ -75,26 +86,26 @@ async function register() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        username: username.value,
+        email: email.value,
         password: password.value,
       }),
     })
 
     if (!response.ok) {
       const errorData = await response.json()
-      errorMessage.value = errorData.detail || 'Registration failed'
+      errorMessage.value = 'registerError'
+      console.log(errorData)
       return
     }
 
     const data = await response.json()
     const token = data.token
     if (token) {
-      tokenCookie.value = token
-      alert('Registration successful!')
-      await router.push({name: 'login'})
-      }
+      await router.push('/login')
+      showSnackbar('registerSuccess', 'success')
+    }
   } catch (error) {
-    errorMessage.value = 'An error occurred. Please try again later.'
+    errorMessage.value = 'anErrorOccurred'
     console.error(error)
   }
 }

@@ -1,20 +1,19 @@
 <template>
   <div class="error-container">
-    <h1 class="error-title">Oops! Something went wrong.</h1>
+    <h1 class="error-title">{{ $t('errorSomethingWentWrong') }}</h1>
     <p class="error-message-grey">
-      <strong>Error Code:</strong> {{ errorCode }} <br />
-      <strong>Message:</strong> {{ errorMessage }}
+      <strong>{{ $t('errorCode') }}:</strong> {{ errorCode }} <br />
+      <strong>{{ $t('errorCode') }}:</strong> {{ $t(errorMessage) }}
     </p>
-    <router-link to="/" class="error-link">Go back to home</router-link>
+    <router-link to="/" class="error-link">{{ $t('goBackHome') }}</router-link>
   </div>
 </template>
 
 <script setup lang="ts">
-
 const error = useError()
 
 const errorCode = error.value?.statusCode || 'Unknown'
-const errorMessage = error.value?.statusMessage || 'An unknown error occurred. Please try again later.'
+const errorMessage = error.value?.statusMessage || 'anErrorOccurred'
 </script>
 
 <style lang="scss" scoped>
