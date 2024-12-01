@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -101,7 +102,7 @@ class AuthService {
       return errorData['detail'] ?? 'An error occurred';
     } catch (e) {
       print('Error parsing error message: $e');
-      return 'An error occurred';
+      return translate('anErrorOccurred');
     }
   }
 }

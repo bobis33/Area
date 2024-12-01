@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 
 import '/services/auth.dart';
 
@@ -37,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Login successful!',
+            translate('loginSuccess'),
             style: TextStyle(
               color: Colors.white,
             ),
@@ -50,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pushNamed(context, '/home');
     } else {
       setState(() {
-        errorMessage = authResponse.error ?? 'An error occurred. Please try again.';
+        errorMessage = authResponse.error ?? translate('anErrorOccurred');
       });
     }
   }
@@ -76,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Login',
+              translate('login'),
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: theme.colorScheme.primary,
@@ -87,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
             TextField(
               controller: emailController,
               decoration: InputDecoration(
-                labelText: 'Username',
+                labelText: translate('email'),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -98,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
             TextField(
               controller: passwordController,
               decoration: InputDecoration(
-                labelText: 'Password',
+                labelText: translate('password'),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -128,8 +129,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 backgroundColor: theme.colorScheme.primary,
               ),
-              child: const Text(
-                'Login',
+              child: Text(
+                translate('login'),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
@@ -140,12 +141,12 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Don't have an account? "),
+                Text(translate('noAccount')),
                 TextButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/register');
                   },
-                  child: const Text('Register here'),
+                  child: Text(translate('register')),
                 ),
               ],
             ),

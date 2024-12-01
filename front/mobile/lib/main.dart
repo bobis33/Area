@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_translate/flutter_translate.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '/models/common.dart';
 import '/styles/color_schemes.g.dart';

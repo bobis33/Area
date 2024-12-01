@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 
 import '/services/auth.dart';
 
@@ -32,13 +33,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (email.isEmpty || !email.contains('@')) {
       setState(() {
-        emailError = 'Please enter a valid email address.';
+        emailError = translate('invalidEmail');
       });
       return;
     }
     if (password != confirmPassword) {
       setState(() {
-        passwordError = 'Passwords do not match.';
+        passwordError = translate('passwordMismatch');
       });
       return;
     }
@@ -57,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Registration successful!',
+            translate('registerSuccess'),
             style: TextStyle(
               color: Colors.white,
             ),
@@ -69,7 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(authResponse.error ?? 'An error occurred. Please try again.')),
+        SnackBar(content: Text(authResponse.error ?? translate('anErrorOccurred'))),
       );
     }
   }
@@ -95,7 +96,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Register',
+              translate('register'),
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: theme.colorScheme.primary,
@@ -105,21 +106,21 @@ class _RegisterPageState extends State<RegisterPage> {
             const SizedBox(height: 24),
             _buildTextField(
               controller: emailController,
-              label: 'Email',
+              label: translate('email'),
               errorText: emailError,
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
             _buildTextField(
               controller: passwordController,
-              label: 'Password',
+              label: translate('password'),
               errorText: passwordError,
               obscureText: true,
             ),
             const SizedBox(height: 16),
             _buildTextField(
               controller: confirmPasswordController,
-              label: 'Confirm Password',
+              label: translate('confirmPassword'),
               obscureText: true,
             ),
             const SizedBox(height: 24),
@@ -135,8 +136,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   backgroundColor: theme.colorScheme.primary,
                 ),
-                child: const Text(
-                  'Register',
+                child: Text(
+                  translate('register'),
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -147,12 +148,12 @@ class _RegisterPageState extends State<RegisterPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Already have an account? '),
+                Text(translate('alreadyHaveAccount')),
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text('Login here'),
+                  child: Text(translate('login')),
                 ),
               ],
             ),

@@ -1,3 +1,16 @@
 {
-  "hello": "Bonjour"
+  "alreadyHaveAccount": "Vous avez déjà un compte ?",
+  "anErrorOccurred": "Une erreur s'est produite. Veuillez réessayer.",
+  "email": "Email",
+  "enterValidEmail": "Veuillez entrer une adresse email valide",
+  "hello": "Bonjour",
+  "login": "Se connecter",
+  "loginSuccess": "Vous êtes connecté",
+  "logout": "Se déconnecter",
+  "logoutSuccess": "Vous êtes déconnecté",
+  "noAccount": "Vous n'avez pas de compte ?",
+  "password": "Mot de passe",
+  "passwordConfirmation": "Confirmer le mot de passe",
+  "passwordMismatch": "Les mots de passe ne correspondent pas",
+  "register": "S'inscrire"
 }

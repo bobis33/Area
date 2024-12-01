@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          translate('logout'),
+          translate('logoutSuccess'),
           style: TextStyle(
             color: Colors.white,
           ),
@@ -46,8 +46,8 @@ class HomePage extends StatelessWidget {
                 ),
                 backgroundColor: Theme.of(context).colorScheme.secondary,
               ),
-              child: const Text(
-                'Logout',
+              child: Text(
+                translate('logout'),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
