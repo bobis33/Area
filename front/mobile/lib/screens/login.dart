@@ -1,4 +1,3 @@
-import 'package:area_front_mobile/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '/models/common.dart';
 import '/services/auth.dart';
 import '/services/storage.dart';
+import '/widgets/snack_bar.dart';
+import '/widgets/text_field.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,25 +18,17 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final AuthService authService = AuthService();
-
-  bool _isLoading = false;
   String? errorMessage;
 
   Future<void> handleLogin() async {
     setState(() {
-      _isLoading = true;
       errorMessage = null;
     });
 
-    final authResponse = await authService.loginUser(
+    final authResponse = await AuthService().loginUser(
       emailController.text.trim(),
       passwordController.text.trim(),
     );
-
-    setState(() {
-      _isLoading = false;
-    });
 
     if (authResponse.token != null) {
       snackBar(context, translate('loginSuccess'), Theme.of(context).colorScheme.secondary);
@@ -77,42 +70,11 @@ class _LoginPageState extends State<LoginPage> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                labelText: translate('email'),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              ),
-            ),
+            textField(controller: emailController, label: translate('email'), keyboardType: TextInputType.emailAddress),
             const SizedBox(height: 16),
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(
-                labelText: translate('password'),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              ),
-              obscureText: true,
-            ),
-            const SizedBox(height: 20),
-            if (errorMessage != null)
-              Text(
-                errorMessage!,
-                style: TextStyle(
-                  color: theme.colorScheme.error,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            const SizedBox(height: 16),
-            _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : ElevatedButton(
+            textField(controller: passwordController, label: translate('password'), obscureText: true),
+            const SizedBox(height: 24),
+            ElevatedButton(
               onPressed: handleLogin,
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 14),
@@ -130,6 +92,15 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             const SizedBox(height: 16),
+            if (errorMessage != null)
+              Text(
+                errorMessage!,
+                style: TextStyle(
+                  color: theme.colorScheme.error,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

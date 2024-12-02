@@ -14,4 +14,3 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar(BuildContext 
     ),
   );
 }
-

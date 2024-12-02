@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,10 +13,8 @@ class LoginResponse {
 }
 
 class AuthService {
-  final String baseUrl = 'http://10.0.2.2:5000';
-  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
-
   AuthService();
+  static final String baseUrl = 'http://10.0.2.2:5000';
 
   Future<bool> isLoggedIn() async {
     final token = await StorageService().getItem(StorageKeyEnum.authToken.name);
@@ -54,7 +51,6 @@ class AuthService {
         return LoginResponse(error: 'Login failed: ${data['detail']}');
       }
     } catch (e) {
-      print('An error occurred: $e');
       return LoginResponse(error: 'An unexpected error occurred');
     }
   }
@@ -78,11 +74,9 @@ class AuthService {
         return LoginResponse(token: data['token']);
       } else {
         final errorMessage = _parseError(response);
-        print('Registration failed: $errorMessage');
         return LoginResponse(error: errorMessage);
       }
     } catch (e) {
-      print('An error occurred during registration: $e');
       return LoginResponse(error: 'An unexpected error occurred: $e');
     }
   }
@@ -92,7 +86,6 @@ class AuthService {
       final Map<String, dynamic> errorData = json.decode(response.body);
       return errorData['detail'] ?? 'An error occurred';
     } catch (e) {
-      print('Error parsing error message: $e');
       return translate('anErrorOccurred');
     }
   }

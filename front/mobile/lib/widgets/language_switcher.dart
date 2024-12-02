@@ -10,7 +10,6 @@ Widget languageSwitcher(BuildContext context) {
     leading: const Icon(Icons.language),
     title: Text(translate('changeLanguage')),
     onTap: () {
-      context.pop();
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -19,15 +18,15 @@ Widget languageSwitcher(BuildContext context) {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: Text(translate('en')),
+                title: Text(translate('english')),
                 onTap: () async {
                   await changeLocale(context, LangEnum.en_US.name);
                   StorageService().storeItem(StorageKeyEnum.lang.name, LangEnum.en_US.name);
-                  context.pop();
+                  context.pop(context);
                 },
               ),
               ListTile(
-                title: Text(translate('fr')),
+                title: Text(translate('french')),
                 onTap: () async {
                   await changeLocale(context, LangEnum.fr_FR.name);
                   StorageService().storeItem(StorageKeyEnum.lang.name, LangEnum.fr_FR.name);

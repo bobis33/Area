@@ -1,11 +1,11 @@
 import 'package:go_router/go_router.dart';
 
-import '/layouts/main_layout.dart';
+import '/layouts/main.dart';
+import '/models/common.dart';
 import '/screens/home.dart';
-import '/screens/index.dart';
 import '/screens/login.dart';
 import '/screens/register.dart';
-import '/models/common.dart';
+import '/screens/root.dart';
 
 final router = GoRouter(
   initialLocation: '/',
@@ -13,7 +13,7 @@ final router = GoRouter(
     GoRoute(
       name: RouteEnum.root.name,
       path: '/',
-      builder: (context, state) => IndexPage(),
+      builder: (context, state) => RootPage(),
     ),
     GoRoute(
       name: RouteEnum.login.name,

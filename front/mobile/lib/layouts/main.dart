@@ -9,23 +9,19 @@ import '/widgets/language_switcher.dart';
 import '/widgets/theme_switcher.dart';
 
 class MainLayout extends StatelessWidget {
-  final Widget child;
-
   const MainLayout({super.key, required this.child});
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final AuthService authService = AuthService();
-
     return Scaffold(
       appBar: AppBar(),
       drawer: FutureBuilder<bool>(
-        future: authService.isLoggedIn(),
+        future: AuthService().isLoggedIn(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (snapshot.hasError) {
             return Drawer(
               child: Center(child: Text(translate('errorLoading'))),
@@ -33,7 +29,6 @@ class MainLayout extends StatelessWidget {
           }
 
           final bool isLoggedIn = snapshot.data ?? false;
-
           return Drawer(
             child: ListView(
               padding: EdgeInsets.zero,
@@ -79,7 +74,7 @@ class MainLayout extends StatelessWidget {
           );
         },
       ),
-      body: child,
+      body: SafeArea(child: child),
     );
   }
 }

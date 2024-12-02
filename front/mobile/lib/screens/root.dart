@@ -4,14 +4,13 @@ import 'package:go_router/go_router.dart';
 import '/models/common.dart';
 import '/services/auth.dart';
 
-class IndexPage extends StatelessWidget {
-  const IndexPage({super.key});
+class RootPage extends StatelessWidget {
+  const RootPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AuthService authService = AuthService();
     return FutureBuilder<bool>(
-      future: authService.isLoggedIn(),
+      future: AuthService().isLoggedIn(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(

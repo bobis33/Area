@@ -4,7 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '/models/common.dart';
 import '/services/auth.dart';
-import '/widgets/snackbar.dart';
+import '/widgets/snack_bar.dart';
+import '/widgets/text_field.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,15 +19,13 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
 
-  bool _isLoading = false;
   String? emailError;
   String? passwordError;
 
   Future<void> handleRegister() async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
-    final confirmPassword = confirmPasswordController.text.trim();
-    final authService = AuthService();
+    final colorScheme = Theme.of(context).colorScheme;
 
     setState(() {
       emailError = null;
@@ -39,28 +38,20 @@ class _RegisterPageState extends State<RegisterPage> {
       });
       return;
     }
-    if (password != confirmPassword) {
+    if (password != confirmPasswordController.text.trim()) {
       setState(() {
         passwordError = translate('passwordMismatch');
       });
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
-
-    final authResponse = await authService.registerUser(email, password);
-
-    setState(() {
-      _isLoading = false;
-    });
+    final authResponse = await AuthService().registerUser(email, password);
 
     if (authResponse.token != null) {
-      snackBar(context, translate('registerSuccess'), Theme.of(context).colorScheme.secondary);
+      snackBar(context, translate('registerSuccess'), colorScheme.secondary);
       context.go(context.namedLocation(RouteEnum.login.name));
     } else {
-      snackBar(context, authResponse.error ?? translate('anErrorOccurred'), Theme.of(context).colorScheme.error);
+      snackBar(context, authResponse.error ?? translate('anErrorOccurred'), colorScheme.error);
     }
   }
 
@@ -93,46 +84,43 @@ class _RegisterPageState extends State<RegisterPage> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
-            _buildTextField(
+            textField(
               controller: emailController,
               label: translate('email'),
               errorText: emailError,
               keyboardType: TextInputType.emailAddress,
             ),
             const SizedBox(height: 16),
-            _buildTextField(
+            textField(
               controller: passwordController,
               label: translate('password'),
               errorText: passwordError,
               obscureText: true,
             ),
             const SizedBox(height: 16),
-            _buildTextField(
+            textField(
               controller: confirmPasswordController,
               label: translate('passwordConfirmation'),
               obscureText: true,
             ),
             const SizedBox(height: 24),
-            if (_isLoading)
-              const Center(child: CircularProgressIndicator())
-            else
-              ElevatedButton(
-                onPressed: handleRegister,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  backgroundColor: theme.colorScheme.primary,
+            ElevatedButton(
+              onPressed: handleRegister,
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: Text(
-                  translate('register'),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
+                backgroundColor: theme.colorScheme.primary,
+              ),
+              child: Text(
+                translate('register'),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
                 ),
               ),
+            ),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -149,28 +137,6 @@ class _RegisterPageState extends State<RegisterPage> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    String? errorText,
-    bool obscureText = false,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        errorText: errorText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      ),
-      obscureText: obscureText,
-      keyboardType: keyboardType,
     );
   }
 }
