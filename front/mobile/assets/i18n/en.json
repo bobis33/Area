@@ -1,8 +1,10 @@
 {
   "alreadyHaveAccount": "Already have an account?",
   "anErrorOccurred": "An error occurred. Please try again.",
+  "changeLanguage": "Change language",
   "email": "Email",
   "enterValidEmail": "Please enter a valid email",
+  "errorLoading": "Error loading",
   "hello": "Hello",
   "login": "Login",
   "loginSuccess": "Successfully logged in",
@@ -10,7 +12,7 @@
   "logoutSuccess": "Successfully logged out",
   "noAccount": "Don't have an account?",
   "password": "Password",
-  "passwordConfirmation": "Confirm Password",
   "passwordMismatch": "Passwords do not match",
-  "register": "Register"
+  "register": "Register",
+  "theme": "Theme"
 }

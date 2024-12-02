@@ -1,29 +1,12 @@
-import 'package:flutter_translate/flutter_translate.dart';
+import 'package:area_front_mobile/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 
-import '/services/auth.dart';
+import '/services/storage.dart';
 
 class HomePage extends StatelessWidget {
-  final AuthService authService;
 
-  const HomePage({required this.authService, super.key});
-
-  Future<void> handleLogout(BuildContext context) async {
-    await authService.clearToken();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          translate('logoutSuccess'),
-          style: TextStyle(
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        duration: const Duration(seconds: 3),
-      ),
-    );
-    Navigator.pushReplacementNamed(context, '/');
-  }
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,25 +15,27 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              translate('hello'),
-              style: TextStyle(fontSize: 24),
-            ),
-            const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () => handleLogout(context),
+              onPressed: () async => {
+                await StorageService().clearToken(),
+                snackBar(context, translate('logoutSuccess'), Theme.of(context).colorScheme.secondary),
+                Navigator.pushReplacementNamed(context, '/'),
+              },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                backgroundColor: Theme.of(context).colorScheme.secondary,
+                backgroundColor: Theme.of(context).colorScheme.error,
               ),
-              child: Text(
-                translate('logout'),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  translate('logout'),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),

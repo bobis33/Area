@@ -7,14 +7,10 @@ class IndexPage extends StatelessWidget {
 
   const IndexPage({required this.authService, super.key});
 
-  Future<bool> _checkIfLoggedIn() async {
-    return await authService.isLoggedIn();
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-      future: _checkIfLoggedIn(),
+      future: authService.isLoggedIn(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(

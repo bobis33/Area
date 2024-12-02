@@ -1,3 +1,4 @@
+import 'package:area_front_mobile/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 
@@ -55,23 +56,10 @@ class _RegisterPageState extends State<RegisterPage> {
     });
 
     if (authResponse.token != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            translate('registerSuccess'),
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          backgroundColor: Theme.of(context).colorScheme.secondary,
-          duration: const Duration(seconds: 3),
-        ),
-      );
-      Navigator.pop(context);
+      snackBar(context, translate('registerSuccess'), Theme.of(context).colorScheme.secondary);
+      Navigator.pushNamed(context, '/login');
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(authResponse.error ?? translate('anErrorOccurred'))),
-      );
+      snackBar(context, authResponse.error ?? translate('anErrorOccurred'), Theme.of(context).colorScheme.error);
     }
   }
 
@@ -120,7 +108,7 @@ class _RegisterPageState extends State<RegisterPage> {
             const SizedBox(height: 16),
             _buildTextField(
               controller: confirmPasswordController,
-              label: translate('confirmPassword'),
+              label: translate('password'),
               obscureText: true,
             ),
             const SizedBox(height: 24),

@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import '/services/storage.dart';
 
 class LoginResponse {
   final String? token;
@@ -11,25 +13,13 @@ class LoginResponse {
 }
 
 class AuthService {
-  final String baseUrl;
+  final String baseUrl = 'http://10.0.2.2:5000';
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
-  AuthService({required this.baseUrl});
-
-  Future<void> storeToken(String token) async {
-    await secureStorage.write(key: 'authToken', value: token);
-  }
-
-  Future<String?> getToken() async {
-    return await secureStorage.read(key: 'authToken');
-  }
-
-  Future<void> clearToken() async {
-    await secureStorage.delete(key: 'authToken');
-  }
+  AuthService();
 
   Future<bool> isLoggedIn() async {
-    final token = await getToken();
+    final token = await StorageService().getToken();
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/auth/protected'),

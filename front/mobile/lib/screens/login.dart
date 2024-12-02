@@ -1,7 +1,9 @@
+import 'package:area_front_mobile/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 
 import '/services/auth.dart';
+import '/services/storage.dart';
 
 class LoginPage extends StatefulWidget {
   final AuthService authService;
@@ -35,19 +37,8 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     if (authResponse.token != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            translate('loginSuccess'),
-            style: TextStyle(
-              color: Colors.white,
-            ),
-          ),
-          backgroundColor: Theme.of(context).colorScheme.secondary,
-          duration: const Duration(seconds: 3),
-        ),
-      );
-      widget.authService.storeToken(authResponse.token!);
+      snackBar(context, translate('loginSuccess'), Theme.of(context).colorScheme.secondary);
+      StorageService().storeToken(authResponse.token!);
       Navigator.pushNamed(context, '/home');
     } else {
       setState(() {
