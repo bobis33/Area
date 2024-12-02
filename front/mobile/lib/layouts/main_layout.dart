@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:go_router/go_router.dart';
 
+import '/models/common.dart';
 import '/services/auth.dart';
 import '/services/storage.dart';
 import '/widgets/language_switcher.dart';
@@ -47,26 +49,26 @@ class MainLayout extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.home),
                     title: Text(translate('home')),
-                    onTap: () => Navigator.pushNamed(context, '/home'),
+                    onTap: () => context.go(context.namedLocation(RouteEnum.home.name)),
                   ),
                   ListTile(
                     leading: const Icon(Icons.logout),
                     title: Text(translate('logout')),
                     onTap: () async {
-                      await StorageService().clearToken();
-                      Navigator.pushReplacementNamed(context, '/login');
+                      await StorageService().clearItem(StorageKeyEnum.authToken.name);
+                      context.go(context.namedLocation(RouteEnum.root.name));
                     },
                   ),
                 ] else ...[
                   ListTile(
                     leading: const Icon(Icons.login),
                     title: Text(translate('login')),
-                    onTap: () => Navigator.pushNamed(context, '/login'),
+                    onTap: () => context.go(context.namedLocation(RouteEnum.login.name)),
                   ),
                   ListTile(
                     leading: const Icon(Icons.person_add),
                     title: Text(translate('register')),
-                    onTap: () => Navigator.pushNamed(context, '/register'),
+                    onTap: () => context.go(context.namedLocation(RouteEnum.register.name)),
                   ),
                 ],
                 const Divider(),

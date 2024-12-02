@@ -6,11 +6,11 @@
     <form @submit.prevent="login">
       <div class="mb-4">
         <label for="username" class="block text-sm font-medium mb-1">{{ $t('email') }}</label>
-        <input id="username" v-model="email" type="text" class="input-field" :placeholder="$t('enterEmail')" />
+        <input id="username" v-model="email" type="text" class="input-field" :placeholder="$t('email')" />
       </div>
       <div class="mb-4">
         <label for="password" class="block text-sm font-medium mb-1">{{ $t('password') }}</label>
-        <input id="password" v-model="password" type="password" class="input-field" :placeholder="$t('enterPassword')" />
+        <input id="password" v-model="password" type="password" class="input-field" :placeholder="$t('password')" />
       </div>
       <button type="submit" class="btn-primary">{{ $t('login') }}</button>
     </form>

@@ -3,22 +3,20 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:provider/provider.dart';
 
-import '/layouts/main_layout.dart';
+import '/router.dart';
 import '/models/common.dart';
 import '/providers/theme_provider.dart';
 import '/styles/color_schemes.g.dart';
 import '/styles/text_themes.g.dart';
 import '/screens/home.dart';
-import '/screens/index.dart';
 import '/screens/login.dart';
-import '/screens/register.dart';
 import '/services/auth.dart';
 import '/services/storage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final String? savedTheme = await StorageService().loadTheme();
-  final String? savedLang = await StorageService().loadLang();
+  final String? savedTheme = await StorageService().getItem(StorageKeyEnum.theme.name);
+  final String? savedLang = await StorageService().getItem(StorageKeyEnum.lang.name);
 
   final LocalizationDelegate delegate = await LocalizationDelegate.create(
     fallbackLocale: savedLang ?? LangEnum.en_US.name,
@@ -47,7 +45,6 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final LocalizationDelegate localizationDelegate = LocalizedApp.of(context).delegate;
-    final AuthService authService = AuthService();
     if (lang != null) {
       localizationDelegate.changeLocale(Locale(lang!));
     }
@@ -56,7 +53,7 @@ class App extends StatelessWidget {
       state: LocalizationProvider.of(context).state,
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
-          return MaterialApp(
+          return MaterialApp.router(
             title: 'AREA',
             debugShowCheckedModeBanner: false,
             locale: localizationDelegate.currentLocale,
@@ -68,14 +65,7 @@ class App extends StatelessWidget {
             supportedLocales: localizationDelegate.supportedLocales,
             theme: themeProvider.themeData,
 
-            home: SafeArea(
-              child: IndexPage(authService: authService),
-            ),
-            routes: {
-              '/register': (context) => MainLayout(child: RegisterPage(authService: authService)),
-              '/login': (context) => MainLayout(child: LoginPage(authService: authService)),
-              '/home': (context) => MainLayout(child: HomePage()),
-            },
+            routerConfig: router,
           );
         },
       ),
@@ -100,7 +90,7 @@ class AuthRedirection extends StatelessWidget {
         if (snapshot.hasData && snapshot.data != null) {
           return HomePage();
         } else {
-          return LoginPage(authService: authService);
+          return LoginPage();
         }
       },
     );

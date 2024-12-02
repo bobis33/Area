@@ -1,13 +1,13 @@
-import 'package:area_front_mobile/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:go_router/go_router.dart';
 
+import '/models/common.dart';
 import '/services/auth.dart';
+import '/widgets/snackbar.dart';
 
 class RegisterPage extends StatefulWidget {
-  final AuthService authService;
-
-  const RegisterPage({required this.authService, super.key});
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -26,6 +26,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
     final confirmPassword = confirmPasswordController.text.trim();
+    final authService = AuthService();
 
     setState(() {
       emailError = null;
@@ -49,7 +50,7 @@ class _RegisterPageState extends State<RegisterPage> {
       _isLoading = true;
     });
 
-    final authResponse = await widget.authService.registerUser(email, password);
+    final authResponse = await authService.registerUser(email, password);
 
     setState(() {
       _isLoading = false;
@@ -57,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     if (authResponse.token != null) {
       snackBar(context, translate('registerSuccess'), Theme.of(context).colorScheme.secondary);
-      Navigator.pushNamed(context, '/login');
+      context.go(context.namedLocation(RouteEnum.login.name));
     } else {
       snackBar(context, authResponse.error ?? translate('anErrorOccurred'), Theme.of(context).colorScheme.error);
     }
@@ -108,7 +109,7 @@ class _RegisterPageState extends State<RegisterPage> {
             const SizedBox(height: 16),
             _buildTextField(
               controller: confirmPasswordController,
-              label: translate('password'),
+              label: translate('passwordConfirmation'),
               obscureText: true,
             ),
             const SizedBox(height: 24),
@@ -139,7 +140,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 Text(translate('alreadyHaveAccount')),
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    context.go(context.namedLocation(RouteEnum.login.name));
                   },
                   child: Text(translate('login')),
                 ),

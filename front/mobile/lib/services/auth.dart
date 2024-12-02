@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:http/http.dart' as http;
 
+import '/models/common.dart';
 import '/services/storage.dart';
 
 class LoginResponse {
@@ -19,7 +20,7 @@ class AuthService {
   AuthService();
 
   Future<bool> isLoggedIn() async {
-    final token = await StorageService().getToken();
+    final token = await StorageService().getItem(StorageKeyEnum.authToken.name);
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/auth/protected'),

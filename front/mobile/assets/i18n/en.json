@@ -12,6 +12,7 @@
   "logoutSuccess": "Successfully logged out",
   "noAccount": "Don't have an account?",
   "password": "Password",
+  "passwordConfirmation": "Confirm password",
   "passwordMismatch": "Passwords do not match",
   "register": "Register",
   "theme": "Theme"

@@ -1,14 +1,14 @@
 import 'package:area_front_mobile/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:go_router/go_router.dart';
 
+import '/models/common.dart';
 import '/services/auth.dart';
 import '/services/storage.dart';
 
 class LoginPage extends StatefulWidget {
-  final AuthService authService;
-
-  const LoginPage({required this.authService, super.key});
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -17,6 +17,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final AuthService authService = AuthService();
 
   bool _isLoading = false;
   String? errorMessage;
@@ -27,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
       errorMessage = null;
     });
 
-    final authResponse = await widget.authService.loginUser(
+    final authResponse = await authService.loginUser(
       emailController.text.trim(),
       passwordController.text.trim(),
     );
@@ -38,8 +39,8 @@ class _LoginPageState extends State<LoginPage> {
 
     if (authResponse.token != null) {
       snackBar(context, translate('loginSuccess'), Theme.of(context).colorScheme.secondary);
-      StorageService().storeToken(authResponse.token!);
-      Navigator.pushNamed(context, '/home');
+      StorageService().storeItem(StorageKeyEnum.authToken.name, authResponse.token!);
+      context.go(context.namedLocation(RouteEnum.home.name));
     } else {
       setState(() {
         errorMessage = authResponse.error ?? translate('anErrorOccurred');
@@ -135,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                 Text(translate('noAccount')),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/register');
+                    context.go(context.namedLocation(RouteEnum.register.name));
                   },
                   child: Text(translate('register')),
                 ),

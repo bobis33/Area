@@ -1,3 +1,4 @@
+import 'package:area_front_mobile/models/common.dart';
 import 'package:flutter/material.dart';
 
 import '/services/storage.dart';
@@ -16,7 +17,7 @@ class ThemeProvider extends ChangeNotifier {
     _themeData = _themeData.brightness == Brightness.dark
         ? ThemeData(useMaterial3: true, colorScheme: lightColorScheme, textTheme: textTheme)
         : ThemeData(useMaterial3: true, colorScheme: darkColorScheme, textTheme: textTheme);
-    StorageService().storeTheme(themeData);
+    StorageService().storeItem(StorageKeyEnum.theme.name, _themeData.brightness == Brightness.dark ? 'dark' : 'light');
     notifyListeners();
   }
 }

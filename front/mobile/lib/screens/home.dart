@@ -1,11 +1,12 @@
 import 'package:area_front_mobile/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:go_router/go_router.dart';
 
+import '/models/common.dart';
 import '/services/storage.dart';
 
 class HomePage extends StatelessWidget {
-
   const HomePage({super.key});
 
   @override
@@ -17,9 +18,9 @@ class HomePage extends StatelessWidget {
           children: <Widget>[
             ElevatedButton(
               onPressed: () async => {
-                await StorageService().clearToken(),
+                await StorageService().clearItem(StorageKeyEnum.authToken.name),
                 snackBar(context, translate('logoutSuccess'), Theme.of(context).colorScheme.secondary),
-                Navigator.pushReplacementNamed(context, '/'),
+                context.go(context.namedLocation(RouteEnum.root.name)),
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 14),

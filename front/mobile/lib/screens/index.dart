@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '/models/common.dart';
 import '/services/auth.dart';
 
 class IndexPage extends StatelessWidget {
-  final AuthService authService;
-
-  const IndexPage({required this.authService, super.key});
+  const IndexPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final AuthService authService = AuthService();
     return FutureBuilder<bool>(
       future: authService.isLoggedIn(),
       builder: (context, snapshot) {
@@ -20,11 +21,11 @@ class IndexPage extends StatelessWidget {
 
         if (snapshot.hasData && snapshot.data == true) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pushReplacementNamed(context, '/home');
+            context.go(context.namedLocation(RouteEnum.home.name));
           });
         } else {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pushReplacementNamed(context, '/login');
+            context.go(context.namedLocation(RouteEnum.login.name));
           });
         }
 
