@@ -9,7 +9,7 @@ import requests
 
 from app.service import login_user, register_user
 from app.config import Config
-from app.database import UserDAO
+from app.database import DAO
 
 from app.service import googleAREA
 
@@ -63,8 +63,8 @@ async def google_callback(request: Request, Authorize: AuthJWT = Depends()):
     user_infos = google_token['userinfo']
     user_email = user_infos['email']
 
-    if not await UserDAO.find_user_by_email(user_email):
-        await UserDAO.insert_user(user_email, None)
+    if not await DAO.find_user_by_email(user_email):
+        await DAO.insert_user(user_email, None)
 
     access_token = Authorize.create_access_token(subject=user_email)
 
