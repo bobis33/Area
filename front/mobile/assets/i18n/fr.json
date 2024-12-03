@@ -7,8 +7,8 @@
   "enterValidEmail": "Veuillez entrer une adresse email valide",
   "errorLoading": "Erreur de chargement",
   "french": "Français",
-  "hello": "Bonjour",
   "login": "Se connecter",
+  "loginHere": "Se connecter ici",
   "loginSuccess": "Vous êtes connecté",
   "logout": "Se déconnecter",
   "logoutSuccess": "Vous êtes déconnecté",
@@ -17,5 +17,6 @@
   "passwordConfirmation": "Confirmer le mot de passe",
   "passwordMismatch": "Les mots de passe ne correspondent pas",
   "register": "S'inscrire",
+  "registerSuccess": "Inscription réussie",
   "theme": "Thème"
 }

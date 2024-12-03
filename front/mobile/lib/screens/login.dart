@@ -3,8 +3,8 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:go_router/go_router.dart';
 
 import '/models/common.dart';
+import '/models/data.dart';
 import '/services/auth.dart';
-import '/services/storage.dart';
 import '/widgets/snack_bar.dart';
 import '/widgets/text_field.dart';
 
@@ -30,11 +30,10 @@ class _LoginPageState extends State<LoginPage> {
       passwordController.text.trim(),
     );
 
-    if (authResponse.token != null) {
+    if (authResponse is DataSuccess) {
       snackBar(context, translate('loginSuccess'), Theme.of(context).colorScheme.secondary);
-      StorageService().storeItem(StorageKeyEnum.authToken.name, authResponse.token!);
       context.go(context.namedLocation(RouteEnum.home.name));
-    } else {
+    } else if (authResponse is DataError) {
       setState(() {
         errorMessage = authResponse.error ?? translate('anErrorOccurred');
       });
@@ -84,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                 backgroundColor: theme.colorScheme.primary,
               ),
               child: Text(
-                translate('login'),
+                translate('loginHere'),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,

@@ -7,8 +7,8 @@
   "enterValidEmail": "Please enter a valid email",
   "errorLoading": "Error loading",
   "french": "French",
-  "hello": "Hello",
   "login": "Login",
+  "loginHere": "Login here",
   "loginSuccess": "Successfully logged in",
   "logout": "Logout",
   "logoutSuccess": "Successfully logged out",
@@ -17,5 +17,6 @@
   "passwordConfirmation": "Confirm password",
   "passwordMismatch": "Passwords do not match",
   "register": "Register",
+  "registerSuccess": "Successfully registered",
   "theme": "Theme"
 }

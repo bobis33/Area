@@ -3,6 +3,7 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:go_router/go_router.dart';
 
 import '/models/common.dart';
+import '/models/data.dart';
 import '/services/auth.dart';
 import '/widgets/snack_bar.dart';
 import '/widgets/text_field.dart';
@@ -18,7 +19,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
-
   String? emailError;
   String? passwordError;
 
@@ -47,7 +47,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     final authResponse = await AuthService().registerUser(email, password);
 
-    if (authResponse.token != null) {
+    if (authResponse is DataSuccess) {
       snackBar(context, translate('registerSuccess'), colorScheme.secondary);
       context.go(context.namedLocation(RouteEnum.login.name));
     } else {

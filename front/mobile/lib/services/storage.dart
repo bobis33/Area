@@ -5,7 +5,6 @@ class StorageService {
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   StorageService._internal();
-
   factory StorageService() => _instance;
 
   Future<void> storeItem(String key, String value) async {

@@ -3,6 +3,7 @@ description: Area | Front mobile
 version: 0.0.0+1
 repository: https://github.com/EpitechPromo2027/B-DEV-500-BDX-5-2-area-yohan.decamps
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
 platforms:
   android:
   ios:
