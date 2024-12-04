@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '/config/router.dart';
 import '/config/themes/themes.dart';
 import '/models/common.dart';
+import '/providers/language.dart';
 import '/providers/theme.dart';
 import '/services/storage.dart';
 
@@ -20,12 +21,19 @@ Future<void> main() async {
 
   if (savedLang != null) delegate.changeLocale(Locale(savedLang));
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeProvider(
-        (savedTheme ?? 'light') == 'dark'
-            ? darkTheme
-            : lightTheme
-      ),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ThemeProvider(
+            (savedTheme ?? 'light') == 'dark'
+                ? darkTheme
+                : lightTheme,
+          ),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => LanguageProvider(),
+        ),
+      ],
       child: LocalizedApp(
         delegate,
         const App(),
@@ -35,7 +43,7 @@ Future<void> main() async {
 }
 
 class App extends StatelessWidget {
-   const App({super.key});
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {

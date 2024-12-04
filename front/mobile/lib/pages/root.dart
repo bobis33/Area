@@ -28,7 +28,7 @@ class RootPage extends StatelessWidget {
           });
         }
 
-        return const Scaffold();
+        return const SizedBox();
       },
     );
   }

@@ -1,44 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_translate/flutter_translate.dart';
-import 'package:go_router/go_router.dart';
 
-import '/models/common.dart';
-import '/models/data.dart';
-import '/services/auth.dart';
-import '/widgets/snack_bar.dart';
-import '/widgets/text_field.dart';
+class AuthPage extends StatelessWidget {
+  final String title;
+  final List<Widget> formFields;
+  final String primaryButtonText;
+  final VoidCallback onPrimaryButtonPressed;
+  final String footerText;
+  final String footerActionText;
+  final VoidCallback onFooterActionPressed;
+  final String? errorMessage;
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  String? errorMessage;
-
-  Future<void> handleLogin() async {
-    setState(() {
-      errorMessage = null;
-    });
-
-    final authResponse = await AuthService().loginUser(
-      emailController.text.trim(),
-      passwordController.text.trim(),
-    );
-
-    if (authResponse is DataSuccess) {
-      snackBar(context, translate('loginSuccess'), Theme.of(context).colorScheme.secondary);
-      context.go(context.namedLocation(RouteEnum.home.name));
-    } else if (authResponse is DataError) {
-      setState(() {
-        errorMessage = authResponse.error ?? translate('anErrorOccurred');
-      });
-    }
-  }
+  const AuthPage({
+    super.key,
+    required this.title,
+    required this.formFields,
+    required this.primaryButtonText,
+    required this.onPrimaryButtonPressed,
+    required this.footerText,
+    required this.footerActionText,
+    required this.onFooterActionPressed,
+    this.errorMessage,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
+          children: [
             Center(
               child: Image.asset(
                 'assets_shared/images/icon.png',
@@ -61,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 24),
             Text(
-              translate('login'),
+              title,
               style: theme.textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: theme.colorScheme.primary,
@@ -69,12 +51,10 @@ class _LoginPageState extends State<LoginPage> {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
-            textField(controller: emailController, label: translate('email'), keyboardType: TextInputType.emailAddress),
-            const SizedBox(height: 16),
-            textField(controller: passwordController, label: translate('password'), obscureText: true),
+            ...formFields,
             const SizedBox(height: 24),
             ElevatedButton(
-              onPressed: handleLogin,
+              onPressed: onPrimaryButtonPressed,
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
@@ -83,8 +63,8 @@ class _LoginPageState extends State<LoginPage> {
                 backgroundColor: theme.colorScheme.primary,
               ),
               child: Text(
-                translate('loginHere'),
-                style: TextStyle(
+                primaryButtonText,
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                 ),
@@ -100,15 +80,14 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 textAlign: TextAlign.center,
               ),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(translate('noAccount')),
+                Text(footerText),
                 TextButton(
-                  onPressed: () {
-                    context.go(context.namedLocation(RouteEnum.register.name));
-                  },
-                  child: Text(translate('register')),
+                  onPressed: onFooterActionPressed,
+                  child: Text(footerActionText),
                 ),
               ],
             ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 Widget textField({
   required TextEditingController controller,
@@ -19,5 +20,8 @@ Widget textField({
     ),
     obscureText: obscureText,
     keyboardType: keyboardType,
+    inputFormatters: [
+      FilteringTextInputFormatter.deny(RegExp(r'\s')),
+    ],
   );
 }

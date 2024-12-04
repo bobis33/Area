@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:http/http.dart' as http;
 
 import '/models/data.dart';
@@ -48,9 +49,9 @@ class RequestService {
   String _parseError(http.Response response) {
     try {
       final Map<String, dynamic> errorData = json.decode(response.body);
-      return errorData['detail'] ?? 'anErrorOccurred';
+      return errorData['detail'] ?? translate('anErrorOccurred');
     } catch (e) {
-      return 'anErrorOccurred';
+      return translate('anErrorOccurred');
     }
   }
 }

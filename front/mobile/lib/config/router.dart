@@ -2,10 +2,10 @@ import 'package:go_router/go_router.dart';
 
 import '/layouts/main.dart';
 import '/models/common.dart';
-import '/screens/home.dart';
-import '/screens/login.dart';
-import '/screens/register.dart';
-import '/screens/root.dart';
+import '/pages/home.dart';
+import '/pages/login.dart';
+import '/pages/register.dart';
+import '/pages/root.dart';
 
 final router = GoRouter(
   initialLocation: '/',

@@ -2,16 +2,16 @@ import 'dart:convert';
 
 import '/models/common.dart';
 import '/models/data.dart';
+import '/services/request.dart';
 import '/services/storage.dart';
-import 'request.dart';
 
 class AuthService {
   AuthService();
   final StorageService _storageService = StorageService();
 
   Future<bool> isLoggedIn() async {
-    final token = await _storageService.getItem(StorageKeyEnum.authToken.name);
-    final result = await RequestService().makeRequest<bool>(
+    final String? token = await _storageService.getItem(StorageKeyEnum.authToken.name);
+    final DataState<bool> result = await RequestService().makeRequest<bool>(
       endpoint: '/auth/protected',
       method: 'GET',
       headers: {'Authorization': 'Bearer $token'},
