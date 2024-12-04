@@ -11,6 +11,7 @@ from app.service import login_user, register_user
 from app.config import Config
 from app.database import UserDAO
 
+from app.service import googleAREA
 
 
 router = APIRouter()
@@ -68,7 +69,6 @@ async def google_callback(request: Request, Authorize: AuthJWT = Depends()):
     access_token = Authorize.create_access_token(subject=user_email)
 
     return {"token": access_token}
-
 
 
 # Test endpoints
