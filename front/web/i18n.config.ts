@@ -14,11 +14,9 @@ export default defineI18nConfig(() => ({
             fillInAllFields: 'Please fill in all fields',
             goBackHome: 'Go back home',
             login: 'Login',
-            loginError: 'Login failed',
             loginHere: 'Login here',
             loginSuccess: 'Login successful',
             logout: 'Logout',
-            logoutError: 'Logout failed',
             logoutSuccess: 'Logout successful',
             message: 'Message',
             noAccount: 'Don\'t have an account?',
@@ -30,8 +28,7 @@ export default defineI18nConfig(() => ({
             registerError: 'Registration failed',
             registerHere: 'Register here',
             registerSuccess: 'Registration successful',
-            unknown: 'Unknown',
-            welcome: 'Welcome',
+            unknownError: 'Unknown error',
         },
         fr: {
             alreadyHaveAccount: 'Vous avez déjà un compte ?',
@@ -46,11 +43,9 @@ export default defineI18nConfig(() => ({
             fillInAllFields: 'Veuillez remplir tous les champs',
             goBackHome: 'Retourner à l\'accueil',
             login: 'Se connecter',
-            loginError: 'Échec de la connexion',
             loginHere: 'Se connecter ici',
             loginSuccess: 'Connexion réussie',
             logout: 'Se déconnecter',
-            logoutError: 'Échec de la déconnexion',
             logoutSuccess: 'Déconnexion réussie',
             message: 'Message',
             noAccount: 'Vous n\'avez pas de compte ?',
@@ -62,8 +57,7 @@ export default defineI18nConfig(() => ({
             registerError: 'Échec de l\'inscription',
             registerHere: 'S\'inscrire ici',
             registerSuccess: 'Inscription réussie',
-            unknown: 'Inconnu',
-            welcome: 'Bienvenue',
+            unknownError: 'Erreur inconnue',
         }
     }
 }))

@@ -12,7 +12,7 @@
 <script setup lang="ts">
 const error = useError()
 
-const errorCode = error.value?.statusCode || 'Unknown'
+const errorCode = error.value?.statusCode || 'unknownError'
 const errorMessage = error.value?.statusMessage || 'anErrorOccurred'
 </script>
 
