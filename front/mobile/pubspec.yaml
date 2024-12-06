@@ -3,41 +3,44 @@ description: Area | Front mobile
 version: 0.0.0+1
 repository: https://github.com/EpitechPromo2027/B-DEV-500-BDX-5-2-area-yohan.decamps
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
 platforms:
-  ios:
   android:
+  ios:
 
 environment:
-  sdk: ^3.5.3
   flutter: 3.24.3
+  sdk: ^3.5.3
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.1
+  flutter_secure_storage: ^9.2.2
   flutter_translate: ^4.1.0
   font_awesome_flutter: ^10.7.0
+  go_router: ^14.6.1
   http: ^1.2.2
-  flutter_secure_storage: ^9.2.2
-  flutter_launcher_icons: ^0.14.1
+  provider: ^6.1.2
 
 dev_dependencies:
+  flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
 
 flutter:
-  uses-material-design: true
   assets:
     - assets/i18n/
     - assets_shared/images/
+  uses-material-design: true
 
 flutter_launcher_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: "assets_shared/images/icon.png"
   adaptive_icon_foreground: "assets_shared/images/icon.png"
   adaptive_icon_background: "#00000000"
-  remove_alpha_ios: true
+  android: "launcher_icon"
+  image_path: "assets_shared/images/icon.png"
+  ios: true
   min_sdk_android: 21
+  remove_alpha_ios: true

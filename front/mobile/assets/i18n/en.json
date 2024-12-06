@@ -1,16 +1,22 @@
 {
   "alreadyHaveAccount": "Already have an account?",
   "anErrorOccurred": "An error occurred. Please try again.",
+  "changeLanguage": "Change language",
   "email": "Email",
-  "enterValidEmail": "Please enter a valid email",
-  "hello": "Hello",
+  "emailInvalid": "Invalid email",
+  "english": "English",
+  "errorLoading": "Error loading",
+  "french": "French",
   "login": "Login",
   "loginSuccess": "Successfully logged in",
   "logout": "Logout",
   "logoutSuccess": "Successfully logged out",
   "noAccount": "Don't have an account?",
   "password": "Password",
-  "passwordConfirmation": "Confirm Password",
+  "passwordConfirmation": "Confirm password",
+  "passwordInvalid": "Invalid password",
   "passwordMismatch": "Passwords do not match",
-  "register": "Register"
+  "register": "Register",
+  "registerSuccess": "Successfully registered",
+  "theme": "Theme"
 }

@@ -1,9 +1,12 @@
 {
   "alreadyHaveAccount": "Vous avez déjà un compte ?",
   "anErrorOccurred": "Une erreur s'est produite. Veuillez réessayer.",
+  "changeLanguage": "Changer de langue",
   "email": "Email",
-  "enterValidEmail": "Veuillez entrer une adresse email valide",
-  "hello": "Bonjour",
+  "emailInvalid": "Email invalide",
+  "english": "Anglais",
+  "errorLoading": "Erreur de chargement",
+  "french": "Français",
   "login": "Se connecter",
   "loginSuccess": "Vous êtes connecté",
   "logout": "Se déconnecter",
@@ -11,6 +14,9 @@
   "noAccount": "Vous n'avez pas de compte ?",
   "password": "Mot de passe",
   "passwordConfirmation": "Confirmer le mot de passe",
+  "passwordInvalid": "Mot de passe invalide",
   "passwordMismatch": "Les mots de passe ne correspondent pas",
-  "register": "S'inscrire"
+  "register": "S'inscrire",
+  "registerSuccess": "Inscription réussie",
+  "theme": "Thème"
 }
