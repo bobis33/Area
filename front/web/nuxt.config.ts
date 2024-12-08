@@ -15,6 +15,10 @@ export default defineNuxtConfig({
       baseUrlApi: 'http://localhost:5000',
     },
   },
+  colorMode: {
+    preference: 'system',
+    fallback: 'light',
+  },
   vite: {
     css: {
       preprocessorOptions: {
@@ -36,5 +40,5 @@ export default defineNuxtConfig({
     defaultLocale: 'fr',
     vueI18n: './i18n.config.ts',
 },
-  modules: ['@nuxtjs/i18n'],
+  modules: ['@nuxtjs/i18n', '@nuxtjs/color-mode'],
 })

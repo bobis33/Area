@@ -1,5 +1,4 @@
 <template>
-  <LanguageSwitcher />
   <button @click="logout" class="btn-logout">{{ $t('logout') }}</button>
   <button @click="google_login" class="btn-logout">{{ $t('google_login') }}</button>
   <button @click="goToAreas" class="btn-logout">{{ $t('go_to_areas') }}</button>
@@ -37,18 +36,20 @@ function goToAreas() {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .btn-logout {
-  background-color: #f44336;
+  background-color: var(--error-color);
   color: white;
   border: none;
   padding: 10px 20px;
   cursor: pointer;
   border-radius: 5px;
   font-size: 14px;
-}
+  transition: background-color 0.3s ease;
 
-.btn-logout:hover {
-  background-color: #d32f2f;
+  &:hover {
+    background-color: #dc3545;
+  }
 }
 </style>
+

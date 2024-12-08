@@ -1,15 +1,14 @@
 <template>
-  <LanguageSwitcher />
   <div class="form-container">
     <img src="@assets/images/icon.png" alt="Area icon" class="login-logo" />
     <h1 class="form-title">{{ $t('login') }}</h1>
     <form @submit.prevent="login">
       <div class="mb-4">
-        <label for="username" class="block text-sm font-medium mb-1">{{ $t('email') }}</label>
+        <label for="username" class="label">{{ $t('email') }}</label>
         <input id="username" v-model="email" type="text" class="input-field" :placeholder="$t('email')" />
       </div>
       <div class="mb-4">
-        <label for="password" class="block text-sm font-medium mb-1">{{ $t('password') }}</label>
+        <label for="password" class="label">{{ $t('password') }}</label>
         <input id="password" v-model="password" type="password" class="input-field" :placeholder="$t('password')" />
       </div>
       <button type="submit" class="btn-primary">{{ $t('login') }}</button>
@@ -22,6 +21,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 definePageMeta({middleware: 'auth'})
@@ -94,4 +94,71 @@ async function login() {
   height: 125px;
   margin: 0 auto 20px;
 }
+
+.form-container {
+  max-width: 400px;
+  margin: 0 auto;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: var(--text-color);
+}
+
+.form-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--color-primary);
+}
+
+.label {
+  display: block;
+  color: var(--text-color);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.375rem;
+  background-color: var(--bg);
+  color: var(--text-color);
+  font-size: 1rem;
+
+  &:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+  }
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.875rem;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.register-link {
+  text-align: center;
+
+  .btn-link {
+    color: var(--link-color);
+    text-decoration: underline;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--link-hover-color);
+    }
+  }
+}
+
 </style>
