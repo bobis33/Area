@@ -2,6 +2,7 @@
 # pylint: disable=no-self-argument
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
+from fastapi.security import HTTPBearer
 from starlette.requests import Request
 from fastapi_jwt_auth import AuthJWT
 import requests
@@ -11,7 +12,7 @@ from app.config import Config
 
 
 router = APIRouter()
-
+auth_scheme = HTTPBearer()
 
 class Credentials(BaseModel):
     email: str
@@ -43,7 +44,7 @@ GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
 GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo"
 
 @router.get("/login/google")
-async def login_google():
+async def login_google(token=Depends(auth_scheme)):
     params = {
         "client_id": Config.GOOGLE_CLIENT_ID,
         "redirect_uri": GOOGLE_REDIRECT_URI,
@@ -84,12 +85,7 @@ async def google_callback(request: Request):
 
 # Test endpoints
 @router.get('/protected', response_model=dict)
-async def protected(Authorize: AuthJWT = Depends()):
-    try:
-        Authorize.jwt_required()
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized") from e
-
+async def protected(token=Depends(auth_scheme)):
     return {"message": "protected endpoint"}
 
 @router.get('/youtube', response_model=dict)
