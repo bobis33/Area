@@ -70,12 +70,11 @@ const subscribedAreas = ref([])
 
 const createArea = async () => {
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/create`, {
+    const response = await fetch(`${config.public.baseUrlApi}/area/create?action=${newArea.value.action}&reaction=${newArea.value.reaction}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(newArea.value)
     })
   } catch (error) {
     console.error('Error creating area:', error)
