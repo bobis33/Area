@@ -72,4 +72,3 @@ class DAO:
     async def find_all_areas():
         documents = await get_database().areas.find({}).to_list(length=None)
         return [DAO.serialize_document(doc) for doc in documents]
-    

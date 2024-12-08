@@ -6,13 +6,7 @@
     <form @submit.prevent="register">
       <div class="mb-4">
         <label for="email" class="block text-sm font-medium mb-1">{{ $t('email') }}</label>
-        <input
-            id="email"
-            v-model="email"
-            type="text"
-            class="input-field"
-            :placeholder="$t('enterEmail')"
-        />
+        <input id="email" v-model="email" type="text" class="input-field" :placeholder="$t('email')"/>
       </div>
       <div class="mb-4">
         <label for="password" class="block text-sm font-medium mb-1">{{ $t('password') }}</label>
@@ -21,7 +15,7 @@
             v-model="password"
             type="password"
             class="input-field"
-            :placeholder="$t('enterPassword')"
+            :placeholder="$t('password')"
         />
       </div>
       <div class="mb-4">
