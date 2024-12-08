@@ -1,6 +1,7 @@
 <template>
   <LanguageSwitcher />
   <button @click="logout" class="btn-logout">{{ $t('logout') }}</button>
+  <button @click="google_login" class="btn-logout">{{ $t('google_login') }}</button>
 </template>
 
 <script setup lang="ts">
