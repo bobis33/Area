@@ -7,17 +7,38 @@
 definePageMeta({middleware: 'auth'})
 
 import { useCookie, useRouter } from '#app'
-
 import { useSnackbar } from '~/composables/useSnackBar'
 
 const { showSnackbar } = useSnackbar()
 const router = useRouter()
+const config = useRuntimeConfig()
+const tokenCookie = useCookie('token').value;
 
 async function logout() {
   useCookie('token').value = undefined
   await router.push('/login')
   showSnackbar('logoutSuccess', 'success')
 }
+
+async function google_login() {
+  try {
+    const response = await fetch(`${config.public.baseUrlApi}/auth/login/google`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${tokenCookie}`,
+      }
+    })
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+    const data = await response.json()
+    console.log(data)
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error)
+  }
+}
+
 </script>
 
 <style scoped>
