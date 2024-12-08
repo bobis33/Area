@@ -11,6 +11,7 @@ from app.service import login_user, register_user
 from app.config import Config
 from app.database import DAO
 
+
 router = APIRouter()
 
 oauth = OAuth()
@@ -25,6 +26,7 @@ oauth.register(
 class Credentials(BaseModel):
     email: str
     password: str
+
 
 # User login and registration
 @router.post('/login', response_model=dict)
@@ -42,6 +44,7 @@ async def register(credentials: Credentials, authorize: AuthJWT = Depends()):
         return {"token": access_token}
 
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="email already exists")
+
 
 # Google login
 @router.get("/login/google")
