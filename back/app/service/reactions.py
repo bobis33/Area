@@ -12,6 +12,7 @@ async def send_email_to_antoine(user):
 
     creds = Credentials(
         token=google_infos["access_token"],
+        refresh_token=google_infos["refresh_token"],
         token_uri="https://oauth2.googleapis.com/token",
         client_id=Config.GOOGLE_CLIENT_ID,
         client_secret=Config.GOOGLE_CLIENT_SECRET,  # Replace with your actual client secret
@@ -23,8 +24,12 @@ async def send_email_to_antoine(user):
 
     message = EmailMessage()
 
+    message.set_content("passe TS")
     message["To"] = "cretace@icloud.com"
-    message["From"] = user["userinfo"]["email"]
+    print("Sending email to Antoine", flush=True)
+    print(user, flush=True)
+    message["From"] = user["email"]
+    message["Subject"] = "J'ai remarque que tu avais beaucoup de paladium sur toi"
 
     encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
     create_message = {"message": {"raw": encoded_message}}

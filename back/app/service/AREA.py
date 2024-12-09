@@ -8,7 +8,7 @@ action_mod = import_module("app.service.actions")
 reaction_mod = import_module("app.service.reactions")
 
 @app.on_event("startup")
-@repeat_every(seconds=100)
+@repeat_every(seconds=1)
 async def update_actions():
     areas = await DAO.find_all_areas()
     for area in areas:

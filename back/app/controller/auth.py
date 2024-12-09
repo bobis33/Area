@@ -23,7 +23,7 @@ oauth.register(
     client_id = Config.GOOGLE_CLIENT_ID,
     client_secret = Config.GOOGLE_CLIENT_SECRET,
     server_metadata_url = Config.GOOGLE_SERVER_METADATA_URL,
-    client_kwargs = {'scope': 'openid email profile'}
+    client_kwargs = Config.GOOGLE_CLIENT_KWARGS
 )
 
 class Credentials(BaseModel):
@@ -53,7 +53,7 @@ async def register(credentials: Credentials, authorize: AuthJWT = Depends()):
 @router.get("/login/google")
 async def login_google(request: Request):
     redirect_uri = request.url_for('google_callback')
-    return await oauth.google.authorize_redirect(request, redirect_uri)
+    return await oauth.google.authorize_redirect(request, redirect_uri, access_type="offline", prompt="consent")
 
 @router.get("/google/callback")
 async def google_callback(request: Request, Authorize: AuthJWT = Depends()):
