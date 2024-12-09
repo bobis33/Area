@@ -13,7 +13,6 @@ import { useSnackbar } from '~/composables/useSnackBar'
 const { showSnackbar } = useSnackbar()
 const router = useRouter()
 const config = useRuntimeConfig()
-const tokenCookie = useCookie('token').value;
 
 async function logout() {
   useCookie('token').value = undefined
@@ -23,23 +22,15 @@ async function logout() {
 
 async function google_login() {
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/auth/login/google`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${tokenCookie}`,
-      }
-    })
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
-    }
-    const data = await response.json()
-    window.location.href = data.redirect_uri
+    const tokenCookie = useCookie('token');
+    console.log(tokenCookie.value)
+    // Redirect the user to the backend endpoint to initiate Google login
+    // Redirect the user to the backend endpoint to initiate Google login
+    window.location.href = `${config.public.baseUrlApi}/auth/login/google`;
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error)
   }
 }
-
 </script>
 
 <style scoped>

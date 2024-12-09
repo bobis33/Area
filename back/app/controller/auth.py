@@ -6,6 +6,7 @@ from fastapi.security import HTTPBearer
 from starlette.requests import Request
 from fastapi_jwt_auth import AuthJWT
 from pydantic import BaseModel
+from fastapi.responses import RedirectResponse
 import requests
 
 from app.service import login_user, register_user
@@ -49,15 +50,28 @@ async def register(credentials: Credentials, authorize: AuthJWT = Depends()):
 
 # Google OAuth
 @router.get("/login/google")
-async def login_google(request: Request, token=Depends(auth_scheme)):
+async def login_google(request: Request):
     redirect_uri = request.url_for('google_callback')
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 @router.get("/google/callback")
 async def google_callback(request: Request, Authorize: AuthJWT = Depends()):
-    google_token = await oauth.google.authorize_access_token(request)
-    user_infos = google_token['userinfo']
-    return user_infos
+    try:
+        # Get the Google token and user info
+        google_token = await oauth.google.authorize_access_token(request)
+        user_info = google_token.get("userinfo")
+        user_email = user_info["email"]
+
+        # Create a JWT for your app
+        access_token = Authorize.create_access_token(subject=user_email)
+
+        # Redirect back to the frontend with the token
+        frontend_url = "http://localhost:8081"  # Your frontend URL
+        return RedirectResponse(f"{frontend_url}/?token={access_token}")
+    except Exception as e:
+        # Redirect to the frontend with an error message
+        frontend_url = "http://localhost:8081"
+        return RedirectResponse(f"{frontend_url}/?error=OAuthFailed")
 
 
 # Test endpoints
