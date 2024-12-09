@@ -4,6 +4,8 @@ from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from email.message import EmailMessage
 
+import random
+
 async def test_reaction(user):
     print("Reaction triggered", flush=True)
 
@@ -24,22 +26,20 @@ async def send_email_to_antoine(user):
 
     message = EmailMessage()
 
-    message.set_content("passe TS")
+    message.set_content("passe TS " + str(random.randint(0, 100000000)))
     message["To"] = "cretace@icloud.com"
-    print("Sending email to Antoine", flush=True)
-    print(user, flush=True)
     message["From"] = user["email"]
     message["Subject"] = "J'ai remarque que tu avais beaucoup de paladium sur toi"
 
     encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
-    create_message = {"message": {"raw": encoded_message}}
+    create_message = {"raw": encoded_message}
 
     # pylint: disable=E1101
-    draft = (
+    send_message = (
         service.users()
-        .drafts()
-        .create(userId="me", body=create_message)
+        .messages()
+        .send(userId="me", body=create_message)
         .execute()
     )
 
-    print(f'Draft id: {draft["id"]}\nDraft message: {draft["message"]}', flush=True)
+    print(f'Message Id: {send_message["id"]}', flush=True)
