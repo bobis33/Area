@@ -1,5 +1,6 @@
 <template>
-  <div>
+    <div>
+      <button @click="goToHome" class="btn-back-home">Go to Home</button>
     <h1>All Areas</h1>
     <div v-if="data && data.areas.length">
       <ul>
@@ -45,39 +46,43 @@
       </div>
       <button type="submit">Create Area</button>
     </form>
+
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 const config = useRuntimeConfig()
 
-const { data, error } = await useFetch(`${config.public.baseUrlApi}/area/get/all`, {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
+const router = useRouter()
 
+const data = ref(null)
+const userEmails = ref({})
+const userEmail = ref('')
+const subscribedAreas = ref([])
 const newArea = ref({
   action: '',
   reaction: ''
 })
 
-const userEmails = ref({})
-const userEmail = ref('')
-const subscribedAreas = ref([])
-
-const createArea = async () => {
+const fetchSubscribedAreas = async () => {
+  if (!userEmail.value) {
+    alert('Please enter your email.')
+    return
+  }
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/create?action=${newArea.value.action}&reaction=${newArea.value.reaction}`, {
-      method: 'POST',
+    const response = await fetch(`${config.public.baseUrlApi}/area/get/subscribed?user_email=${encodeURIComponent(userEmail.value)}`, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
     })
+    const result = await response.json()
+    subscribedAreas.value = result.subscribed_areas
+    console.log(subscribedAreas.value)
   } catch (error) {
-    console.error('Error creating area:', error)
+    console.error('Error fetching subscribed areas:', error)
   }
 }
 
@@ -88,9 +93,7 @@ const subscribeUser = async (area_id) => {
     return
   }
   try {
-    console.log(email)
-    console.log(area_id)
-    const response = await fetch(`${config.public.baseUrlApi}/area/subscribe?user_email=${(email)}&area_id=${area_id}`, {
+    const response = await fetch(`${config.public.baseUrlApi}/area/subscribe?user_email=${encodeURIComponent(email)}&area_id=${area_id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -110,7 +113,7 @@ const unsubscribeUser = async (area_id) => {
     return
   }
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/unsubscribe?user_email=${(userEmail.value)}&area_id=${area_id}`, {
+    const response = await fetch(`${config.public.baseUrlApi}/area/unsubscribe?user_email=${encodeURIComponent(userEmail.value)}&area_id=${area_id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -124,28 +127,41 @@ const unsubscribeUser = async (area_id) => {
   }
 }
 
-const fetchSubscribedAreas = async () => {
-  if (!userEmail.value) {
-    alert('Please enter your email.')
-    return
-  }
+const createArea = async () => {
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/get/subscribed?user_email=${(userEmail.value)}`, {
-      method: 'GET',
+    const url = `${config.public.baseUrlApi}/area/create?action=${encodeURIComponent(newArea.value.action)}&reaction=${encodeURIComponent(newArea.value.reaction)}`
+    const response = await fetch(url, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-      },
+      }
     })
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
     const result = await response.json()
-    subscribedAreas.value = result.subscribed_areas
-    console.log(subscribedAreas.value)
+    console.log(result.message)
+    // Optionally, fetch the updated list of areas
+    // fetchAreas()
   } catch (error) {
-    console.error('Error fetching subscribed areas:', error)
+    console.error('Error creating area:', error)
   }
 }
 
+const goToHome = () => {
+  router.push('/')
+}
 </script>
 
 <style scoped>
-/* Add your styles here */
+.btn-back-home {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+  margin-top: 20px;
+}
 </style>

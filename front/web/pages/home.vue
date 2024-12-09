@@ -2,6 +2,7 @@
   <LanguageSwitcher />
   <button @click="logout" class="btn-logout">{{ $t('logout') }}</button>
   <button @click="google_login" class="btn-logout">{{ $t('google_login') }}</button>
+  <button @click="goToAreas" class="btn-logout">{{ $t('go_to_areas') }}</button>
 </template>
 
 <script setup lang="ts">
@@ -30,6 +31,9 @@ async function google_login() {
   } catch (error) {
     console.error('There was a problem with the fetch operation:', error)
   }
+}
+function goToAreas() {
+  router.push('/areas')
 }
 </script>
 
