@@ -65,14 +65,15 @@ async def google_callback(request: Request, Authorize: AuthJWT = Depends()):
 
         # Create a JWT for your app
         access_token = Authorize.create_access_token(subject=user_email)
-        user = DAO.find_user_by_email(user_email)
+        user = await DAO.find_user_by_email(user_email)
         user["external_tokens"]["GOOGLE"] = google_token
-        DAO.update_user(user_email, user)
+        await DAO.update_user(user_email, user)
 
         # Redirect back to the frontend with the token
         frontend_url = "http://localhost:8081"  # Your frontend URL
         return RedirectResponse(f"{frontend_url}/?token={access_token}")
     except Exception as e:
+        print(e, flush=True)
         # Redirect to the frontend with an error message
         frontend_url = "http://localhost:8081"
         return RedirectResponse(f"{frontend_url}/?error=OAuthFailed")
