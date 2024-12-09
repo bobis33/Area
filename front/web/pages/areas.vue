@@ -57,7 +57,6 @@ const config = useRuntimeConfig()
 
 const router = useRouter()
 
-const data = ref(null)
 const userEmails = ref({})
 const userEmail = ref('')
 const subscribedAreas = ref([])
@@ -66,13 +65,20 @@ const newArea = ref({
   reaction: ''
 })
 
+const { data, error } = await useFetch(`${config.public.baseUrlApi}/area/get/all`, {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+
 const fetchSubscribedAreas = async () => {
   if (!userEmail.value) {
     alert('Please enter your email.')
     return
   }
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/get/subscribed?user_email=${encodeURIComponent(userEmail.value)}`, {
+    const response = await fetch(`${config.public.baseUrlApi}/area/get/subscribed?user_email=${(userEmail.value)}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -93,7 +99,7 @@ const subscribeUser = async (area_id) => {
     return
   }
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/subscribe?user_email=${encodeURIComponent(email)}&area_id=${area_id}`, {
+    const response = await fetch(`${config.public.baseUrlApi}/area/subscribe?user_email=${(email)}&area_id=${area_id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -113,7 +119,7 @@ const unsubscribeUser = async (area_id) => {
     return
   }
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/unsubscribe?user_email=${encodeURIComponent(userEmail.value)}&area_id=${area_id}`, {
+    const response = await fetch(`${config.public.baseUrlApi}/area/unsubscribe?user_email=${(userEmail.value)}&area_id=${area_id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -129,7 +135,7 @@ const unsubscribeUser = async (area_id) => {
 
 const createArea = async () => {
   try {
-    const url = `${config.public.baseUrlApi}/area/create?action=${encodeURIComponent(newArea.value.action)}&reaction=${encodeURIComponent(newArea.value.reaction)}`
+    const url = `${config.public.baseUrlApi}/area/create?action=${(newArea.value.action)}&reaction=${(newArea.value.reaction)}`
     const response = await fetch(url, {
       method: 'POST',
       headers: {
