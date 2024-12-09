@@ -2,7 +2,6 @@
 # pylint: disable=no-self-argument
 import uvicorn
 
-from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_jwt_auth import AuthJWT
 from pydantic import BaseModel
@@ -10,6 +9,7 @@ from pydantic import BaseModel
 from .config import Config
 from .common import init_app
 from .controller import register_router
+from .fast import app
 
 class Settings(BaseModel):
     authjwt_secret_key: str = Config.JWT_SECRET_KEY
@@ -17,8 +17,6 @@ class Settings(BaseModel):
 @AuthJWT.load_config
 def get_config():
     return Settings()
-
-app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -33,6 +31,9 @@ def create_app(config_class=Config):
 
     register_router(app)
 
+    return app
+
+def get_app():
     return app
 
 create_app()

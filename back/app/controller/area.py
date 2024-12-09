@@ -5,7 +5,6 @@ router = APIRouter()
 
 @router.get('/get/triggers', response_model=dict)
 async def get_triggers_list(user_email: str):
-    print(await DAO.find_user_by_email(user_email))
     return {"triggers": "None"}
 
 @router.get('/get/subscribed', response_model=dict)
