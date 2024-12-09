@@ -11,6 +11,7 @@ import requests
 
 from app.service import login_user, register_user
 from app.config import Config
+from app.database import DAO
 
 
 router = APIRouter()
@@ -64,6 +65,9 @@ async def google_callback(request: Request, Authorize: AuthJWT = Depends()):
 
         # Create a JWT for your app
         access_token = Authorize.create_access_token(subject=user_email)
+        user = DAO.find_user_by_email(user_email)
+        user["external_tokens"]["GOOGLE"] = google_token
+        DAO.update_user(user_email, user)
 
         # Redirect back to the frontend with the token
         frontend_url = "http://localhost:8081"  # Your frontend URL

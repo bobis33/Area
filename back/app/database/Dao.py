@@ -31,7 +31,8 @@ class DAO:
     @staticmethod
     async def insert_user(email, hashed_password):
         return await get_database().users.insert_one({"email": email, "password": hashed_password, "subscribed_areas": [],
-                                                      "created_at": datetime.datetime.now(), "updated_at": datetime.datetime.now()})
+                                                      "created_at": datetime.datetime.now(), "updated_at": datetime.datetime.now(),
+                                                      "external_tokens": {}})
 
     @staticmethod
     async def update_user(email, updated_user):
