@@ -8,7 +8,7 @@ action_mod = import_module("app.service.actions")
 reaction_mod = import_module("app.service.reactions")
 
 @app.on_event("startup")
-@repeat_every(seconds=1)
+@repeat_every(seconds=10)
 async def update_actions():
     areas = await DAO.find_all_areas()
     for area in areas:
@@ -16,9 +16,9 @@ async def update_actions():
             action_func = getattr(action_mod, area["action"])
             reaction_func = getattr(reaction_mod, area["reaction"])
 
-            if await action_func():
-                for user_email in area["subscribed_users"]:
-                    user = await DAO.find_user_by_email(user_email)
+            for user_email in area["subscribed_users"]:
+                user = await DAO.find_user_by_email(user_email)
+                if await action_func(user):
                     await reaction_func(user)
 
         except AttributeError:

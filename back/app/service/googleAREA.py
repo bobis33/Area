@@ -11,6 +11,7 @@ class YtVideoInfos:
 def check_for_new_yt_video_action(channel_id: str = 'UCfgh3Ul_dG6plQ7rzuOLx-w') -> bool:
     video_infos = YtVideoInfos()
 
+    # pylint: disable=E1101
     request = youtube.channels().list(
         part='statistics',
         id=channel_id
