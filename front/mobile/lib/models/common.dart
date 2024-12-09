@@ -9,7 +9,8 @@ enum RouteEnum {
   home,
   login,
   register,
-  root
+  root,
+  areas
 }
 
 enum StorageKeyEnum {

@@ -6,6 +6,7 @@ import '/pages/home.dart';
 import '/pages/login.dart';
 import '/pages/register.dart';
 import '/pages/root.dart';
+import '/pages/areas.dart';
 
 final router = GoRouter(
   initialLocation: '/',
@@ -29,6 +30,11 @@ final router = GoRouter(
       name: RouteEnum.home.name,
       path: '/home',
       builder: (context, state) => MainLayout(child: HomePage()),
+    ),
+    GoRoute(
+      name: RouteEnum.areas.name,
+      path: '/areas',
+      builder: (context, state) => MainLayout(child: AreasPage()),
     ),
   ],
 );

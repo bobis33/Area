@@ -40,6 +40,27 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
+            // basic button to go to the areas page
+            ElevatedButton(
+              onPressed: () => context.go(context.namedLocation(RouteEnum.areas.name)),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  translate('areas'),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
