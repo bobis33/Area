@@ -17,7 +17,10 @@ async def update_actions():
             reaction_func = getattr(reaction_mod, area["reaction"])
 
             if await action_func():
-                await reaction_func()
+                for user_email in area["subscribed_users"]:
+                    user = await DAO.find_user_by_email(user_email)
+                    await reaction_func(user)
+
         except AttributeError:
             print(f"Reaction {area['reaction']} not found\n", flush=True)
         except Exception as e:
