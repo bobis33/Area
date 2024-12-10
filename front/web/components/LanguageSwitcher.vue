@@ -1,15 +1,13 @@
 <template>
-  <div>
-    <div class="language-switcher">
-      <button
-          v-for="lang in ['en', 'fr']"
-          :key="lang"
-          @click="changeLanguage(lang)"
-          :class="{ active: locale === lang }"
-      >
-        {{ lang.toUpperCase() }}
-      </button>
-    </div>
+  <div class="language-switcher">
+    <button
+        v-for="lang in ['en', 'fr']"
+        :key="lang"
+        @click="changeLanguage(lang)"
+        :class="{ active: locale === lang }"
+    >
+      {{ lang.toUpperCase() }}
+    </button>
   </div>
 </template>
 
@@ -30,23 +28,30 @@ const changeLanguage = (lang) => {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .language-switcher {
   display: flex;
-  gap: 10px;
-}
 
-button {
-  padding: 5px 10px;
-  border: 1px solid #ccc;
-  background-color: #f9f9f9;
-  cursor: pointer;
-  border-radius: 5px;
-}
+  button {
+    padding: 5px 10px;
+    border: 1px solid var(--border-color);
+    background-color: var(--button-bg);
+    color: var(--text-on-primary);
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 
-button.active {
-  background-color: #007bff;
-  color: white;
-  border-color: #007bff;
+    &:hover {
+      background-color: var(--button-bg-hover);
+    }
+
+    &.active {
+      background-color: var(--color-primary);
+      color: var(--reverse-border-color);
+      border-color: var(--reverse-border-color);;
+    }
+  }
 }
 </style>
+

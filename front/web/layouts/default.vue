@@ -1,7 +1,9 @@
 <template>
-  <div>
+  <div class="layout">
     <header>
     </header>
+    <LanguageSwitcher />
+    <ThemeSwitcher />
     <slot />
     <Snackbar v-if="snackbarMessage" :message="snackbarMessage" :type="snackbarType" />
     <footer>
@@ -12,6 +14,12 @@
 <script setup lang="ts">
 import { useSnackbar } from '~/composables/useSnackBar'
 import Snackbar from '~/components/SnackBar.vue'
+import ThemeSwitcher from "~/components/ThemeSwitcher.vue";
 
 const { message: snackbarMessage, type: snackbarType } = useSnackbar()
 </script>
+
+<style scoped>
+
+
+</style>
