@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ['~/assets/styles/main.scss'],
   alias: {
-    '@assets': resolve(__dirname, '../assets'),
+    '@assets': resolve(__dirname, '../shared_assets'),
   },
   devServer: {
     port: 8081,

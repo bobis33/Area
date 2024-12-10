@@ -33,14 +33,14 @@ dev_dependencies:
 flutter:
   assets:
     - assets/i18n/
-    - assets_shared/images/
+    - shared_assets/images/
   uses-material-design: true
 
 flutter_launcher_icons:
-  adaptive_icon_foreground: "assets_shared/images/icon.png"
+  adaptive_icon_foreground: "shared_assets/images/icon.png"
   adaptive_icon_background: "#00000000"
   android: "launcher_icon"
-  image_path: "assets_shared/images/icon.png"
+  image_path: "shared_assets/images/icon.png"
   ios: true
   min_sdk_android: 21
   remove_alpha_ios: true
