@@ -6,9 +6,13 @@ from googleapiclient.errors import HttpError
 from app.config import Config
 
 async def test_action(user):
+    """'test_action' An action function that is used for testing witch always activates
+    """
     return True
 
 async def mail_received(user):
+    """'mail_received' An action function that triggers when a mail is received
+    """
     try:
         google_infos = user['external_tokens']['GOOGLE']
 

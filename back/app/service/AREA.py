@@ -1,14 +1,16 @@
 from importlib import import_module
+from fastapi_utils.tasks import repeat_every
 
 from app.fast import app
 from app.database.Dao import DAO
-from fastapi_utils.tasks import repeat_every
+
+from app.config import Config
 
 action_mod = import_module("app.service.actions")
 reaction_mod = import_module("app.service.reactions")
 
 @app.on_event("startup")
-@repeat_every(seconds=10)
+@repeat_every(seconds=Config.AREA_CHECK_INTERVAL)
 async def update_actions():
     areas = await DAO.find_all_areas()
     for area in areas:
