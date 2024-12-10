@@ -5,29 +5,23 @@
 </template>
 
 <script setup>
-import { useRouter, useCookie } from '#app'
+import { useCookie } from '#app'
 
-const router = useRouter()
-const tokenCookie = useCookie('token')
+import { CookiesEnum } from "~/constants";
 
-// Capture the token from the URL
 const params = new URLSearchParams(window.location.search)
+const oauthTokenCookie = useCookie(CookiesEnum.OAUTHTOKEN.toString())
 const token = params.get('token')
 const error = params.get('error')
 
-// Handle the response
 if (token) {
   console.log("Token received:", token)
 
-  // Save the token securely (e.g., in a cookie or localStorage)
-  tokenCookie.value = token
+  oauthTokenCookie.value = token
 
-  // Optionally, navigate the user to a logged-in page
-  router.push('/dashboard') // Adjust as needed
 } else if (error) {
   console.error("OAuth failed:", error)
 
-  // Optionally, show an error message to the user
   alert("Login failed. Please try again.")
 } else {
   console.log("No token or error found in the URL.")
@@ -35,5 +29,4 @@ if (token) {
 </script>
 
 <style scoped>
-/* Add your styles here */
 </style>

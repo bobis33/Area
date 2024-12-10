@@ -10,7 +10,6 @@ export const useSnackbar = () => {
             message.value = null
         }, 3000)
     }
-
     return {
         message,
         type,

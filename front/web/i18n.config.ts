@@ -27,6 +27,7 @@ export default defineI18nConfig(() => ({
             registerHere: 'Register here',
             registerSuccess: 'Registration successful',
             unknownError: 'Unknown error',
+            username: 'Username',
         },
         fr: {
             alreadyHaveAccount: 'Vous avez déjà un compte ?',
@@ -54,6 +55,7 @@ export default defineI18nConfig(() => ({
             registerHere: 'S\'inscrire ici',
             registerSuccess: 'Inscription réussie',
             unknownError: 'Erreur inconnue',
+            username: 'Nom d\'utilisateur',
         }
     }
 }))

@@ -2,10 +2,10 @@
   <div class="form-container">
     <img src="@assets/images/icon.png" alt="Area icon" class="login-logo" />
     <h1 class="form-title">{{ $t('login') }}</h1>
-    <form @submit.prevent="login">
+    <form @submit.prevent="handleSubmit">
       <div class="mb-4">
-        <label for="username" class="label">{{ $t('email') }}</label>
-        <input id="username" v-model="email" type="text" class="input-field" :placeholder="$t('email')" />
+        <label for="username" class="block text-sm font-medium mb-1">{{ $t('username') }}</label>
+        <input id="username" v-model="username" type="text" class="input-field" :placeholder="$t('username')" />
       </div>
       <div class="mb-4">
         <label for="password" class="label">{{ $t('password') }}</label>
@@ -16,7 +16,7 @@
     <p v-if="errorMessage" class="error-message">{{ $t(errorMessage) }}</p>
     <div class="register-link mt-4">
       <p>{{ $t('noAccount') }}
-        <button @click="router.push('/register')" class="btn-link">{{ $t('registerHere') }}</button>
+        <button @click="router.push(RoutesEnum.REGISTER.toString())" class="btn-link">{{ $t('registerHere') }}</button>
       </p>
     </div>
   </div>
@@ -25,68 +25,39 @@
 
 <script setup lang="ts">
 definePageMeta({middleware: 'auth'})
-
 import { ref } from 'vue'
 import { useCookie, useRouter } from '#app'
 
 import { useSnackbar } from '~/composables/useSnackBar'
+import { loginUser } from '~/domain/use-cases/loginUser'
+import { RoutesEnum } from "~/constants";
 
-const config = useRuntimeConfig()
+const username = ref('')
+const password = ref('')
+const errorMessage = ref('')
 const tokenCookie = useCookie('token', { path: '/', maxAge: 60 * 60 * 24 * 7 })
 const router = useRouter()
 const { showSnackbar } = useSnackbar()
 
-const email = ref('')
-const password = ref('')
-const errorMessage = ref('')
-
-async function login() {
+async function handleSubmit() {
   try {
-    if (!email.value || !password.value) {
-      errorMessage.value = 'fillInAllFields'
+    if (!username.value || !password.value) {
+      errorMessage.value = 'fillAllFields'
       return
     }
-    if (!email.value.includes('@') || !email.value.includes('.')) {
-      errorMessage.value = 'enterEmailValid'
-      return
-    }
-
-    const response = await fetch(`${config.public.baseUrlApi}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email.value,
-        password: password.value,
-      }),
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json()
-      errorMessage.value = 'invalidCredentials'
-      console.error(errorData)
-      return
-    }
-
-    const data = await response.json()
-    const token = data.token
-    if (token) {
-      tokenCookie.value = token
-      await router.push('/home')
-      showSnackbar('loginSuccess', 'success')
-    }
-  } catch (error) {
-    errorMessage.value = 'anErrorOccurred'
-    console.error(error)
+    tokenCookie.value = await loginUser({ email: username.value, password: password.value })
+    showSnackbar('loginSuccess', 'success')
+    await router.push('/home')
+  } catch (error: any) {
+    errorMessage.value = error.message
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@use "~/assets/styles/forms.scss" as *;
-@use "~/assets/styles/buttons.scss" as *;
-@use "~/assets/styles/errors.scss" as *;
+@use "assets/styles/forms" as *;
+@use "assets/styles/buttons" as *;
+@use "assets/styles/errors" as *;
 
 .login-logo {
   display: block;

@@ -2,32 +2,26 @@
   <div class="form-container">
     <img src="@assets/images/icon.png" alt="AREA icon" class="register-logo" />
     <h1 class="form-title">{{ $t('register') }}</h1>
-    <form @submit.prevent="register">
+    <form @submit.prevent="handleRegister">
       <div class="mb-4">
-        <label for="email" class="label">{{ $t('email') }}</label>
-        <input id="email" v-model="email" type="text" class="input-field" :placeholder="$t('email')" />
+        <label for="username" class="block text-sm font-medium mb-1">{{ $t('username') }}</label>
+        <input id="username" v-model="username" type="text" class="input-field" :placeholder="$t('username')" />
       </div>
       <div class="mb-4">
-        <label for="password" class="label">{{ $t('password') }}</label>
+        <label for="password" class="block text-sm font-medium mb-1">{{ $t('password') }}</label>
         <input id="password" v-model="password" type="password" class="input-field" :placeholder="$t('password')" />
       </div>
       <div class="mb-4">
-        <label for="confirmPassword" class="label">{{ $t('passwordConfirmation') }}</label>
-        <input
-            id="confirmPassword"
-            v-model="confirmPassword"
-            type="password"
-            class="input-field"
-            :placeholder="$t('passwordConfirmation')"
+        <label for="confirmPassword" class="block text-sm font-medium mb-1">{{ $t('passwordConfirmation') }}</label>
+        <input id="confirmPassword" v-model="confirmPassword" type="password" class="input-field" :placeholder="$t('passwordConfirmation')"
         />
       </div>
       <button type="submit" class="btn-primary">{{ $t('register') }}</button>
     </form>
     <p v-if="errorMessage" class="error-message">{{ $t(errorMessage) }}</p>
     <div class="login-link mt-4">
-      <p>
-        {{ $t('alreadyHaveAccount') }}
-        <button @click="router.push('login')" class="btn-link">{{ $t('loginHere') }}</button>
+      <p>{{ $t('alreadyHaveAccount') }}
+        <button @click="router.push(RoutesEnum.LOGIN.toString())" class="btn-link">{{ $t('loginHere') }}</button>
       </p>
     </div>
   </div>
@@ -36,32 +30,24 @@
 
 <script setup lang="ts">
 definePageMeta({middleware: 'auth'})
-
 import { ref } from 'vue'
+import { useRouter } from '#app'
 
-import { useSnackbar } from "~/composables/useSnackBar";
+import { useSnackbar } from '~/composables/useSnackBar'
+import { registerUser } from '~/domain/use-cases/RegisterUser'
+import { RoutesEnum } from "~/constants";
 
-const config = useRuntimeConfig()
-const router = useRouter()
-const { showSnackbar } = useSnackbar()
-
-const email = ref('')
+const username = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const errorMessage = ref('')
+const router = useRouter()
+const { showSnackbar } = useSnackbar()
 
-async function register() {
+const handleRegister = async () => {
   try {
-    if (!email.value || !password.value || !confirmPassword.value) {
+    if (!username.value || !password.value || !confirmPassword.value) {
       errorMessage.value = 'fillInAllFields'
-      return
-    }
-    if (!email.value.includes('@') || !email.value.includes('.')) {
-      errorMessage.value = 'enterEmailValid'
-      return
-    }
-    if (password.value.length < 8) {
-      errorMessage.value = 'passwordLength'
       return
     }
     if (password.value !== confirmPassword.value) {
@@ -69,41 +55,21 @@ async function register() {
       return
     }
 
-    const response = await fetch(`${config.public.baseUrlApi}/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email.value,
-        password: password.value,
-      }),
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json()
-      errorMessage.value = 'registerError'
-      console.log(errorData)
-      return
-    }
-
-    const data = await response.json()
-    const token = data.token
+    const token = await registerUser({ email: username.value, password: password.value })
     if (token) {
-      await router.push('/login')
       showSnackbar('registerSuccess', 'success')
+      await router.push(RoutesEnum.LOGIN.toString());
     }
-  } catch (error) {
-    errorMessage.value = 'anErrorOccurred'
-    console.error(error)
+  } catch (error: any) {
+    errorMessage.value = error.message || 'anErrorOccurred'
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@use "~/assets/styles/forms.scss" as *;
-@use "~/assets/styles/buttons.scss" as *;
-@use "~/assets/styles/errors.scss" as *;
+@use "assets/styles/forms" as *;
+@use "assets/styles/buttons" as *;
+@use "assets/styles/errors" as *;
 
 .form-container {
   max-width: 400px;
