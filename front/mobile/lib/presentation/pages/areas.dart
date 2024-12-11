@@ -1,12 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:provider/provider.dart';
 
-import '/models/data.dart';
-import '/providers/language.dart';
-import '/services/request.dart';
+import '/data/models/data.dart';
+import '/data/sources/request_service.dart';
+import '/presentation/providers/language.dart';
 
 class AreasPage extends StatefulWidget {
   const AreasPage({super.key});

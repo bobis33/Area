@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:provider/provider.dart';
 
-import '/providers/theme.dart';
+import '/presentation/providers/theme.dart';
 
 Widget themeSwitcher(BuildContext context) {
   return SwitchListTile(

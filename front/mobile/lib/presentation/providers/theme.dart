@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '/config/themes/themes.dart';
-import '/models/common.dart';
-import '/services/storage.dart';
+import '/data/models/common.dart';
+import '/data/sources/storage_service.dart';
 
 class ThemeProvider extends ChangeNotifier {
   ThemeData _themeData;

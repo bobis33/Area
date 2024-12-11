@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:go_router/go_router.dart';
 
-import '/models/common.dart';
-import '/services/storage.dart';
-import '/widgets/snack_bar.dart';
+import '/data/models/common.dart';
+import '/data/sources/storage_service.dart';
+import '/presentation/widgets/snack_bar.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

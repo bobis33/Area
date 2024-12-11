@@ -5,15 +5,16 @@ import 'package:provider/provider.dart';
 
 import '/config/router.dart';
 import '/config/themes/themes.dart';
-import '/models/common.dart';
-import '/providers/language.dart';
-import '/providers/theme.dart';
-import '/services/storage.dart';
+import '/data/models/common.dart';
+import '/data/sources/storage_service.dart';
+import '/presentation/providers/language.dart';
+import '/presentation/providers/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final String? savedTheme = await StorageService().getItem(StorageKeyEnum.theme.name);
-  final String? savedLang = await StorageService().getItem(StorageKeyEnum.lang.name);
+  final storageService = StorageService();
+  final String? savedTheme = await storageService.getItem(StorageKeyEnum.theme.name);
+  final String? savedLang = await storageService.getItem(StorageKeyEnum.lang.name);
   final LocalizationDelegate delegate = await LocalizationDelegate.create(
     fallbackLocale: savedLang ?? LangEnum.en_US.name,
     supportedLocales: <String>[LangEnum.en_US.name, LangEnum.fr_FR.name],

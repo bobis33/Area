@@ -1,12 +1,12 @@
 import 'package:go_router/go_router.dart';
 
-import '/layouts/main.dart';
-import '/models/common.dart';
-import '/pages/home.dart';
-import '/pages/login.dart';
-import '/pages/register.dart';
-import '/pages/root.dart';
-import '/pages/areas.dart';
+import '/data/models/common.dart';
+import '/presentation/layouts/main.dart';
+import '/presentation/pages/areas.dart';
+import '/presentation/pages/home.dart';
+import '/presentation/pages/login.dart';
+import '/presentation/pages/register.dart';
+import '/presentation/pages/root.dart';
 
 final router = GoRouter(
   initialLocation: '/',

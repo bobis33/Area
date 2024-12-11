@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:http/http.dart' as http;
 
-import '/models/data.dart';
+import '/data/models/data.dart';
 
 class RequestService {
   const RequestService();
@@ -55,4 +55,3 @@ class RequestService {
     }
   }
 }
-
