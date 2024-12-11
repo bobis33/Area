@@ -1,6 +1,6 @@
 <template>
-    <div>
-      <button @click="goToHome" class="btn-back-home">Go to Home</button>
+  <div>
+      <button @click="router.push(RoutesEnum.HOME.toString())" class="btn-back-home">Go to Home</button>
     <h1>All Areas</h1>
     <div v-if="data && data.areas.length">
       <ul>
@@ -51,10 +51,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-const config = useRuntimeConfig()
+definePageMeta({middleware: 'auth'})
+import { useRouter } from "#app";
 
+import { RoutesEnum } from "~/constants";
+
+const config = useRuntimeConfig()
 const router = useRouter()
 
 const userEmails = ref({})
@@ -154,9 +156,6 @@ const createArea = async () => {
   }
 }
 
-const goToHome = () => {
-  router.push('/')
-}
 </script>
 
 <style scoped>

@@ -1,7 +1,6 @@
 @use 'variables' as *;
 
 .btn-primary {
-  width: 100%;
   background-color: $primary-color;
   color: #ffffff;
   padding: 0.75rem;
@@ -27,5 +26,22 @@
 
   &:hover {
     color: $link-hover-color;
+  }
+}
+
+.text-link {
+  text-align: center;
+
+  .btn-link {
+    color: var(--link-color);
+    text-decoration: underline;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--link-hover-color);
+    }
   }
 }

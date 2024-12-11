@@ -1,22 +1,22 @@
 <template>
   <div class="form-container">
-    <img src="@assets/images/icon.png" alt="Area icon" class="login-logo" />
+    <img src="@assets/images/icon.png" alt="Area icon" class="auth-logo" />
     <h1 class="form-title">{{ $t('login') }}</h1>
-    <form @submit.prevent="login">
+    <form @submit.prevent="handleSubmit">
       <div class="mb-4">
-        <label for="username" class="label">{{ $t('email') }}</label>
-        <input id="username" v-model="email" type="text" class="input-field" :placeholder="$t('email')" />
+        <label for="username" class="label">{{ $t('username') }}</label>
+        <input id="username" v-model="username" type="text" class="input-field" :placeholder="$t('username')" />
       </div>
       <div class="mb-4">
         <label for="password" class="label">{{ $t('password') }}</label>
         <input id="password" v-model="password" type="password" class="input-field" :placeholder="$t('password')" />
       </div>
-      <button type="submit" class="btn-primary">{{ $t('login') }}</button>
+      <button type="submit" class="btn-primary w-full mt-8">{{ $t('login') }}</button>
     </form>
     <p v-if="errorMessage" class="error-message">{{ $t(errorMessage) }}</p>
-    <div class="register-link mt-4">
+    <div class="text-link mt-4">
       <p>{{ $t('noAccount') }}
-        <button @click="router.push('/register')" class="btn-link">{{ $t('registerHere') }}</button>
+        <button @click="router.push(RoutesEnum.REGISTER.toString())" class="btn-link">{{ $t('registerHere') }}</button>
       </p>
     </div>
   </div>
@@ -25,140 +25,38 @@
 
 <script setup lang="ts">
 definePageMeta({middleware: 'auth'})
-
 import { ref } from 'vue'
 import { useCookie, useRouter } from '#app'
 
 import { useSnackbar } from '~/composables/useSnackBar'
+import { loginUser } from '~/domain/use-cases/loginUser'
+import { RoutesEnum } from "~/constants";
 
-const config = useRuntimeConfig()
+const username = ref('')
+const password = ref('')
+const errorMessage = ref('')
 const tokenCookie = useCookie('token', { path: '/', maxAge: 60 * 60 * 24 * 7 })
 const router = useRouter()
 const { showSnackbar } = useSnackbar()
 
-const email = ref('')
-const password = ref('')
-const errorMessage = ref('')
-
-async function login() {
+async function handleSubmit() {
   try {
-    if (!email.value || !password.value) {
+    if (!username.value || !password.value) {
       errorMessage.value = 'fillInAllFields'
       return
     }
-    if (!email.value.includes('@') || !email.value.includes('.')) {
-      errorMessage.value = 'enterEmailValid'
-      return
-    }
-
-    const response = await fetch(`${config.public.baseUrlApi}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email.value,
-        password: password.value,
-      }),
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json()
-      errorMessage.value = 'invalidCredentials'
-      console.error(errorData)
-      return
-    }
-
-    const data = await response.json()
-    const token = data.token
-    if (token) {
-      tokenCookie.value = token
-      await router.push('/home')
-      showSnackbar('loginSuccess', 'success')
-    }
-  } catch (error) {
-    errorMessage.value = 'anErrorOccurred'
-    console.error(error)
+    tokenCookie.value = await loginUser({ email: username.value, password: password.value })
+    showSnackbar('loginSuccess', 'success')
+    await router.push(RoutesEnum.HOME.toString())
+  } catch (error: any) {
+    errorMessage.value = error.message
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@use "~/assets/styles/forms.scss" as *;
-@use "~/assets/styles/buttons.scss" as *;
-@use "~/assets/styles/errors.scss" as *;
-
-.login-logo {
-  display: block;
-  width: 125px;
-  height: 125px;
-  margin: 0 auto 20px;
-}
-
-.form-container {
-  max-width: 400px;
-  margin: 0 auto;
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: 0.5rem;
-  padding: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  color: var(--text-color);
-}
-
-.form-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 1.5rem;
-  color: var(--color-primary);
-}
-
-.label {
-  display: block;
-  color: var(--text-color);
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-}
-
-.input-field {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--border-color);
-  border-radius: 0.375rem;
-  background-color: var(--bg);
-  color: var(--text-color);
-  font-size: 1rem;
-
-  &:focus {
-    border-color: var(--color-primary);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
-  }
-}
-
-.error-message {
-  color: var(--error-color);
-  font-size: 0.875rem;
-  margin-top: 1rem;
-  text-align: center;
-}
-
-.register-link {
-  text-align: center;
-
-  .btn-link {
-    color: var(--link-color);
-    text-decoration: underline;
-    background: none;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
-
-    &:hover {
-      color: var(--link-hover-color);
-    }
-  }
-}
-
+@use "assets/styles/buttons" as *;
+@use "assets/styles/errors" as *;
+@use "assets/styles/forms" as *;
+@use "assets/styles/logo" as *;
 </style>

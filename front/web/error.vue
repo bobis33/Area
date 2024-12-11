@@ -5,13 +5,14 @@
       <strong>{{ $t('errorCode') }}:</strong> {{ errorCode }} <br />
       <strong>{{ $t('errorCode') }}:</strong> {{ $t(errorMessage) }}
     </p>
-    <router-link to="/" class="error-link">{{ $t('goBackHome') }}</router-link>
+    <router-link :to=RoutesEnum.LOGIN class="error-link">{{ $t('goBackHome') }}</router-link>
   </div>
 </template>
 
 <script setup lang="ts">
-const error = useError()
+import { RoutesEnum } from "~/constants";
 
+const error = useError()
 const errorCode = error.value?.statusCode || 'unknownError'
 const errorMessage = error.value?.statusMessage || 'anErrorOccurred'
 </script>

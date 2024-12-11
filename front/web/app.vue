@@ -1,10 +1,9 @@
 <template>
-  <NuxtLayout :name="layout">
+  <NuxtLayout name="default">
     <NuxtPage />
   </NuxtLayout>
 </template>
 
 <script setup lang="ts">
-const layout = "default";
 useHead({title: 'AREA'})
 </script>
