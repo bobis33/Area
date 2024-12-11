@@ -2,16 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '/models/common.dart';
 import '/models/data.dart';
 import '/providers/language.dart';
-import '/services/storage.dart';
 import '/services/request.dart';
-import '/widgets/snack_bar.dart';
-import '/widgets/text_field.dart';
 
 class AreasPage extends StatefulWidget {
   const AreasPage({super.key});
@@ -84,7 +79,7 @@ class _AreasPageState extends State<AreasPage> {
 
   Future<void> subscribeUser(String areaId) async {
     final email = userEmail;
-    if (email == null || email.isEmpty) {
+    if (email.isEmpty) {
       setState(() {
         errorMessage = translate('emailInvalid');
       });
