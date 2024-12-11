@@ -12,7 +12,7 @@ class AuthService {
   Future<bool> isLoggedIn() async {
     final String? token = await _storageService.getItem(StorageKeyEnum.authToken.name);
     final DataState<bool> result = await RequestService().makeRequest<bool>(
-      endpoint: '/auth/protected',
+      endpoint: '/auth/me',
       method: 'GET',
       headers: {'Authorization': 'Bearer $token'},
       parse: (response) => response.statusCode == 200,

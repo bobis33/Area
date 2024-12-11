@@ -20,3 +20,5 @@ class Config:
     YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY', 'None')
 
     MIDDLEWARE_SECRET_KEY = os.getenv('MIDDLEWARE_SECRET_KEY', 'Default')
+
+    AREA_CHECK_INTERVAL = int(os.getenv('AREA_CHECK_INTERVAL', "10"))

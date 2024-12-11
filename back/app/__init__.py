@@ -33,7 +33,4 @@ def create_app(config_class=Config):
 
     return app
 
-def get_app():
-    return app
-
 create_app()
