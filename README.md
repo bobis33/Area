@@ -1,6 +1,39 @@
 # EPITECH | B-DEV-500 | AREA
 
-![Epitech_banner](doc/Epitech_banner.png)
+![Epitech_banner](assets/Epitech_banner.png)
+
+## Introduction
+
+The AREA project is a project that aims to create a platform that allows users to create and manage their own automation scenarios. The platform is composed of three main parts:
+- A backend that manages the user's data and the automation scenarios.
+- A web frontend that allows users to create and manage their automation scenarios.
+- A mobile frontend that allows users to create and manage their automation scenarios.
+
+
+
+
+## Getting Started
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/)
+
+### Launch
+
+```bash
+sudo docker-compose up --build
+```
+> You should down the container before relaunching it with the following command:
+
+```bash
+sudo docker-compose down
+```
+
+For more information, please refer to the documentation of each service:
+- [Backend](back/README.md)
+- [Frontend-web](front/web/README.md)
+- [Frontend-mobile](front/mobile/README.md)
+
 
 ## Commit Norms
 

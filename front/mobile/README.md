@@ -28,7 +28,8 @@ $> flutter pub get
 ## Build and run
 
 ```bash
-$> flutter build [ios | android | web] --release
+$> flutter build [ apk | appbundle ]
 [...]
 $> flutter run --release
 ```
+> You should use android studio to run the app on an emulator or a real device.
