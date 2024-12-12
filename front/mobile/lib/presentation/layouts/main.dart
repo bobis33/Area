@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:go_router/go_router.dart';
 
-import '/models/common.dart';
-import '/services/auth.dart';
-import '/services/storage.dart';
-import '/widgets/language_switcher.dart';
-import '/widgets/theme_switcher.dart';
+import '/data/models/common.dart';
+import '/data/repositories/auth.dart';
+import '/data/sources/storage_service.dart';
+import '/domain/use-cases/auth.dart';
+import '/presentation/widgets/language_switcher.dart';
+import '/presentation/widgets/theme_switcher.dart';
 
 class MainLayout extends StatelessWidget {
   const MainLayout({super.key, required this.child});
@@ -17,7 +18,7 @@ class MainLayout extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       drawer: FutureBuilder<bool>(
-        future: AuthService().isLoggedIn(),
+        future: IsAuthenticated(AuthRepositoryImpl()).execute(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

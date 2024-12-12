@@ -3,13 +3,15 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '/models/common.dart';
-import '/models/data.dart';
-import '/providers/language.dart';
-import '/services/auth.dart';
-import '/widgets/auth_base.dart';
-import '/widgets/snack_bar.dart';
-import '/widgets/text_field.dart';
+import '/data/models/common.dart';
+import '/data/models/data.dart';
+import '/data/models/user.dart';
+import '/data/repositories/auth.dart';
+import '/domain/use-cases/auth.dart';
+import '/presentation/providers/language.dart';
+import '/presentation/widgets/auth_base.dart';
+import '/presentation/widgets/snack_bar.dart';
+import '/presentation/widgets/text_field.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,7 +21,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   String? errorMessage;
 
@@ -27,11 +29,11 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       errorMessage = null;
     });
-    final email = emailController.text.trim();
+    final username = usernameController.text.trim();
     final password = passwordController.text.trim();
 
-    if (email.isEmpty || !email.contains('@')) {
-      errorMessage = translate('emailInvalid');
+    if (username.isEmpty) {
+      errorMessage = translate('usernameInvalid');
       return;
     }
     if (password.isEmpty) {
@@ -39,10 +41,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    final authResponse = await AuthService().loginUser(
-      emailController.text.trim(),
-      passwordController.text.trim(),
-    );
+    final authResponse = await LoginUser(AuthRepositoryImpl()).execute(User(username: username, password: password));
 
     if (authResponse is DataSuccess) {
       snackBar(context, translate('loginSuccess'), Theme.of(context).colorScheme.secondary);
@@ -61,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
         return AuthPage(
           title: translate('login'),
           formFields: [
-            textField(controller: emailController, label: translate('email'), keyboardType: TextInputType.emailAddress),
+            textField(controller: usernameController, label: translate('username'), keyboardType: TextInputType.name),
             const SizedBox(height: 16),
             textField(controller: passwordController, label: translate('password'), obscureText: true),
           ],

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '/models/common.dart';
-import '/services/auth.dart';
+import '/data/models/common.dart';
+import '/data/repositories/auth.dart';
+import '/domain/use-cases/auth.dart';
 
 class RootPage extends StatelessWidget {
   const RootPage({super.key});
@@ -10,7 +11,7 @@ class RootPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-      future: AuthService().isLoggedIn(),
+      future: IsAuthenticated(AuthRepositoryImpl()).execute(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(

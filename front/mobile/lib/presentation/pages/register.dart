@@ -3,13 +3,15 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '/models/common.dart';
-import '/models/data.dart';
-import '/providers/language.dart';
-import '/services/auth.dart';
-import '/widgets/auth_base.dart';
-import '/widgets/snack_bar.dart';
-import '/widgets/text_field.dart';
+import '/data/models/common.dart';
+import '/data/models/data.dart';
+import '/data/models/user.dart';
+import '/data/repositories/auth.dart';
+import '/domain/use-cases/auth.dart';
+import '/presentation/providers/language.dart';
+import '/presentation/widgets/auth_base.dart';
+import '/presentation/widgets/snack_bar.dart';
+import '/presentation/widgets/text_field.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -19,7 +21,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
   String? errorMessage;
@@ -28,12 +30,12 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() {
       errorMessage = null;
     });
-    final email = emailController.text.trim();
+    final username = usernameController.text.trim();
     final password = passwordController.text.trim();
     final confirmPassword = confirmPasswordController.text.trim();
 
-    if (email.isEmpty || !email.contains('@')) {
-      errorMessage = translate('emailInvalid');
+    if (username.isEmpty) {
+      errorMessage = translate('usernameInvalid');
       return;
     }
     if (password.isEmpty || confirmPassword.isEmpty) {
@@ -45,7 +47,7 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
-    final authResponse = await AuthService().registerUser(email, password);
+    final authResponse = await RegisterUser(AuthRepositoryImpl()).execute(User(username: username, password: password));
     if (authResponse is DataSuccess) {
       snackBar(context, translate('registerSuccess'), Theme.of(context).colorScheme.secondary);
       context.go(context.namedLocation(RouteEnum.login.name));
@@ -63,7 +65,7 @@ class _RegisterPageState extends State<RegisterPage> {
         return AuthPage(
           title: translate('register'),
           formFields: [
-            textField(controller: emailController, label: translate('email'), keyboardType: TextInputType.emailAddress),
+            textField(controller: usernameController, label: translate('email'), keyboardType: TextInputType.emailAddress),
             const SizedBox(height: 16),
             textField(controller: passwordController, label: translate('password'), obscureText: true),
             const SizedBox(height: 16),
