@@ -1,6 +1,12 @@
-import { AuthRepository } from '~/domain/repositories/AuthRepository'
+import type { AuthRepositoryInterface } from '~/domain/repositories/AuthRepositoryInterface'
 
-export const verifyToken = async (token: string): Promise<boolean> => {
-    const authRepository = new AuthRepository()
-    return await authRepository.verifyToken(token)
+export class VerifyToken {
+    constructor(private authRepository: AuthRepositoryInterface) {}
+
+    async execute(token: string): Promise<boolean> {
+        if (!token) {
+            throw new Error('Token is required');
+        }
+        return this.authRepository.verifyToken(token);
+    }
 }

@@ -7,8 +7,6 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
-
 <style scoped lang="scss">
 .theme-switcher {
   align-items: center;

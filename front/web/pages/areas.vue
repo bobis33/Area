@@ -50,11 +50,10 @@
   </div>
 </template>
 
-<script setup>
-definePageMeta({middleware: 'auth'})
-import { useRouter } from "#app";
+<script setup lang="ts">
+import { useRouter } from '#app'
 
-import { RoutesEnum } from "~/constants";
+import { RoutesEnum } from '~/config/constants'
 
 const config = useRuntimeConfig()
 const router = useRouter()
@@ -87,8 +86,7 @@ const fetchSubscribedAreas = async () => {
       },
     })
     const result = await response.json()
-    subscribedAreas.value = result.subscribed_areas
-    console.log(subscribedAreas.value)
+    subscribedAreas.value = result['subscribed_areas']
   } catch (error) {
     console.error('Error fetching subscribed areas:', error)
   }
@@ -108,8 +106,7 @@ const subscribeUser = async (area_id) => {
       },
     })
     const result = await response.json()
-    console.log(result.message)
-    fetchSubscribedAreas()
+    await fetchSubscribedAreas()
   } catch (error) {
     console.error('Error subscribing user:', error)
   }
@@ -128,8 +125,7 @@ const unsubscribeUser = async (area_id) => {
       }
     })
     const result = await response.json()
-    console.log(result.message)
-    fetchSubscribedAreas()
+    await fetchSubscribedAreas()
   } catch (error) {
     console.error('Error unsubscribing user:', error)
   }
@@ -155,10 +151,9 @@ const createArea = async () => {
     console.error('Error creating area:', error)
   }
 }
-
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .btn-back-home {
   background-color: #4CAF50;
   color: white;

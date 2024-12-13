@@ -10,8 +10,6 @@ The AREA project is a project that aims to create a platform that allows users t
 - A mobile frontend that allows users to create and manage their automation scenarios.
 
 
-
-
 ## Getting Started
 
 ### Prerequisites

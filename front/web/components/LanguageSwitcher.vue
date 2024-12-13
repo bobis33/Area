@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import { useCookie } from '#app'
 
-import {CookiesEnum, LanguagesEnum} from "~/constants";
+import { CookiesEnum, LanguagesEnum } from '~/config/constants'
 
 const { setLocale } = useI18n()
 const languageCookie = useCookie(CookiesEnum.LANGUAGE.toString())
@@ -27,7 +27,6 @@ const changeLanguage = (lang: string) => {
 if (languageCookie.value) {
   setLocale(languageCookie.value as LanguagesEnum.EN | LanguagesEnum.FR)
 }
-
 </script>
 
 <style scoped lang="scss">
@@ -56,4 +55,3 @@ if (languageCookie.value) {
   }
 }
 </style>
-

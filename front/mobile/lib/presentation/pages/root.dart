@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '/data/models/common.dart';
+import '/config/constants.dart';
 import '/data/repositories/auth.dart';
 import '/domain/use-cases/auth.dart';
 

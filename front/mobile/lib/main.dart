@@ -3,9 +3,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:provider/provider.dart';
 
+import '/config/constants.dart';
 import '/config/router.dart';
 import '/config/themes/themes.dart';
-import '/data/models/common.dart';
 import '/data/sources/storage_service.dart';
 import '/presentation/providers/language.dart';
 import '/presentation/providers/theme.dart';
