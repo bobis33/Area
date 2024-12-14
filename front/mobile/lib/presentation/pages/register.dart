@@ -3,7 +3,7 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '/data/models/common.dart';
+import '/config/constants.dart';
 import '/data/models/data.dart';
 import '/data/models/user.dart';
 import '/data/repositories/auth.dart';

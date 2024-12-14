@@ -1,6 +1,6 @@
 <template>
   <div class="form-container">
-    <img src="@assets/images/icon.png" alt="Area icon" class="auth-logo" />
+    <img src="@assets/icon.png" alt="Area icon" class="auth-logo" />
     <h1 class="form-title">{{ $t('login') }}</h1>
     <form @submit.prevent="handleSubmit">
       <div class="mb-4">
@@ -24,18 +24,18 @@
 
 
 <script setup lang="ts">
-definePageMeta({middleware: 'auth'})
 import { ref } from 'vue'
 import { useCookie, useRouter } from '#app'
 
 import { useSnackbar } from '~/composables/useSnackBar'
-import { loginUser } from '~/domain/use-cases/loginUser'
-import { RoutesEnum } from "~/constants";
+import { LoginUser } from '~/domain/use-cases/loginUser'
+import {CookiesEnum, RoutesEnum} from '~/config/constants'
+import { AuthRepository } from '~/infrastructure/repositories/AuthRepository'
 
 const username = ref('')
 const password = ref('')
 const errorMessage = ref('')
-const tokenCookie = useCookie('token', { path: '/', maxAge: 60 * 60 * 24 * 7 })
+const tokenCookie = useCookie(CookiesEnum.TOKEN.toString(), { path: '/', maxAge: 60 * 60 * 24 * 7 })
 const router = useRouter()
 const { showSnackbar } = useSnackbar()
 
@@ -45,7 +45,7 @@ async function handleSubmit() {
       errorMessage.value = 'fillInAllFields'
       return
     }
-    tokenCookie.value = await loginUser({ email: username.value, password: password.value })
+    tokenCookie.value = await new LoginUser(new AuthRepository()).execute({ email: username.value, password: password.value })
     showSnackbar('loginSuccess', 'success')
     await router.push(RoutesEnum.HOME.toString())
   } catch (error: any) {
@@ -54,9 +54,9 @@ async function handleSubmit() {
 }
 </script>
 
-<style lang="scss" scoped>
-@use "assets/styles/buttons" as *;
-@use "assets/styles/errors" as *;
-@use "assets/styles/forms" as *;
-@use "assets/styles/logo" as *;
+<style scoped lang="scss">
+@use 'assets/styles/buttons' as *;
+@use 'assets/styles/errors' as *;
+@use 'assets/styles/forms' as *;
+@use 'assets/styles/logo' as *;
 </style>

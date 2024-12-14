@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '/data/models/common.dart';
+import '/config/constants.dart';
 import '/data/models/data.dart';
 import '/data/models/user.dart';
 import '/data/sources/request_service.dart';

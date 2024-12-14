@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:go_router/go_router.dart';
 
-import '/data/models/common.dart';
+import '/config/constants.dart';
 import '/data/repositories/auth.dart';
 import '/data/sources/storage_service.dart';
 import '/domain/use-cases/auth.dart';

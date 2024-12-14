@@ -1,6 +1,6 @@
 <template>
   <div class="form-container">
-    <img src="@assets/images/icon.png" alt="AREA icon" class="auth-logo" />
+    <img src="@assets/icon.png" alt="AREA icon" class="auth-logo" />
     <h1 class="form-title">{{ $t('register') }}</h1>
     <form @submit.prevent="handleRegister">
       <div class="mb-4">
@@ -29,13 +29,13 @@
 
 
 <script setup lang="ts">
-definePageMeta({middleware: 'auth'})
 import { ref } from 'vue'
 import { useRouter } from '#app'
 
 import { useSnackbar } from '~/composables/useSnackBar'
-import { registerUser } from '~/domain/use-cases/RegisterUser'
-import { RoutesEnum } from "~/constants";
+import { RoutesEnum } from "~/config/constants";
+import { AuthRepository } from "~/infrastructure/repositories/AuthRepository";
+import { RegisterUser } from '~/domain/use-cases/RegisterUser'
 
 const username = ref('')
 const password = ref('')
@@ -55,7 +55,7 @@ const handleRegister = async () => {
       return
     }
 
-    const token = await registerUser({ email: username.value, password: password.value })
+    const token = await new RegisterUser(new AuthRepository()).execute({ email: username.value, password: password.value })
     if (token) {
       showSnackbar('registerSuccess', 'success')
       await router.push(RoutesEnum.LOGIN.toString());
@@ -66,9 +66,9 @@ const handleRegister = async () => {
 }
 </script>
 
-<style lang="scss" scoped>
-@use "assets/styles/buttons" as *;
-@use "assets/styles/errors" as *;
-@use "assets/styles/forms" as *;
-@use "assets/styles/logo" as *;
+<style scoped lang="scss">
+@use 'assets/styles/buttons' as *;
+@use 'assets/styles/errors' as *;
+@use 'assets/styles/forms' as *;
+@use 'assets/styles/logo' as *;
 </style>

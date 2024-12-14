@@ -1,10 +1,14 @@
 import { resolve } from 'path'
 
-import { LanguagesEnum } from "./constants";
+import { LanguagesEnum } from './config/constants'
 
 export default defineNuxtConfig({
   alias: {
-    '@assets': resolve(__dirname, '../shared_assets'),
+    '@assets': resolve(__dirname, '../../assets'),
+  },
+  colorMode: {
+    preference: 'system',
+    fallback: 'light',
   },
   compatibilityDate: '2024-11-01',
   css: ['~/assets/styles/main.scss'],
@@ -15,24 +19,26 @@ export default defineNuxtConfig({
   i18n: {
     defaultLocale: LanguagesEnum.FR,
     detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'language',
       alwaysRedirect: true,
+      cookieKey: 'language',
       fallbackLocale: LanguagesEnum.FR,
+      useCookie: true,
     },
     locales: [LanguagesEnum.FR, LanguagesEnum.EN],
     strategy: 'no_prefix',
-    vueI18n: './i18n.config.ts',
+    vueI18n: './config/i18n.config.ts',
   },
   modules: ['@nuxtjs/color-mode', '@nuxtjs/i18n'],
+  postcss: {
+    plugins: {
+      autoprefixer: {},
+      tailwindcss: { config: './config/tailwind.config.ts' },
+    },
+  },
   runtimeConfig: {
     public: {
       baseUrlApi: 'http://localhost:5000',
     },
-  },
-  colorMode: {
-    preference: 'system',
-    fallback: 'light',
   },
   vite: {
     css: {
@@ -43,11 +49,5 @@ export default defineNuxtConfig({
         }
       }
     }
-  },
-  postcss: {
-    plugins: {
-      autoprefixer: {},
-      tailwindcss: {},
-    },
   },
 })

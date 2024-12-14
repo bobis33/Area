@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
 
-import '/data/models/common.dart';
+import '/config/constants.dart';
 import '/presentation/layouts/main.dart';
 import '/presentation/pages/areas.dart';
 import '/presentation/pages/home.dart';

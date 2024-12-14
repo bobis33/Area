@@ -44,7 +44,7 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .snackbar {
   position: fixed;
   bottom: 30px;

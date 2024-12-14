@@ -5,19 +5,17 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({middleware: 'auth'})
-
 import { useCookie, useRouter } from '#app'
 
 import { useSnackbar } from '~/composables/useSnackBar'
-import { RoutesEnum, CookiesEnum } from "~/constants";
+import { RoutesEnum, CookiesEnum } from '~/config/constants'
 
 const { showSnackbar } = useSnackbar()
 const router = useRouter()
 const config = useRuntimeConfig()
 
 async function logout() {
-  useCookie(CookiesEnum.TOKEN.toString()).value = ''
+  useCookie(CookiesEnum.TOKEN.toString()).value = null
   await router.push(RoutesEnum.LOGIN.toString())
   showSnackbar('logoutSuccess', 'success')
 }
@@ -32,7 +30,7 @@ async function google_login() {
 </script>
 
 <style scoped lang="scss">
-@use "assets/styles/buttons" as *;
+@use 'assets/styles/buttons' as *;
 
 .btn-logout {
   background-color: var(--error-color);
@@ -49,4 +47,3 @@ async function google_login() {
   }
 }
 </style>
-

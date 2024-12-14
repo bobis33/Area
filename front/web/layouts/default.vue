@@ -13,13 +13,8 @@
 
 <script setup lang="ts">
 import Snackbar from '~/components/SnackBar.vue'
-import ThemeSwitcher from "~/components/ThemeSwitcher.vue";
+import ThemeSwitcher from '~/components/ThemeSwitcher.vue'
 import { useSnackbar } from '~/composables/useSnackBar'
 
 const { message: snackbarMessage, type: snackbarType } = useSnackbar()
 </script>
-
-<style scoped>
-
-
-</style>
