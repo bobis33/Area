@@ -45,7 +45,7 @@ async function handleSubmit() {
       errorMessage.value = 'fillInAllFields'
       return
     }
-    tokenCookie.value = await new LoginUser(new AuthRepository()).execute({ email: username.value, password: password.value })
+    tokenCookie.value = await new LoginUser(new AuthRepository()).execute({ username: username.value, password: password.value })
     showSnackbar('loginSuccess', 'success')
     await router.push(RoutesEnum.HOME.toString())
   } catch (error: any) {

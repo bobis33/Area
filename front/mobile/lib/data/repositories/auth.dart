@@ -30,7 +30,7 @@ class AuthRepositoryImpl implements AuthRepository {
     return await _requestService.makeRequest<String>(
       endpoint: '/auth/login',
       method: 'POST',
-      body: {'email': user.username, 'password': user.password},
+      body: {'username': user.username, 'password': user.password},
       parse: (response) {
         final data = json.decode(response.body);
         final token = data['token'];
@@ -45,7 +45,7 @@ class AuthRepositoryImpl implements AuthRepository {
     return await _requestService.makeRequest<String>(
       endpoint: '/auth/register',
       method: 'POST',
-      body: {'email': user.username, 'password': user.password},
+      body: {'username': user.username, 'password': user.password},
       parse: (response) {
         final data = json.decode(response.body);
         final token = data['token'];

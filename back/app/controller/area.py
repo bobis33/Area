@@ -54,7 +54,7 @@ async def get_reactions(token: HTTPAuthorizationCredentials = Depends(auth_schem
 @secure_endpoint
 async def get_subscribed_areas(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     subject = TokenManager.get_token_subject(token)
-    user = await DAO.find_user_by_email(subject)
+    user = await DAO.find_user_by_username(subject)
 
     result = []
     for area_id in list(user["subscribed_areas"]):
@@ -77,9 +77,9 @@ async def create_area(action:str, reaction:str, token: HTTPAuthorizationCredenti
 @router.post('/subscribe')
 @secure_endpoint
 async def subscribe_to_area(area_id: str, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
-    user_email = TokenManager.get_token_subject(token)
+    user_username = TokenManager.get_token_subject(token)
 
-    user = await DAO.find_user_by_email(user_email)
+    user = await DAO.find_user_by_username(user_username)
     area = await DAO.find_area_by_id(area_id)
 
     if area is None:
@@ -89,9 +89,9 @@ async def subscribe_to_area(area_id: str, token: HTTPAuthorizationCredentials = 
         return {"message": "Already subscribed"}
 
     user["subscribed_areas"].append(area_id)
-    await DAO.update_user(user_email, user)
+    await DAO.update_user(user_username, user)
 
-    area["subscribed_users"].append(user_email)
+    area["subscribed_users"].append(user_username)
     await DAO.update_area(area_id, area)
 
     return {"message": "Subscribed"}
@@ -99,9 +99,9 @@ async def subscribe_to_area(area_id: str, token: HTTPAuthorizationCredentials = 
 @router.post('/unsubscribe')
 @secure_endpoint
 async def unsubscribe_to_area(area_id: str, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
-    user_email = TokenManager.get_token_subject(token)
+    user_username = TokenManager.get_token_subject(token)
 
-    user = await DAO.find_user_by_email(user_email)
+    user = await DAO.find_user_by_username(user_username)
     area = await DAO.find_area_by_id(area_id)
 
     if area is None:
@@ -111,9 +111,9 @@ async def unsubscribe_to_area(area_id: str, token: HTTPAuthorizationCredentials 
         return {"message": "Not subscribed"}
 
     user["subscribed_areas"].remove(area_id)
-    await DAO.update_user(user_email, user)
+    await DAO.update_user(user_username, user)
 
-    area["subscribed_users"].remove(user_email)
+    area["subscribed_users"].remove(user_username)
     await DAO.update_area(area_id, area)
 
     return {"message": "Unsubscribed"}

@@ -1,10 +1,10 @@
 <template>
     <div class="language-switcher">
       <button
-          v-for="lang in [LanguagesEnum.EN.toString(), LanguagesEnum.FR.toString()]"
+          v-for="lang in [LanguagesEnum.EN, LanguagesEnum.FR]"
           :key="lang"
           @click="changeLanguage(lang)"
-          :class="{ active: lang === languageCookie?.toString() }"
+          :class="{ active: lang === languageCookie }"
       >
         {{ lang.toUpperCase() }}
       </button>
@@ -19,8 +19,8 @@ import { CookiesEnum, LanguagesEnum } from '~/config/constants'
 const { setLocale } = useI18n()
 const languageCookie = useCookie(CookiesEnum.LANGUAGE.toString())
 
-const changeLanguage = (lang: string) => {
-  setLocale(languageCookie.value as LanguagesEnum.EN | LanguagesEnum.FR)
+const changeLanguage = (lang: LanguagesEnum) => {
+  setLocale(lang)
   languageCookie.value = lang
 }
 

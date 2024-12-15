@@ -1,8 +1,8 @@
 <template>
   <div class="theme-switcher">
     <select v-model="$colorMode.preference" class="theme-select">
-      <option value="light">Light</option>
-      <option value="dark">Dark</option>
+      <option value="light">{{ $t('light') }}</option>
+      <option value="dark">{{ $t('dark') }}</option>
     </select>
   </div>
 </template>

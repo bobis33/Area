@@ -55,7 +55,7 @@ const handleRegister = async () => {
       return
     }
 
-    const token = await new RegisterUser(new AuthRepository()).execute({ email: username.value, password: password.value })
+    const token = await new RegisterUser(new AuthRepository()).execute({ username: username.value, password: password.value })
     if (token) {
       showSnackbar('registerSuccess', 'success')
       await router.push(RoutesEnum.LOGIN.toString());

@@ -65,7 +65,7 @@ class _RegisterPageState extends State<RegisterPage> {
         return AuthPage(
           title: translate('register'),
           formFields: [
-            textField(controller: usernameController, label: translate('email'), keyboardType: TextInputType.emailAddress),
+            textField(controller: usernameController, label: translate('username'), keyboardType: TextInputType.emailAddress),
             const SizedBox(height: 16),
             textField(controller: passwordController, label: translate('password'), obscureText: true),
             const SizedBox(height: 16),

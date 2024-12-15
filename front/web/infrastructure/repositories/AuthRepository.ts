@@ -3,7 +3,7 @@ import type { AuthRepositoryInterface } from '~/domain/repositories/AuthReposito
 export class AuthRepository implements AuthRepositoryInterface {
     private baseUrlAPI = useRuntimeConfig().public.baseUrlApi
 
-    async login(user: { email: string; password: string }): Promise<string> {
+    async login(user: { username: string; password: string }): Promise<string> {
         const response = await fetch(`${this.baseUrlAPI}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -18,7 +18,7 @@ export class AuthRepository implements AuthRepositoryInterface {
         return data['token']
     }
 
-    async register(user: { email: string; password: string }): Promise<string> {
+    async register(user: { username: string; password: string }): Promise<string> {
         const response = await fetch(`${this.baseUrlAPI}/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

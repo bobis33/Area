@@ -30,7 +30,7 @@ async def get_all_users(token: HTTPAuthorizationCredentials = Depends(auth_schem
 @router.get('/get/self', response_model=dict)
 @secure_endpoint
 async def get_self(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
-    self_user = await DAO.find_user_by_email(TokenManager.get_token_subject(token))
+    self_user = await DAO.find_user_by_username(TokenManager.get_token_subject(token))
     self_user["external_tokens"] = "HIDDEN"
 
     return {"user": DAO.serialize_document(self_user)}
@@ -40,9 +40,9 @@ async def get_self(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
 @secure_endpoint
 async def update_username(username: str, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     try:
-        user = await DAO.find_user_by_email(TokenManager.get_token_subject(token))
-        user["email"] = username
-        await DAO.update_user(user["email"], user)
+        user = await DAO.find_user_by_username(TokenManager.get_token_subject(token))
+        user["username"] = username
+        await DAO.update_user(user["username"], user)
         return {"message": "username updated successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -51,7 +51,7 @@ async def update_username(username: str, token: HTTPAuthorizationCredentials = D
 @secure_endpoint
 async def update_password(password: str, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     try:
-        user = await DAO.find_user_by_email(TokenManager.get_token_subject(token))
+        user = await DAO.find_user_by_username(TokenManager.get_token_subject(token))
         user["password"] = pwd_context.hash(password)
         await DAO.update_user(user["password"], user)
         return {"message": "password updated successfully"}

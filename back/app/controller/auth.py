@@ -27,26 +27,26 @@ oauth.register(
 )
 
 class Credentials(BaseModel):
-    email: str
+    username: str
     password: str
 
 
 # User login and registration
 @router.post('/login', response_model=dict)
 async def login(credentials: Credentials, authorize: AuthJWT = Depends()):
-    access_token = await login_user(credentials.email, credentials.password, authorize)
+    access_token = await login_user(credentials.username, credentials.password, authorize)
     if access_token:
         return {"token": access_token}
 
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid email or password")
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid username or password")
 
 @router.post('/register', response_model=dict)
 async def register(credentials: Credentials, authorize: AuthJWT = Depends()):
-    if await register_user(credentials.email, credentials.password):
-        access_token = await login_user(credentials.email, credentials.password, authorize)
+    if await register_user(credentials.username, credentials.password):
+        access_token = await login_user(credentials.username, credentials.password, authorize)
         return {"token": access_token}
 
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="email already exists")
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="username already exists")
 
 # Google OAuth
 @router.get("/login/google")

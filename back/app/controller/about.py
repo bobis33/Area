@@ -5,13 +5,16 @@ router = APIRouter()
 
 @router.get('/about.json', response_model=dict)
 def about_json(request: Request):
+    server_host = request.url.hostname
+    server_port = request.url.port
+    server_address = f"{server_host}:{server_port}" if server_port else server_host
     return {
         "client": {
             "host": request.client.host,
         },
         "server": {
             "current_time": int(datetime.utcnow().timestamp()),
-            "host": "127.0.0.1:5000",
+            "host": server_address,
             "version": "0.0.0+1",
             "services": [{
                 "name": "google",

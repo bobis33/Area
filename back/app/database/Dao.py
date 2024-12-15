@@ -29,27 +29,31 @@ class DAO:
     # User management
 
     @staticmethod
-    async def insert_user(email, hashed_password):
-        return await get_database().users.insert_one({"email": email, "password": hashed_password, "subscribed_areas": [],
+    async def insert_user(username, hashed_password):
+        return await get_database().users.insert_one({"username": username, "password": hashed_password, "email": "", "subscribed_areas": [],
                                                       "created_at": datetime.datetime.now(), "updated_at": datetime.datetime.now(),
                                                       "external_tokens": {}})
 
     @staticmethod
-    async def update_user(email, updated_user):
+    async def update_user(username, updated_user):
         updated_user["updated_at"] = datetime.datetime.now()
-        return await get_database().users.update_one({"email": email}, {"$set": updated_user})
-    
+        return await get_database().users.update_one({"username": username}, {"$set": updated_user})
+
     @staticmethod
     async def find_all_users():
         return await get_database().users.find({}).to_list(length=None)
 
     @staticmethod
     async def find_user_by_email(email):
-        return await get_database().users.find_one({"email": email})
+        return await get_database().users.find_one({"email": username})
 
     @staticmethod
-    async def delete_user_by_email(email):
-        return await get_database().users.delete_one({"email": email})
+    async def find_user_by_username(username):
+        return await get_database().users.find_one({"username": username})
+
+    @staticmethod
+    async def delete_user_by_username(username):
+        return await get_database().users.delete_one({"username": username})
 
 
     # Areas

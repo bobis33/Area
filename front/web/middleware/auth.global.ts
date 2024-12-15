@@ -33,7 +33,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
             }
 
             if (to.path === '/') {
-                return router.push(RoutesEnum.HOME.toString())
+                return window.location.href = RoutesEnum.HOME.toString()
             }
 
         } catch (error) {

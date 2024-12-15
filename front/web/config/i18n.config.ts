@@ -4,6 +4,7 @@ export default defineI18nConfig(() => ({
         en: {
             alreadyHaveAccount: 'Already have an account?',
             anErrorOccurred: 'An error occurred, please try again later',
+            dark: 'Dark',
             email: 'Email',
             enterEmailValid: 'Enter a valid email',
             errorCode: 'Error code',
@@ -11,6 +12,7 @@ export default defineI18nConfig(() => ({
             invalidCredentials: 'Invalid email or password',
             fillInAllFields: 'Please fill in all fields',
             goBackHome: 'Go back home',
+            light: 'Light',
             login: 'Login',
             loginHere: 'Login here',
             loginSuccess: 'Login successful',
@@ -32,6 +34,7 @@ export default defineI18nConfig(() => ({
         fr: {
             alreadyHaveAccount: 'Vous avez déjà un compte ?',
             anErrorOccurred: 'Une erreur est survenue, veuillez réessayer plus tard',
+            dark: 'Sombre',
             email: 'Email',
             enterEmailValid: 'Entrez un email valide',
             errorCode: 'Code d\'erreur',
@@ -39,6 +42,7 @@ export default defineI18nConfig(() => ({
             invalidCredentials: 'Email ou mot de passe invalide',
             fillInAllFields: 'Veuillez remplir tous les champs',
             goBackHome: 'Retourner à l\'accueil',
+            light: 'Clair',
             login: 'Se connecter',
             loginHere: 'Se connecter ici',
             loginSuccess: 'Connexion réussie',
