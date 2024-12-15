@@ -1,6 +1,6 @@
 # pylint: disable=no-name-in-module
 # pylint: disable=no-self-argument
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from authlib.integrations.starlette_client import OAuth
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.requests import Request
@@ -57,24 +57,20 @@ async def login_google(request: Request):
 @router.get("/google/callback", include_in_schema=False)
 async def google_callback(request: Request, Authorize: AuthJWT = Depends()):
     try:
-        # Get the Google token and user info
         google_token = await oauth.google.authorize_access_token(request)
         user_info = google_token.get("userinfo")
         user_email = user_info["email"]
 
-        # Create a JWT for your app
         access_token = Authorize.create_access_token(subject=user_email)
         user = await DAO.find_user_by_email(user_email)
         user["external_tokens"]["GOOGLE"] = google_token
         await DAO.update_user(user_email, user)
 
-        # Redirect back to the frontend with the token
-        frontend_url = "http://localhost:8081"  # Your frontend URL
+        frontend_url = request.client.host
         return RedirectResponse(f"{frontend_url}/?token={access_token}")
     except Exception as e:
         print(e, flush=True)
-        # Redirect to the frontend with an error message
-        frontend_url = "http://localhost:8081"
+        frontend_url = request.client.host
         return RedirectResponse(f"{frontend_url}/?error=OAuthFailed")
 
 @router.get('/me', response_model=dict)

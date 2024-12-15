@@ -5,6 +5,7 @@ from fastapi_jwt_auth import AuthJWT
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPAuthorizationCredentials
 from app.common import secure_endpoint, auth_scheme, TokenManager
+from passlib.context import CryptContext
 
 
 from app.database import DAO
@@ -12,6 +13,7 @@ from app.common import secure_endpoint
 
 from app.config import Config
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 router = APIRouter()
 
 @router.get('/get/all', response_model=dict)
@@ -32,3 +34,26 @@ async def get_self(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     self_user["external_tokens"] = "HIDDEN"
 
     return {"user": DAO.serialize_document(self_user)}
+
+
+@router.patch('/update/username', response_model=dict)
+@secure_endpoint
+async def update_username(username: str, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    try:
+        user = await DAO.find_user_by_email(TokenManager.get_token_subject(token))
+        user["email"] = username
+        await DAO.update_user(user["email"], user)
+        return {"message": "username updated successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.patch('/update/password', response_model=dict)
+@secure_endpoint
+async def update_password(password: str, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    try:
+        user = await DAO.find_user_by_email(TokenManager.get_token_subject(token))
+        user["password"] = pwd_context.hash(password)
+        await DAO.update_user(user["password"], user)
+        return {"message": "password updated successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
