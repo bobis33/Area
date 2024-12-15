@@ -153,127 +153,117 @@ class _AreasPageState extends State<AreasPage> {
   Widget build(BuildContext context) {
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(translate('areas')),
-          ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('All Areas', style: Theme.of(context).textTheme.headlineSmall),
-                  Row(
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('All Areas', style: Theme.of(context).textTheme.headlineSmall),
+                Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: fetchAreas,
+                      child: Text('Fetch Areas'),
+                    ),
+                    SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          showAreas = !showAreas;
+                        });
+                      },
+                      child: Text(showAreas ? 'Hide Areas' : 'Show Areas'),
+                    ),
+                  ],
+                ),
+                if (showAreas)
+                  areas.isNotEmpty ? Column(
                     children: [
-                      ElevatedButton(
-                        onPressed: fetchAreas,
-                        child: Text('Fetch Areas'),
-                      ),
-                      SizedBox(width: 10),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            showAreas = !showAreas;
-                          });
-                        },
-                        child: Text(showAreas ? 'Hide Areas' : 'Show Areas'),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: areas.length,
+                        itemBuilder: (context, index) {
+                          final area = areas[index];
+                          return ListTile(
+                            title: Text('Action: ${area['action']}'),
+                            subtitle: Text('Reaction: ${area['reaction']}'),
+                            trailing: ElevatedButton(onPressed: () => subscribeUser(area['_id']),
+                              child: Text('Subscribe'),
+                            ),
+                          );
+                          },
                       ),
                     ],
+                  ) : Text('No areas found.'),
+                SizedBox(height: 20),
+                Text('Subscribed Areas', style: Theme.of(context).textTheme.headlineSmall),
+                TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      userEmail = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Enter your email to see subscribed areas',
                   ),
-                  if (showAreas)
-                    areas.isNotEmpty
-                      ? Column(
-                        children: [
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: areas.length,
-                            itemBuilder: (context, index) {
-                            final area = areas[index];
-                            return ListTile(
-                              title: Text('Action: ${area['action']}'),
-                              subtitle: Text('Reaction: ${area['reaction']}'),
-                              trailing: ElevatedButton(
-                              onPressed: () => subscribeUser(area['_id']),
-                              child: Text('Subscribe'),
-                              ),
-                            );
-                            },
-                            ),
-                          ],
-                          )
-                          : Text('No areas found.'),
-                  SizedBox(height: 20),
-                  Text('Subscribed Areas', style: Theme.of(context).textTheme.headlineSmall),
-                  TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        userEmail = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Enter your email to see subscribed areas',
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: fetchSubscribedAreas,
-                    child: Text('Fetch Subscribed Areas'),
-                  ),
-                  subscribedAreas.isNotEmpty
-                      ? ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: subscribedAreas.length,
-                          itemBuilder: (context, index) {
-                            final area = subscribedAreas[index];
-                            return ListTile(
-                              title: Text('Action: ${area['action']}'),
-                              subtitle: Text('Reaction: ${area['reaction']}'),
-                              trailing: ElevatedButton(
-                                onPressed: () => unsubscribeUser(area['_id']),
-                                child: Text('Unsubscribe'),
-                              ),
-                            );
-                          },
-                        )
-                      : Text('No subscribed areas found.'),
-                  SizedBox(height: 20),
-                  Text('Create New Area', style: Theme.of(context).textTheme.headlineSmall),
-                  TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        newAction = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Action',
-                    ),
-                  ),
-                  TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        newReaction = value;
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Reaction',
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: createArea,
-                    child: Text('Create Area'),
-                  ),
-                  if (errorMessage != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: Text(
-                        errorMessage!,
-                        style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+                ElevatedButton(
+                  onPressed: fetchSubscribedAreas,
+                  child: Text('Fetch Subscribed Areas'),
+                ),
+                subscribedAreas.isNotEmpty ? ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: subscribedAreas.length,
+                  itemBuilder: (context, index) {
+                    final area = subscribedAreas[index];
+                    return ListTile(
+                      title: Text('Action: ${area['action']}'),
+                      subtitle: Text('Reaction: ${area['reaction']}'),
+                      trailing: ElevatedButton(
+                        onPressed: () => unsubscribeUser(area['_id']),
+                        child: Text('Unsubscribe'),
                       ),
+                    );
+                    },
+                ) : Text('No subscribed areas found.'),
+                SizedBox(height: 20),
+                Text('Create New Area', style: Theme.of(context).textTheme.headlineSmall),
+                TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      newAction = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Action',
+                  ),
+                ),
+                TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      newReaction = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Reaction',
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: createArea,
+                  child: Text('Create Area'),
+                ),
+                if (errorMessage != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: Text(
+                      errorMessage!,
+                      style: TextStyle(color: Theme.of(context).colorScheme.error),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
           ),
         );

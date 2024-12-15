@@ -25,8 +25,10 @@ async def get_all_users(token: HTTPAuthorizationCredentials = Depends(auth_schem
 @secure_endpoint
 async def get_self(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     self_user = await DAO.find_user_by_username(TokenManager.get_token_subject(token))
-    self_user["external_tokens"] = "HIDDEN"
+    if not self_user:
+        raise HTTPException(status_code=404, detail="User not found")
 
+    self_user["external_tokens"] = "HIDDEN"
     return {"user": DAO.serialize_document(self_user)}
 
 
@@ -35,9 +37,11 @@ async def get_self(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
 async def update_username(username: str, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     try:
         user = await DAO.find_user_by_username(TokenManager.get_token_subject(token))
+        user["external_tokens"] = "HIDDEN"
+        old_username = user["username"]
         user["username"] = username
-        await DAO.update_user(user["username"], user)
-        return {"message": "username updated successfully"}
+        await DAO.update_user(old_username, user)
+        return {"detail": "username updated successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -47,7 +51,18 @@ async def update_password(password: str, token: HTTPAuthorizationCredentials = D
     try:
         user = await DAO.find_user_by_username(TokenManager.get_token_subject(token))
         user["password"] = pwd_context.hash(password)
-        await DAO.update_user(user["password"], user)
-        return {"message": "password updated successfully"}
+        await DAO.update_user(user["username"], user)
+        return {"detail": "password updated successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@router.patch('/update/email', response_model=dict)
+@secure_endpoint
+async def update_email(email: str, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    try:
+        user = await DAO.find_user_by_username(TokenManager.get_token_subject(token))
+        user["email"] = email
+        await DAO.update_user(user["username"], user)
+        return {"detail": "email updated successfully"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
