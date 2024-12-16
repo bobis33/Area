@@ -32,6 +32,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/i18n/
+    - assets/images/
     - shared_assets/
   uses-material-design: true
 

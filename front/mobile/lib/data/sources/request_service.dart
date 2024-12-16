@@ -28,6 +28,13 @@ class RequestService {
             body: json.encode(body),
           );
           break;
+        case 'PATCH':
+          response = await http.patch(
+            url,
+            headers: {..._headers, ...?headers},
+            body: json.encode(body),
+          );
+          break;
         case 'GET':
         default:
           response = await http.get(

@@ -10,6 +10,7 @@ enum RouteEnum {
   areas,
   home,
   login,
+  profile,
   register,
   root,
 }

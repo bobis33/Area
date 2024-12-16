@@ -14,11 +14,8 @@ class RootPage extends StatelessWidget {
       future: IsAuthenticated(AuthRepositoryImpl()).execute(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
-
         if (snapshot.hasData && snapshot.data == true) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             context.go(context.namedLocation(RouteEnum.home.name));
@@ -28,7 +25,6 @@ class RootPage extends StatelessWidget {
             context.go(context.namedLocation(RouteEnum.login.name));
           });
         }
-
         return const SizedBox();
       },
     );
