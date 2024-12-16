@@ -44,7 +44,7 @@ class DAO:
         return await get_database().users.find({}).to_list(length=None)
 
     @staticmethod
-    async def find_user_by_email(email):
+    async def find_user_by_email(username):
         return await get_database().users.find_one({"email": username})
 
     @staticmethod

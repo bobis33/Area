@@ -1,6 +1,6 @@
 # pylint: disable=no-name-in-module
 # pylint: disable=no-self-argument
-from fastapi import APIRouter, Depends, HTTPException, status, Request
+from fastapi import APIRouter, Depends, HTTPException, status
 from authlib.integrations.starlette_client import OAuth
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.requests import Request
@@ -55,13 +55,13 @@ async def login_google(request: Request):
     return await oauth.google.authorize_redirect(request, redirect_uri, access_type="offline", prompt="consent")
 
 @router.get("/google/callback", include_in_schema=False)
-async def google_callback(request: Request, Authorize: AuthJWT = Depends()):
+async def google_callback(request: Request, authorize: AuthJWT = Depends()):
     try:
         google_token = await oauth.google.authorize_access_token(request)
         user_info = google_token.get("userinfo")
         user_email = user_info["email"]
 
-        access_token = Authorize.create_access_token(subject=user_email)
+        access_token = authorize.create_access_token(subject=user_email)
         user = await DAO.find_user_by_email(user_email)
         user["external_tokens"]["GOOGLE"] = google_token
         await DAO.update_user(user_email, user)

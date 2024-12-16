@@ -13,7 +13,7 @@ def about_json(request: Request):
             "host": request.client.host,
         },
         "server": {
-            "current_time": int(datetime.utcnow().timestamp()),
+            "current_time": int(datetime.now().timestamp()),
             "host": server_address,
             "version": "0.0.0+1",
             "services": [{

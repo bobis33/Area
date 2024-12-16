@@ -1,6 +1,3 @@
-from fastapi import Depends, HTTPException
-from fastapi_jwt_auth import AuthJWT
-from fastapi_jwt_auth.exceptions import AuthJWTException
 from starlette.middleware.sessions import SessionMiddleware
 
 from app.config import Config

@@ -1,7 +1,7 @@
 """Module that implements commonly used security functionality
 """
 
-from fastapi import Depends, HTTPException
+from fastapi import HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from fastapi_jwt_auth import AuthJWT

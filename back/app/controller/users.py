@@ -1,17 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi_jwt_auth.exceptions import AuthJWTException
-from fastapi_jwt_auth import AuthJWT
+from fastapi import HTTPException
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPAuthorizationCredentials
-from app.common import secure_endpoint, auth_scheme, TokenManager
+from app.common import auth_scheme, TokenManager
 from passlib.context import CryptContext
-
 
 from app.database import DAO
 from app.common import secure_endpoint
-
-from app.config import Config
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 router = APIRouter()

@@ -1,7 +1,5 @@
 # pylint: disable=no-name-in-module
 # pylint: disable=no-self-argument
-import uvicorn
-
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_jwt_auth import AuthJWT
 from pydantic import BaseModel
