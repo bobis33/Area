@@ -26,10 +26,10 @@ jobs:
         uses: subosito/flutter-action@v2.17.0
         with:
           channel: stable
-          flutter-version-file: './front/mobile/pubspec.yaml'
+          flutter-version-file: './front/mobile/app/pubspec.yaml'
       - run: flutter pub get
-        working-directory: ./front/mobile
+        working-directory: ./front/mobile/app
 
       - name: Launch tests
         run: flutter test
-        working-directory: ./front/mobile
+        working-directory: ./front/mobile/app

@@ -4,7 +4,7 @@ import { LanguagesEnum } from './config/constants'
 
 export default defineNuxtConfig({
   alias: {
-    '@assets': resolve(__dirname, '../../assets'),
+    '@assets': resolve(__dirname, '../../../assets'),
   },
   colorMode: {
     preference: 'system',

@@ -1,0 +1,9 @@
+FROM
+
+WORKDIR /app
+
+
+COPY . .
+
+EXPOSE 8081
+

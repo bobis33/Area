@@ -18,5 +18,5 @@ const errorMessage = error.value?.statusMessage || 'anErrorOccurred'
 </script>
 
 <style scoped lang="scss">
-@use 'assets/styles/errors.scss' as *;
+@use 'assets/styles/errors' as *;
 </style>

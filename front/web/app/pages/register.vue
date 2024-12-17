@@ -33,8 +33,8 @@ import { ref } from 'vue'
 import { useRouter } from '#app'
 
 import { useSnackbar } from '~/composables/useSnackBar'
-import { RoutesEnum } from "~/config/constants";
-import { AuthRepository } from "~/infrastructure/repositories/AuthRepository";
+import { RoutesEnum } from '~/config/constants'
+import { AuthRepository } from '~/infrastructure/repositories/AuthRepository'
 import { RegisterUser } from '~/domain/use-cases/RegisterUser'
 
 const username = ref('')

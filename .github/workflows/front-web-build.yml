@@ -22,8 +22,8 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        working-directory: ./front/web
+        working-directory: ./front/web/app
 
       - name: Build project
         run: npm run build
-        working-directory: ./front/web
+        working-directory: ./front/web/app
