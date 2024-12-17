@@ -1,12 +1,6 @@
-FROM node:latest
+FROM node:20-alpine AS build
 
-WORKDIR /app
+COPY app/package.json ./app/package.json
+RUN cd app && npm install --frozen-lockfile
 
-COPY /app .
-
-RUN npm install \
-    && npm run build
-
-EXPOSE 8081
-
-CMD [ "node", "app/.output/server/index.mjs" ]
+COPY app/ ./app

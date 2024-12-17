@@ -20,7 +20,8 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - MONGO_URI=mongodb://mongo:27017/AREAdatabase
+      - PATH=/root/.local:$PATH
+      - MONGO_URI=mongodb://mongo:27017/area
     depends_on:
       - mongo
 
@@ -30,15 +31,41 @@ services:
     container_name: client_mobile
     working_dir: /app
     volumes:
-      - ./front/mobile:/app
+      - shared-client:/shared
+    command: >
+      sh -c "
+      cp -r /app/app-release.apk /shared/client.apk &&
+      echo 'Build completed' > /shared/client_mobile.txt
+      "
 
-  client_web:
+  client_web_build:
     build:
       context: ./front/web
-    container_name: client_web
-    working_dir: /app
+    container_name: client_web_build
     volumes:
-      - ./front/web:/app
+      - shared-client:/shared
+    depends_on:
+      - client_mobile
+    command: >
+      sh -c "
+      echo 'Waiting for /shared/client_mobile.txt to be available...' &&
+      while [ ! -f /shared/client_mobile.txt ]; do
+        sleep 1;
+      done &&
+      echo 'client_mobile completed successfully. Continuing...' &&
+      cp -r /shared/client.apk /app/public/client.apk &&
+      rm -rf /shared/client.apk &&
+      cd /app &&
+      npm run build &&
+      cp -r /app /shared &&
+      echo 'Build completed' > /shared/client_web.txt
+      "
+
+  client_web:
+    image: node:20-alpine
+    container_name: client_web
+    volumes:
+      - shared-client:/shared
     ports:
       - "8081:8081"
     environment:
@@ -46,7 +73,18 @@ services:
       - NODE_ENV=production
     depends_on:
       - server
-      - client_mobile
+      - client_web_build
+    command: >
+      sh -c "
+      echo 'Waiting for /shared/client_web.txt to be available...' &&
+      while [ ! -f /shared/client_web.txt ]; do
+        sleep 1;
+      done &&
+      echo 'client_web_build completed successfully. Continuing...' &&
+      cp -r /shared/* . &&
+      node /app/.output/server/index.mjs
+      "
 
 volumes:
   mongo-data:
+  shared-client:

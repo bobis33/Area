@@ -8,24 +8,36 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v4.2.2
         with:
           ref: ${{ github.head_ref }}
 
-      - name: Use Node.js
-        uses: actions/setup-node@v4.1.0
-        with:
-          node-version: "20.17.0"
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.7.1
 
-      - name: Install dependencies
-        run: npm install
-        working-directory: ./front/web/app
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose --version
 
-      - name: Build project
-        run: npm run build
-        working-directory: ./front/web/app
+      - name: Build with Docker Compose
+        run: |
+          docker-compose build client_mobile client_web_build client_web
+
+      - name: Start services with Docker Compose
+        run: |
+          docker-compose up -d client_mobile client_web_build client_web && sleep 20
+
+      - name: Check if front web is running
+        run: |
+          sleep 10
+          curl -f http://localhost:8081/login || exit 1
+
+      - name: Shutdown services
+        run: |
+          docker-compose -f docker-compose.yml down

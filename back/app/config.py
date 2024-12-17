@@ -10,7 +10,7 @@ class Config:
     """Base application configuration class"""
 
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'Default')
-    MONGO_URI = os.getenv('MONGO_URI', 'AREAdatabase')
+    MONGO_URI = os.getenv('MONGO_URI', 'area')
 
     GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', 'None')
     GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET', 'None')
