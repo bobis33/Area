@@ -1,5 +1,5 @@
-name: Back Build
-run-name: ${{github.actor}} ${{github.branch}} | Back Build
+name: Front Mobile Build
+run-name: ${{github.actor}} ${{github.branch}} | Front Mobile Build
 on:
   push:
     branches:
@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     steps:
       - name: Checkout code
@@ -27,17 +27,4 @@ jobs:
 
       - name: Build with Docker Compose
         run: |
-          docker-compose build server
-
-      - name: Start services with Docker Compose
-        run: |
-          docker-compose up -d server
-
-      - name: Check if backend is running
-        run: |
-          sleep 10
-          curl -f http://localhost:8080/docs || exit 1
-
-      - name: Shutdown services
-        run: |
-          docker-compose -f docker-compose.yml down
+          docker-compose build client_mobile
