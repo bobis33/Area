@@ -1,6 +1,6 @@
 <template>
   <div class="form-container">
-    <img src="@assets/icon.png" alt="AREA icon" class="auth-logo" />
+    <img src="~/assets/icon.png" alt="AREA icon" class="auth-logo" />
     <h1 class="form-title">{{ $t('register') }}</h1>
     <form @submit.prevent="handleRegister">
       <div class="mb-4">
