@@ -35,7 +35,7 @@ import { useRouter } from '#app'
 import { useSnackbar } from '~/composables/useSnackBar'
 import { RoutesEnum } from '~/config/constants'
 import { AuthRepository } from '~/infrastructure/repositories/AuthRepository'
-import { RegisterUser } from '~/domain/use-cases/RegisterUser'
+import { RegisterUser } from '~/domain/use-cases/auth'
 
 const username = ref('')
 const password = ref('')
