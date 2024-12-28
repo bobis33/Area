@@ -6,7 +6,7 @@ import '/data/models/data.dart';
 
 class RequestService {
   const RequestService();
-  static const String _baseUrl = 'http://10.0.2.2:5000';
+  static const String _baseUrl = 'http://10.0.2.2:8080';
   static const _headers = {'Content-Type': 'application/json'};
 
   Future<DataState<T>> makeRequest<T>({

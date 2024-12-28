@@ -34,7 +34,7 @@ class AuthPage extends StatelessWidget {
         children: [
           Center(
             child: Image.asset(
-              'shared_assets/icon.png',
+              'assets/images/icon.png',
               height: 120,
               width: 120,
               fit: BoxFit.contain,
