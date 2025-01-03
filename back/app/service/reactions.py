@@ -17,11 +17,10 @@ async def send_email_to_antoine(user):
         refresh_token=google_infos["refresh_token"],
         token_uri="https://oauth2.googleapis.com/token",
         client_id=Config.GOOGLE_CLIENT_ID,
-        client_secret=Config.GOOGLE_CLIENT_SECRET,  # Replace with your actual client secret
+        client_secret=Config.GOOGLE_CLIENT_SECRET,
         scopes=["https://www.googleapis.com/auth/gmail.send"]
     )
 
-    # Build Gmail service
     service = build("gmail", "v1", credentials=creds)
 
     message = EmailMessage()
