@@ -32,7 +32,11 @@ class DAO:
     async def insert_user(username, hashed_password):
         return await get_database().users.insert_one({"username": username, "password": hashed_password, "email": "", "subscribed_areas": [],
                                                       "created_at": datetime.datetime.now(), "updated_at": datetime.datetime.now(),
-                                                      "external_tokens": {}})
+                                                      "linked_to": {}})
+
+    @staticmethod
+    async def insert_google_account(account):
+        return await get_database().google.insert_one(account)
 
     @staticmethod
     async def update_user(username, updated_user):
@@ -77,3 +81,15 @@ class DAO:
     async def find_all_areas():
         documents = await get_database().areas.find({}).to_list(length=None)
         return [DAO.serialize_document(doc) for doc in documents]
+
+    @staticmethod
+    async def insert(database, document):
+        return await database.insert_one(document)
+
+    @staticmethod
+    async def find(database, key, value):
+        return await database.find_one({key: value})
+
+    @staticmethod
+    async def update(database, key, value, updated_document):
+        return await database.update_one({key: value}, {"$set": updated_document})
