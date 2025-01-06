@@ -1,14 +1,14 @@
 <template>
   <div>
-      <button @click="router.push(RoutesEnum.HOME.toString())" class="btn-back-home">Go to Home</button>
-    <h1>All Areas</h1>
+      <button @click="router.push(RoutesEnum.HOME.toString())" class="btn-back-home">{{ $t('goBackHome') }}</button>
+    <h1>{{ $t('allAreas') }}</h1>
     <div v-if="data && data.areas.length">
       <ul>
         <li v-for="area in data.areas" :key="area._id">
-          <strong>Action:</strong> {{ area.action }} <br>
-          <strong>Reaction:</strong> {{ area.reaction }}
-          <input type="email" v-model="userEmails[area._id]" placeholder="Enter your email" required />
-          <button @click="subscribeUser(area._id)">Subscribe</button>
+          <strong>{{ $t('action') }}:</strong> {{ area.action }} <br>
+          <strong>{{ $t('reaction') }}:</strong> {{ area.reaction }}
+          <input type="email" v-model="userEmails[area._id]" :placeholder="$t('enterEmail')" required />
+          <button @click="subscribeUser(area._id)">{{ $t('Subscribe') }}</button>
         </li>
       </ul>
     </div>
@@ -16,17 +16,17 @@
       <p>No areas found.</p>
     </div>
 
-    <h2>Subscribed Areas</h2>
+    <h2>{{$t('subscribedArea')}}</h2>
     <div>
-      <input type="email" v-model="userEmail" placeholder="Enter your email to see subscribed areas" required />
-      <button @click="fetchSubscribedAreas">Fetch Subscribed Areas</button>
+      <input type="email" v-model="userEmail" placeholder="enterEmailToSeeSubscribedAreas" required />
+      <button @click="fetchSubscribedAreas">{{$t('fetchSubscribedAreas')}}</button>
     </div>
     <div v-if="subscribedAreas.length">
       <ul>
         <li v-for="area in subscribedAreas" :key="area._id">
-          <strong>Action:</strong> {{ area.action }} <br>
-          <strong>Reaction:</strong> {{ area.reaction }}
-          <button @click="unsubscribeUser(area._id)">Unsubscribe</button>
+          <strong>{{ $t('action') }}:</strong> {{ area.action }} <br>
+          <strong>{{ $t('reaction') }}:</strong> {{ area.reaction }}
+          <button @click="unsubscribeUser(area._id)">{{$t('Unsubscribe')}}</button>
         </li>
       </ul>
     </div>
@@ -34,17 +34,17 @@
       <p>No subscribed areas found.</p>
     </div>
 
-    <h2>Create New Area</h2>
+    <h2>{{$t('createArea')}}</h2>
     <form @submit.prevent="createArea">
       <div>
-        <label for="action">Action:</label>
+        <label for="action">{{ $t('action') }}:</label>
         <input type="text" v-model="newArea.action" required />
       </div>
       <div>
-        <label for="reaction">Reaction:</label>
+        <label for="reaction">{{ $t('reaction') }}:</label>
         <input type="text" v-model="newArea.reaction" required />
       </div>
-      <button type="submit">Create Area</button>
+      <button type="submit">{{$t('createArea')}}</button>
     </form>
 
   </div>

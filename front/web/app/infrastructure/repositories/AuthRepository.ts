@@ -11,7 +11,7 @@ export class AuthRepository implements AuthRepositoryInterface {
         })
 
         if (!response.ok) {
-            throw new Error('invalidCredentials')
+            throw new Error('Invalid credentials')
         }
 
         const data = await response.json()
@@ -34,17 +34,13 @@ export class AuthRepository implements AuthRepositoryInterface {
     }
 
     async verifyToken(token: string): Promise<boolean> {
-        try {
-            return await fetch(`${this.baseUrlAPI}/auth/me`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            }).then((response) => response.ok)
-        } catch (error) {
-            console.error('Token verification failed:', error)
-            return false
-        }
+        const response = await fetch(`${this.baseUrlAPI}/auth/me`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        })
+        return response.ok;
     }
 }

@@ -31,11 +31,10 @@ jobs:
 
       - name: Start services with Docker Compose
         run: |
-          docker-compose up -d client_mobile client_web_build client_web && sleep 20
+          docker-compose up -d client_mobile client_web_build client_web && sleep 30
 
       - name: Check if front web is running
         run: |
-          sleep 10
           curl -f http://localhost:8081/login || exit 1
 
       - name: Shutdown services

@@ -28,8 +28,8 @@ import { ref } from 'vue'
 import { useCookie, useRouter } from '#app'
 
 import { useSnackbar } from '~/composables/useSnackBar'
-import { LoginUser } from '~/domain/use-cases/loginUser'
-import {CookiesEnum, RoutesEnum} from '~/config/constants'
+import { LoginUser } from '~/domain/use-cases/auth'
+import { CookiesEnum, RoutesEnum } from '~/config/constants'
 import { AuthRepository } from '~/infrastructure/repositories/AuthRepository'
 
 const username = ref('')

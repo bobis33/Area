@@ -1,7 +1,7 @@
 <template>
   <button @click="logout" class="btn-logout m-5">{{ $t('logout') }}</button>
-  <button @click="google_login" class="btn-primary m-5">{{ $t('google_login') }}</button>
-  <button @click="router.push(RoutesEnum.AREAS.toString())" class="btn-primary m-5">{{ $t('go_to_areas') }}</button>
+  <button @click="googleLogin" class="btn-primary m-5">{{ $t('googleLogin') }}</button>
+  <button @click="router.push(RoutesEnum.AREAS.toString())" class="btn-primary m-5">{{ $t('myAreas') }}</button>
 </template>
 
 <script setup lang="ts">
@@ -20,7 +20,7 @@ async function logout() {
   showSnackbar('logoutSuccess', 'success')
 }
 
-async function google_login() {
+async function googleLogin() {
   try {
     window.location.href = `${config.public.baseUrlApi}/auth/login/google`;
   } catch (error) {

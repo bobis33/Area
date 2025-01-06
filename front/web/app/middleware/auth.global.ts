@@ -1,47 +1,33 @@
-import { defineNuxtRouteMiddleware, useCookie, useRouter } from '#app'
+import { defineNuxtRouteMiddleware, useCookie } from '#app'
 import { CookiesEnum, RoutesEnum } from '~/config/constants'
-import { VerifyToken } from '~/domain/use-cases/VerifyToken'
+import { VerifyToken } from '~/domain/use-cases/auth'
 import { AuthRepository } from '~/infrastructure/repositories/AuthRepository'
 
 export default defineNuxtRouteMiddleware(async (to) => {
-    const router = useRouter()
     const publicRoutes = [RoutesEnum.LOGIN.toString(), RoutesEnum.REGISTER.toString()]
+    const isPublicRoute = publicRoutes.includes(to.path)
+    const token = useCookie(CookiesEnum.TOKEN.toString()).value ?? ''
 
-    if (import.meta.client) {
-        const token = useCookie(CookiesEnum.TOKEN.toString()).value
+    if (!token && !isPublicRoute) {
+        return window.location.href = RoutesEnum.LOGIN.toString()
+    }
 
-        if (!token) {
-            if (!publicRoutes.includes(to.path)) {
-                return router.push(RoutesEnum.LOGIN.toString())
-            }
-            return
-        }
+    if (token && isPublicRoute) {
+        return window.location.href = RoutesEnum.HOME.toString()
+    }
 
+    if (token) {
         try {
             const response = await new VerifyToken(new AuthRepository()).execute(token)
 
             if (!response) {
                 useCookie(CookiesEnum.TOKEN.toString()).value = null
-                if (to.path !== RoutesEnum.LOGIN.toString()) {
-                    return router.push(RoutesEnum.LOGIN.toString())
-                }
-                return
+                return window.location.href = RoutesEnum.LOGIN.toString()
             }
-
-            if (publicRoutes.includes(to.path)) {
-                return router.push(RoutesEnum.HOME.toString())
-            }
-
-            if (to.path === '/') {
-                return window.location.href = RoutesEnum.HOME.toString()
-            }
-
         } catch (error) {
-            console.log('Error while validating token:', error)
+            console.error('Error verifying token:', error)
             useCookie(CookiesEnum.TOKEN.toString()).value = null
-            if (to.path !== RoutesEnum.LOGIN.toString()) {
-                return router.push(RoutesEnum.LOGIN.toString())
-            }
+            return window.location.href = RoutesEnum.LOGIN.toString()
         }
     }
 })
