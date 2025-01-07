@@ -22,4 +22,4 @@ class Config:
     MIDDLEWARE_SECRET_KEY = os.getenv('MIDDLEWARE_SECRET_KEY', 'Default')
 
     AREA_CHECK_INTERVAL = int(os.getenv('AREA_CHECK_INTERVAL', "10"))
-    FRONTEND_URL = "http://localhost:8081"
+    FRONTEND_URL = os.getenv('FRONTEND_URL', "http://localhost:8081")
