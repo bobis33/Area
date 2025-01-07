@@ -52,86 +52,89 @@ class _AreasPageState extends State<AreasPage> {
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
         return Scaffold(
-        backgroundColor: Color(0xFF272727),
-        appBar: AppBar(
-          title: Text('My AREAS',
+          backgroundColor: Color(0xFF272727),
+          appBar: AppBar(
+            title: Text(
+              'My AREAS',
               style: TextStyle(
-              fontFamily: 'IstokWeb',
-              fontWeight: FontWeight.bold,
-              fontSize: 30,
-              color: Colors.white
+                fontFamily: 'IstokWeb',
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+                color: Colors.white,
+              ),
             ),
+            centerTitle: true,
+            toolbarHeight: 80,
+            backgroundColor: Color(0xFF343434),
           ),
-          centerTitle: true,
-          toolbarHeight: 80,
-          backgroundColor: Color(0xFF343434),
-        ),
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                    if (errorMessage != null) ...[
+                  if (errorMessage != null) ...[
                     Text(
                       errorMessage!,
                       style: TextStyle(color: Colors.red),
                     ),
-                    ] else ...[
+                  ] else ...[
                     ListView.builder(
                       // Display subscribed areas
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: subscribedAreas.length,
                       itemBuilder: (context, index) {
-                      final area = subscribedAreas[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Card(
-                        color: Color(area['color']),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        elevation: 10,
-                        shadowColor: Colors.black,
-                        child: ListTile(
-                          title: Padding(
-                          padding: const EdgeInsets.only(top: 16.0, left: 32.0, right: 32.0),
-                          child: Text(
-                            area['action'],
-                            style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'IstokWeb',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                        final area = subscribedAreas[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Card(
+                            color: Color(area['color']),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                          ),
-                          subtitle: Padding(
-                          padding: const EdgeInsets.only(bottom: 16.0, left: 32.0, right: 32.0),
-                          child: Text(
-                            area['reaction'],
-                            style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'IstokWeb',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                            elevation: 10,
+                            shadowColor: Colors.black,
+                            child: ListTile(
+                              title: Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 16.0, left: 32.0, right: 32.0),
+                                child: Text(
+                                  area['action'],
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'IstokWeb',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 24,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 16.0, left: 32.0, right: 32.0),
+                                child: Text(
+                                  area['reaction'],
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'IstokWeb',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 24,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
                             ),
-                            textAlign: TextAlign.center,
                           ),
-                          ),
-                        ),
-                        ),
-                      );
+                        );
                       },
                     ),
-                    ],
+                  ],
 
-                    // Create new area button
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Card(
+                  // Create new area button
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Card(
                       color: Color(0xFF1F1F1F),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
@@ -148,27 +151,28 @@ class _AreasPageState extends State<AreasPage> {
                           ),
                         ),
                         title: Padding(
-                        padding: const EdgeInsets.only(top: 16.0, bottom: 16.0, right: 32.0),
-                        child: Text(
-                          'Create New Area',
-                          style: TextStyle(
-                          color: Color(0xFF8E8E8E),
-                          fontFamily: 'IstokWeb',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          padding: const EdgeInsets.only(
+                              top: 16.0, bottom: 16.0, right: 32.0),
+                          child: Text(
+                            'Create New Area',
+                            style: TextStyle(
+                              color: Color(0xFF8E8E8E),
+                              fontFamily: 'IstokWeb',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
                           ),
                         ),
-                        ),
                         onTap: () {
-                        // Handle the tap event to create a new area
+                          // Handle the tap event to create a new area
                         },
                       ),
-                      ),
                     ),
+                  ),
                 ],
               ),
             ),
-          )
+          ),
         );
       },
     );
