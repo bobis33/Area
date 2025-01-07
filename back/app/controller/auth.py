@@ -71,7 +71,6 @@ async def link_google(google_token, token: HTTPAuthorizationCredentials = Depend
     return {"message": "Google account linked successfully"}
 
 @router.get("/login/to/google")
-@secure_endpoint
 async def get_google_token(request: Request):
     redirect_uri = request.url_for('google_token_callback')
     return await oauth.google.authorize_redirect(request, redirect_uri, access_type="offline", prompt="consent")
