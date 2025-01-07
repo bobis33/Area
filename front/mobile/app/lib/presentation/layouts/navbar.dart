@@ -1,3 +1,7 @@
+import 'package:area_front_mobile/presentation/pages/areas.dart';
+import 'package:area_front_mobile/presentation/pages/browse.dart';
+import 'package:area_front_mobile/presentation/pages/home.dart';
+import 'package:area_front_mobile/presentation/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_translate/flutter_translate.dart';
@@ -19,28 +23,26 @@ class MainLayout extends StatefulWidget {
 class _MainLayoutState extends State<MainLayout> {
   int _selectedIndex = 0;
 
+  final List<Widget> _pages = [
+    AreasPage(),
+    ProfilePage(),
+    BrowsePage(),
+  ];
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
-
-    switch (_selectedIndex) {
-      case 0:
-        context.go(context.namedLocation(RouteEnum.areas.name));
-        break;
-      case 1:
-        context.go(context.namedLocation("create"));
-        break;
-      case 2:
-        context.go(context.namedLocation("browse"));
-        break;
-    }
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: widget.child,
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ),
       bottomNavigationBar: Container(
         height: 110,
         color: Color(0xFF1A1A1A),
@@ -53,18 +55,18 @@ class _MainLayoutState extends State<MainLayout> {
             currentIndex: _selectedIndex,
             onTap: _onItemTapped,
             items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Padding(padding: EdgeInsets.all(5), child: ImageIcon(AssetImage('assets/images/puzzle.png'), size: 30)),
-              label: 'My AREAS',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add, size: 40),
-              label: 'Create',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search, size: 40),
-              label: 'Browse',
-            ),
+              BottomNavigationBarItem(
+                icon: Padding(padding: EdgeInsets.all(5), child: ImageIcon(AssetImage('assets/images/puzzle.png'), size: 30)),
+                label: 'My AREAS',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.add, size: 40),
+                label: 'Create',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.search, size: 40),
+                label: 'Browse',
+              ),
             ],
             selectedLabelStyle: TextStyle(fontSize: 16),
             unselectedLabelStyle: TextStyle(fontSize: 16),
