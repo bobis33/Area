@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '/data/models/data.dart';
 import '/data/sources/request_service.dart';
 import '/presentation/providers/language.dart';
+import 'create.dart';
 
 class AreasPage extends StatefulWidget {
   const AreasPage({super.key});
@@ -164,7 +165,10 @@ class _AreasPageState extends State<AreasPage> {
                           ),
                         ),
                         onTap: () {
-                          // Handle the tap event to create a new area
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => CreatePage()),
+                          );
                         },
                       ),
                     ),

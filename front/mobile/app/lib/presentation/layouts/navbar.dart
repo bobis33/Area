@@ -1,5 +1,6 @@
 import 'package:area_front_mobile/presentation/pages/areas.dart';
 import 'package:area_front_mobile/presentation/pages/browse.dart';
+import 'package:area_front_mobile/presentation/pages/create.dart';
 import 'package:area_front_mobile/presentation/pages/home.dart';
 import 'package:area_front_mobile/presentation/pages/profile.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class _MainLayoutState extends State<MainLayout> {
 
   final List<Widget> _pages = [
     AreasPage(),
-    ProfilePage(),
+    CreatePage(),
     BrowsePage(),
   ];
 
