@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:area_front_mobile/presentation/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:provider/provider.dart';
 
+import '../../config/constants.dart';
 import '/data/models/data.dart';
 import '/data/sources/request_service.dart';
 import '/presentation/providers/language.dart';
@@ -67,6 +69,20 @@ class _AreasPageState extends State<AreasPage> {
             centerTitle: true,
             toolbarHeight: 80,
             backgroundColor: Color(0xFF343434),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: IconButton(
+                  icon: Icon(Icons.account_circle, color: Colors.white, size: 30),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProfilePage()),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
           body: SingleChildScrollView(
             child: Padding(

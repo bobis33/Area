@@ -185,7 +185,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return Scaffold(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -247,6 +248,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
+      )
     );
   }
 }

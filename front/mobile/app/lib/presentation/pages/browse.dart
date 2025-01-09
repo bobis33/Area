@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '/data/models/data.dart';
 import '/data/sources/request_service.dart';
 import '/presentation/providers/language.dart';
+import 'profile.dart';
 
 class BrowsePage extends StatefulWidget {
   const BrowsePage({super.key});
@@ -88,6 +89,20 @@ class _BrowsePageState extends State<BrowsePage> {
             centerTitle: true,
             toolbarHeight: 80,
             backgroundColor: Color(0xFF343434),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: IconButton(
+                  icon: Icon(Icons.account_circle, color: Colors.white, size: 30),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProfilePage()),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
           body: SingleChildScrollView(
             child: Padding(
