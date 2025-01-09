@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:provider/provider.dart';
 
+import '../../config/constants.dart';
 import '/data/models/data.dart';
 import '/data/sources/request_service.dart';
+import '/data/sources/storage_service.dart';
 import '/presentation/providers/language.dart';
 import 'profile.dart';
 
@@ -19,36 +22,21 @@ class _BrowsePageState extends State<BrowsePage> {
   List<dynamic> areas = [];
   Map<String, String> userEmails = {};
   String userEmail = '';
-  List<dynamic> allAreas = [
-    {
-      'action': 'when a pull request is merged',
-      'reaction': 'receive a mail',
-      'color': 0xFFB23737
-    },
-    {
-      'action': 'when invited to a chess.com game',
-      'reaction': 'receive a discord message',
-      'color': 0xFF379E4A
-    },
-    {
-      'action': 'when a disord message is received',
-      'reaction': 'save it to google sheets',
-      'color': 0xFF0F4FC7
-    },
-  ];
+  List<dynamic> allAreas = [];
   List<dynamic> filteredAreas = [];
   String newAction = '';
   String newReaction = '';
   String? errorMessage;
   bool showAreas = true;
 
+  final StorageService _storageService = StorageService();
   final RequestService _requestService = const RequestService();
   final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    filteredAreas = allAreas;
+    fetchAllAreas();
     _searchController.addListener(_filterAreas);
   }
 
@@ -68,6 +56,45 @@ class _BrowsePageState extends State<BrowsePage> {
         return action.contains(query) || reaction.contains(query);
       }).toList();
     });
+  }
+
+  Future<void> fetchAllAreas() async {
+    final token = await _storageService.getItem(StorageKeyEnum.authToken.name);
+    final response = await _requestService.makeRequest<List<dynamic>>(
+      endpoint: '/area/get/all',
+      method: 'GET',
+      headers: {'Authorization': 'Bearer $token'},
+      parse: (response) => json.decode(response.body)['areas'],
+    );
+
+    if (response is DataSuccess) {
+      setState(() {
+        allAreas = response.data!;
+        filteredAreas = allAreas;
+      });
+    } else if (response is DataError) {
+      setState(() {
+        errorMessage = '${translate('fetchSubscribedAreasError')}: ${response.error}';
+      });
+    }
+  }
+
+  Future<void> subscribeToArea(String areaId) async {
+    final token = await _storageService.getItem(StorageKeyEnum.authToken.name);
+    final response = await _requestService.makeRequest<bool>(
+      endpoint: '/area/subscribe?area_id=$areaId',
+      method: 'POST',
+      headers: {'Authorization': 'Bearer $token'},
+      parse: (response) => response.statusCode == 200,
+    );
+
+    if (response is DataSuccess) {
+      fetchAllAreas();
+    } else if (response is DataError) {
+      setState(() {
+        errorMessage = '${translate('subscribeToAreaError')}: ${response.data}';
+      });
+    }
   }
 
   @override
@@ -149,7 +176,7 @@ class _BrowsePageState extends State<BrowsePage> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: Card(
-                            color: Color(area['color']),
+                            color: Colors.black,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -189,7 +216,7 @@ class _BrowsePageState extends State<BrowsePage> {
                                   ),
                                 ),
 
-                                // Footer to show number of downloads and add button
+                                // Footer to show number of downloads and subscribe button
                                 Container(
                                   padding: const EdgeInsets.all(8.0),
                                   decoration: BoxDecoration(
@@ -202,20 +229,24 @@ class _BrowsePageState extends State<BrowsePage> {
                                   child: Row(
                                     children: [
                                       Icon(Icons.download_rounded,
-                                          color: Colors.white, size: 30),
+                                        color: Colors.white, size: 30),
                                       SizedBox(width: 10),
                                       Text(
-                                        '1.2K',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'IstokWeb',
-                                          fontSize: 18,
-                                        ),
+                                      area['subscribed_users'].length.toString(),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'IstokWeb',
+                                        fontSize: 18,
+                                      ),
                                       ),
                                       Spacer(),
-                                      Icon(Icons.add,
-                                          color: Colors.white, size: 30),
+                                      IconButton(
+                                      icon: Icon(Icons.add, color: Colors.white, size: 30),
+                                      onPressed: () {
+                                        subscribeToArea(area['_id']);
+                                      },
+                                      ),
                                     ],
                                   ),
                                 ),
