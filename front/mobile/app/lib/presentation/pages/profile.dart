@@ -246,6 +246,30 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
           ),
+          ElevatedButton(
+            onPressed: () async => {
+              await StorageService().clearItem(StorageKeyEnum.authToken.name),
+              snackBar(context, translate('logoutSuccess'), Theme.of(context).colorScheme.secondary),
+              context.go(context.namedLocation(RouteEnum.root.name)),
+            },
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                translate('logout'),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
       )
