@@ -7,7 +7,6 @@
         <li v-for="area in data.areas" :key="area._id">
           <strong>{{ $t('action') }}:</strong> {{ area.action }} <br>
           <strong>{{ $t('reaction') }}:</strong> {{ area.reaction }}
-          <input type="email" v-model="userEmails[area._id]" :placeholder="$t('enterEmail')" required />
           <button @click="subscribeUser(area._id)">{{ $t('Subscribe') }}</button>
         </li>
       </ul>
@@ -18,7 +17,6 @@
 
     <h2>{{$t('subscribedArea')}}</h2>
     <div>
-      <input type="email" v-model="userEmail" placeholder="enterEmailToSeeSubscribedAreas" required />
       <button @click="fetchSubscribedAreas">{{$t('fetchSubscribedAreas')}}</button>
     </div>
     <div v-if="subscribedAreas.length">
@@ -52,12 +50,12 @@
 
 <script setup lang="ts">
 import { useRouter } from '#app'
+import {CookiesEnum, RoutesEnum} from "~/config/constants";
+import { useCookie } from "#app";
 
-import { RoutesEnum } from '~/config/constants'
-
+const token = useCookie(CookiesEnum.TOKEN.toString()).value
 const config = useRuntimeConfig()
 const router = useRouter()
-
 const userEmails = ref({})
 const userEmail = ref('')
 const subscribedAreas = ref([])
@@ -70,19 +68,17 @@ const { data, error } = await useFetch(`${config.public.baseUrlApi}/area/get/all
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
   },
 })
 
 const fetchSubscribedAreas = async () => {
-  if (!userEmail.value) {
-    alert('Please enter your email.')
-    return
-  }
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/get/subscribed?user_email=${(userEmail.value)}`, {
+    const response = await fetch(`${config.public.baseUrlApi}/area/get/subscribed`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
     })
     const result = await response.json()
@@ -93,16 +89,12 @@ const fetchSubscribedAreas = async () => {
 }
 
 const subscribeUser = async (area_id) => {
-  const email = userEmails.value[area_id]
-  if (!email) {
-    alert('Please enter your email.')
-    return
-  }
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/subscribe?user_email=${(email)}&area_id=${area_id}`, {
+    const response = await fetch(`${config.public.baseUrlApi}/area/subscribe&area_id=${area_id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
     })
     const result = await response.json()
@@ -113,15 +105,12 @@ const subscribeUser = async (area_id) => {
 }
 
 const unsubscribeUser = async (area_id) => {
-  if (!userEmail.value) {
-    alert('Please enter your email.')
-    return
-  }
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/unsubscribe?user_email=${(userEmail.value)}&area_id=${area_id}`, {
+    const response = await fetch(`${config.public.baseUrlApi}/area/unsubscribe&area_id=${area_id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       }
     })
     const result = await response.json()
@@ -138,6 +127,7 @@ const createArea = async () => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       }
     })
     if (!response.ok) {
