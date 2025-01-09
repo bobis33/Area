@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../config/constants.dart';
 import '/data/models/data.dart';
 import '/data/sources/request_service.dart';
+import '/data/sources/storage_service.dart';
 import '/presentation/providers/language.dart';
 import 'create.dart';
 
@@ -15,39 +16,46 @@ class AreasPage extends StatefulWidget {
 
   @override
   State<AreasPage> createState() => _AreasPageState();
+
 }
 
 class _AreasPageState extends State<AreasPage> {
   List<dynamic> areas = [];
   Map<String, String> userEmails = {};
   String userEmail = '';
-  List<dynamic> subscribedAreas = [
-    {
-      'action': 'when a pull request is merged',
-      'reaction': 'receive a mail',
-      'color': 0xFFB23737
-    },
-    {
-      'action': 'when invited to a chess.com game',
-      'reaction': 'receive a discord message',
-      'color': 0xFF379E4A
-    },
-    {
-      'action': 'when a disord message is received',
-      'reaction': 'save it to google sheets',
-      'color': 0xFF0F4FC7
-    },
-  ];
+  List<dynamic> subscribedAreas = [];
   String newAction = '';
   String newReaction = '';
   String? errorMessage;
   bool showAreas = true;
 
+  final StorageService _storageService = StorageService();
   final RequestService _requestService = const RequestService();
+
+  Future<void> fetchSubscribedAreas() async {
+    final token = await _storageService.getItem(StorageKeyEnum.authToken.name);
+    final response = await _requestService.makeRequest<List<dynamic>>(
+      endpoint: '/area/get/subscribed',
+      method: 'GET',
+      headers: {'Authorization': 'Bearer $token'},
+      parse: (response) => json.decode(response.body)['subscribed_areas'],
+    );
+
+    if (response is DataSuccess) {
+      setState(() {
+        subscribedAreas = response.data!;
+      });
+    } else if (response is DataError) {
+      setState(() {
+        errorMessage = '${translate('fetchSubscribedAreasError')}: ${response.error}';
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    fetchSubscribedAreas();
   }
 
   @override
@@ -106,7 +114,7 @@ class _AreasPageState extends State<AreasPage> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: Card(
-                            color: Color(area['color']),
+                            color: Colors.black,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
