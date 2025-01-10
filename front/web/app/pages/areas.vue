@@ -49,6 +49,9 @@
 </template>
 
 <script setup lang="ts">
+import { defineComponent, ref, onMounted } from 'vue'
+import { Areas } from '~/areas/areas'
+import type { AreasInterface } from '~/areas/areasInterface'
 import { useRouter } from '#app'
 import {CookiesEnum, RoutesEnum} from "~/config/constants";
 import { useCookie } from "#app";
@@ -56,15 +59,20 @@ import { useCookie } from "#app";
 const token = useCookie(CookiesEnum.TOKEN.toString()).value
 const config = useRuntimeConfig()
 const router = useRouter()
-const userEmails = ref({})
-const userEmail = ref('')
-const subscribedAreas = ref([])
+
+interface Area {
+  _id: string;
+  action: string;
+  reaction: string;
+}
+
+const subscribedAreas = ref<Area[]>([])
 const newArea = ref({
   action: '',
   reaction: ''
 })
 
-const { data, error } = await useFetch(`${config.public.baseUrlApi}/area/get/all`, {
+const { data, error } = await useFetch<{ areas: Area[] }>(`${config.public.baseUrlApi}/area/get/all`, {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
@@ -74,47 +82,65 @@ const { data, error } = await useFetch(`${config.public.baseUrlApi}/area/get/all
 
 const fetchSubscribedAreas = async () => {
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/get/subscribed`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    })
-    const result = await response.json()
-    subscribedAreas.value = result['subscribed_areas']
+    if (token) {
+      const response = await new Areas().fetchSubscribedAreas(token);
+      subscribedAreas.value = response
+    } else {
+      console.error('Token is not available');
+    }
+    // const response = await fetch(`${config.public.baseUrlApi}/area/get/subscribed`, {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': `Bearer ${token}`,
+    //   },
+    // })
+    // const result = await response.json()
   } catch (error) {
     console.error('Error fetching subscribed areas:', error)
   }
 }
 
-const subscribeUser = async (area_id) => {
+const subscribeUser = async (area_id: string) => {
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/subscribe&area_id=${area_id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    })
-    const result = await response.json()
-    await fetchSubscribedAreas()
+    if (token) {
+      console.log(area_id)
+      const response = await new Areas().subscribeUser(area_id, token);
+      await fetchSubscribedAreas()
+    } else {
+      console.error('Token is not available');
+    }
+  //   const response = await fetch(`${config.public.baseUrlApi}/area/subscribe&area_id=${area_id}`, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': `Bearer ${token}`,
+  //     },
+  //   })
+  //   const result = await response.json()
+  //   await fetchSubscribedAreas()
   } catch (error) {
     console.error('Error subscribing user:', error)
   }
 }
 
-const unsubscribeUser = async (area_id) => {
+const unsubscribeUser = async (area_id: string) => {
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/unsubscribe&area_id=${area_id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      }
-    })
-    const result = await response.json()
-    await fetchSubscribedAreas()
+    if (token) {
+      const response = await new Areas().unsubscribeUser(area_id, token);
+      await fetchSubscribedAreas()
+    } else {
+      console.error('Token is not available');
+    }
+    // const response = await fetch(`${config.public.baseUrlApi}/area/unsubscribe&area_id=${area_id}`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': `Bearer ${token}`,
+    //   }
+    // })
+    // const result = await response.json()
+    // await fetchSubscribedAreas()
   } catch (error) {
     console.error('Error unsubscribing user:', error)
   }
@@ -122,19 +148,24 @@ const unsubscribeUser = async (area_id) => {
 
 const createArea = async () => {
   try {
-    const url = `${config.public.baseUrlApi}/area/create?action=${(newArea.value.action)}&reaction=${(newArea.value.reaction)}`
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      }
-    })
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
+    if (token) {
+      const response = await new Areas().createArea(token, newArea.value.action, newArea.value.reaction);
+    } else {
+      console.error('Token is not available');
     }
-    const result = await response.json()
-    console.log(result.message)
+    // const url = `${config.public.baseUrlApi}/area/create?action=${(newArea.value.action)}&reaction=${(newArea.value.reaction)}`
+    // const response = await fetch(url, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': `Bearer ${token}`,
+    //   }
+    // })
+    // if (!response.ok) {
+    //   throw new Error('Network response was not ok')
+    // }
+    // const result = await response.json()
+    // console.log(result.message)
     // Optionally, fetch the updated list of areas
     // fetchAreas()
   } catch (error) {
