@@ -3,6 +3,8 @@ from enum import Enum
 class Service(Enum):
     AREA = "Area"
     GMAIL = "GMail"
+    DISCORD = "Discord"
+    GITHUB = "Github"
 
 class IAction:
     def __init__(self):
@@ -10,7 +12,7 @@ class IAction:
         self.description = "No description where provided"
         self.service = Service.AREA
 
-    def is_triggered(self, user) -> bool:
+    async def is_triggered(self, user) -> bool:
         if user is None:
             return False
         return True
@@ -21,5 +23,5 @@ class IReaction:
         self.description = "No description where provided"
         self.service = Service.AREA
 
-    def react(self, user):
+    async def react(self, user):
         print(f"IReaction was triggered for user {user['username']}")

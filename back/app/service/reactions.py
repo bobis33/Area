@@ -1,12 +1,11 @@
+import aiohttp
 import base64
 import random
 from email.message import EmailMessage
-
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
 from app.config import Config
-
 from .areaComponents import IReaction, Service
 
 class SendMailReaction(IReaction):
@@ -16,7 +15,7 @@ class SendMailReaction(IReaction):
         self.description = "Send an email from the logged in user to antoine's dm"
         self.service = Service.GMAIL
 
-    def react(self, user):
+    async def react(self, user):
         google_infos = user['external_tokens']['GOOGLE']
 
         creds = Credentials(
@@ -49,3 +48,36 @@ class SendMailReaction(IReaction):
         )
 
         print(f'Message Id: {send_message["id"]}', flush=True)
+
+class RepoCreationReaction(IReaction):
+    def __init__(self):
+        super().__init__()
+        self.name = "Create repo"
+        self.description = "Create a repo on the logged in user's github account"
+        self.service = Service.GMAIL
+
+    async def react(self, user):
+        """Create a private GitHub repository named 'ok'"""
+        try:
+            github_infos = user['external_tokens']['GITHUB']
+            access_token = github_infos["access_token"]
+
+            async with aiohttp.ClientSession() as session:
+                headers = {
+                    'Authorization': f'Bearer {access_token}',
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+                data = {
+                    "name": "area_reaction",
+                    "private": True
+                }
+                async with session.post('https://api.github.com/user/repos', headers=headers, json=data) as response:
+                    if response.status != 201:
+                        raise Exception(f"GitHub API request failed with status {response.status}")
+                    repo_info = await response.json()
+                    print(f"Repository created: {repo_info['html_url']}", flush=True)
+                    return True
+
+        except Exception as error:
+            print(f"An error occurred: {error}", flush=True)
+            return False
