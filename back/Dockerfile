@@ -11,6 +11,6 @@ WORKDIR /app
 COPY --from=build /root/.local /root/.local
 COPY . .
 
-EXPOSE 8081
+EXPOSE 8080
 
 CMD ["python", "run.py"]

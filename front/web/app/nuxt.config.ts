@@ -13,7 +13,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   css: ['~/assets/styles/main.scss'],
   devServer: {
-    port: 8081,
+    port: 8080,
   },
   devtools: { enabled: true },
   i18n: {
@@ -37,7 +37,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      baseUrlApi: 'http://localhost:8081',
+      baseUrlApi: 'http://localhost:8080',
     },
   },
   vite: {
