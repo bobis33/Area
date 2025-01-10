@@ -6,7 +6,6 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:provider/provider.dart';
 
 import '/data/models/data.dart';
-import '/data/sources/storage_service.dart';
 import '/data/sources/request_service.dart';
 import '/presentation/providers/language.dart';
 
@@ -21,34 +20,12 @@ class _CreatePageState extends State<CreatePage> {
   String? errorMessage;
   bool showAreas = true;
 
-  final StorageService _storageService = StorageService();
   final RequestService _requestService = const RequestService();
-
-  Future<void> createArea(String action, String reaction) async {
-    final token = await _storageService.getItem(StorageKeyEnum.authToken.name);
-    final response = await _requestService.makeRequest<bool>(
-      endpoint: '/area/create?action=$action&reaction=$reaction',
-      method: 'POST',
-      headers: {'Authorization': 'Bearer $token'},
-      parse: (response) => response.statusCode == 200,
-    );
-
-    if (response is DataSuccess) {
-
-    } else if (response is DataError) {
-      setState(() {
-        errorMessage = '${translate('subscribeToAreaError')}: ${response.data}';
-      });
-    }
-  }
 
   @override
   void initState() {
     super.initState();
   }
-
-  String action = '';
-  String reaction = '';
 
   @override
   Widget build(BuildContext context) {
@@ -114,11 +91,6 @@ class _CreatePageState extends State<CreatePage> {
                         padding: const EdgeInsets.only(
                           bottom: 16.0, left: 32.0, right: 32.0),
                         child: TextField(
-                          onChanged: (value) {
-                            setState(() {
-                              action = value;
-                            });
-                          },
                           decoration: InputDecoration(
                           hintText: 'Enter action',
                           hintStyle: TextStyle(
@@ -168,11 +140,6 @@ class _CreatePageState extends State<CreatePage> {
                         padding: const EdgeInsets.only(
                           bottom: 16.0, left: 32.0, right: 32.0),
                         child: TextField(
-                          onChanged: (value) {
-                            setState(() {
-                              reaction = value;
-                            });
-                          },
                           decoration: InputDecoration(
                           hintText: 'Enter reaction',
                           hintStyle: TextStyle(
@@ -200,7 +167,7 @@ class _CreatePageState extends State<CreatePage> {
           ),
             floatingActionButton: FloatingActionButton(
             onPressed: () {
-              createArea(action, reaction);
+              // Logic when button is pressed
             },
             backgroundColor: Color(0xFF0F4FC7),
             child: Icon(Icons.done, color: Colors.white),
