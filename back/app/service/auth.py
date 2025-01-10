@@ -28,22 +28,30 @@ async def link_to_google(username, google_token):
     if user is None:
         raise RuntimeError("Couldn't find user")
 
-    google_user = await DAO.find(get_database().google_users,
-                                 "email", google_token.get("userinfo")["email"])
+    google_account = await DAO.find(get_database().google_users,
+                                 "token.access_token", google_token)
 
-    google_user["link_to"] = user["_id"]
-    user["link_to"]["google"] = google_user["_id"]
+    google_account["linked_to"] = user["_id"]
+    user["linked_to"]["google"] = google_account["_id"]
 
-    DAO.update_user(user["username"], user)
-    DAO.update(get_database().google_users,
-               "email", google_token.get("userinfo")["email"], google_user)
+    await DAO.update_user(user["username"], user)
+    await DAO.update(get_database().google_users, "token.access_token", google_token, google_account)
+
+async def is_linked_google_service(token):
+    user = await DAO.find_user_by_username(token)
+    if user is None:
+        return False
+    if "google" in user["linked_to"]:
+        return True
+
+    return False
 
 async def oauth_google_login(google_token):
     user_info = google_token.get("userinfo")
     user_account = await DAO.find(get_database().google_users, "email", user_info["email"])
 
     if user_account is None:
-        await DAO.insert(get_database().google_users, {"email": user_info["email"], "token": google_token, "link_to": None})
+        await DAO.insert(get_database().google_users, {"email": user_info["email"], "token": google_token, "linked_to": None})
 
 async def area_oauth_google_login(google_token):
     user_info = google_token.get("userinfo")

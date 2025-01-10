@@ -13,8 +13,9 @@ from app.service import (
     login_user,
     register_user,
     link_to_google,
+    is_linked_google_service,
     oauth_google_login,
-    area_oauth_google_login
+    area_oauth_google_login,
 )
 
 from app.common import secure_endpoint, TokenManager
@@ -58,10 +59,20 @@ async def register(credentials: Credentials, authorize: AuthJWT = Depends()):
 @secure_endpoint
 async def link_google(google_token, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     try:
-        link_to_google(TokenManager.get_token_subject(token), google_token)
+        await link_to_google(TokenManager.get_token_subject(token), google_token)
         return {"message": "Google account linked successfully"}
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.args) from e
+
+@router.get("/is/linked/google")
+@secure_endpoint
+async def is_linked_google(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    username = TokenManager.get_token_subject(token)
+    response = await is_linked_google_service(username)
+    if response == True:
+        return {"linked": True}
+    else:
+        return {"linked": False}
 
 @router.get("/login/to/google")
 async def get_google_token(request: Request):
@@ -72,7 +83,7 @@ async def get_google_token(request: Request):
 async def google_token_callback(request: Request):
     try:
         google_token = await oauth.google.authorize_access_token(request)
-        oauth_google_login(google_token)
+        await oauth_google_login(google_token)
 
         return RedirectResponse(f"{Config.FRONTEND_URL}/?google_token={google_token}")
     except Exception as e:
