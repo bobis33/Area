@@ -1,44 +1,51 @@
 import base64
-from app.config import Config
-from googleapiclient.discovery import build
-from google.oauth2.credentials import Credentials
+import random
 from email.message import EmailMessage
 
-import random
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 
-async def test_reaction(user):
-    print("Reaction triggered", flush=True)
+from app.config import Config
 
-async def send_email_to_antoine(user):
-    google_infos = user['external_tokens']['GOOGLE']
+from .areaComponents import IReaction, Service
 
-    creds = Credentials(
-        token=google_infos["access_token"],
-        refresh_token=google_infos["refresh_token"],
-        token_uri="https://oauth2.googleapis.com/token",
-        client_id=Config.GOOGLE_CLIENT_ID,
-        client_secret=Config.GOOGLE_CLIENT_SECRET,
-        scopes=["https://www.googleapis.com/auth/gmail.send"]
-    )
+class SendMailReaction(IReaction):
+    def __init__(self):
+        super().__init__()
+        self.name = "Send Mail To Antoine"
+        self.description = "Send an email from the logged in user to antoine's dm"
+        self.service = Service.GMAIL
 
-    service = build("gmail", "v1", credentials=creds)
+    def react(self, user):
+        google_infos = user['external_tokens']['GOOGLE']
 
-    message = EmailMessage()
+        creds = Credentials(
+            token=google_infos["access_token"],
+            refresh_token=google_infos["refresh_token"],
+            token_uri="https://oauth2.googleapis.com/token",
+            client_id=Config.GOOGLE_CLIENT_ID,
+            client_secret=Config.GOOGLE_CLIENT_SECRET,
+            scopes=["https://www.googleapis.com/auth/gmail.send"]
+        )
 
-    message.set_content("passe TS " + str(random.randint(0, 100000000)))
-    message["To"] = "cretace@icloud.com"
-    message["From"] = user["email"]
-    message["Subject"] = "J'ai remarque que tu avais beaucoup de paladium sur toi"
+        service = build("gmail", "v1", credentials=creds)
 
-    encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
-    create_message = {"raw": encoded_message}
+        message = EmailMessage()
 
-    # pylint: disable=E1101
-    send_message = (
-        service.users()
-        .messages()
-        .send(userId="me", body=create_message)
-        .execute()
-    )
+        message.set_content("passe TS " + str(random.randint(0, 100000000)))
+        message["To"] = "cretace@icloud.com"
+        message["From"] = user["email"]
+        message["Subject"] = "J'ai remarque que tu avais beaucoup de paladium sur toi"
 
-    print(f'Message Id: {send_message["id"]}', flush=True)
+        encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
+        create_message = {"raw": encoded_message}
+
+        # pylint: disable=E1101
+        send_message = (
+            service.users()
+            .messages()
+            .send(userId="me", body=create_message)
+            .execute()
+        )
+
+        print(f'Message Id: {send_message["id"]}', flush=True)
