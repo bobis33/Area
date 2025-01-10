@@ -88,14 +88,6 @@ const fetchSubscribedAreas = async () => {
     } else {
       console.error('Token is not available');
     }
-    // const response = await fetch(`${config.public.baseUrlApi}/area/get/subscribed`, {
-    //   method: 'GET',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${token}`,
-    //   },
-    // })
-    // const result = await response.json()
   } catch (error) {
     console.error('Error fetching subscribed areas:', error)
   }
@@ -110,15 +102,6 @@ const subscribeUser = async (area_id: string) => {
     } else {
       console.error('Token is not available');
     }
-  //   const response = await fetch(`${config.public.baseUrlApi}/area/subscribe&area_id=${area_id}`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': `Bearer ${token}`,
-  //     },
-  //   })
-  //   const result = await response.json()
-  //   await fetchSubscribedAreas()
   } catch (error) {
     console.error('Error subscribing user:', error)
   }
@@ -132,15 +115,6 @@ const unsubscribeUser = async (area_id: string) => {
     } else {
       console.error('Token is not available');
     }
-    // const response = await fetch(`${config.public.baseUrlApi}/area/unsubscribe&area_id=${area_id}`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${token}`,
-    //   }
-    // })
-    // const result = await response.json()
-    // await fetchSubscribedAreas()
   } catch (error) {
     console.error('Error unsubscribing user:', error)
   }
@@ -153,21 +127,6 @@ const createArea = async () => {
     } else {
       console.error('Token is not available');
     }
-    // const url = `${config.public.baseUrlApi}/area/create?action=${(newArea.value.action)}&reaction=${(newArea.value.reaction)}`
-    // const response = await fetch(url, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${token}`,
-    //   }
-    // })
-    // if (!response.ok) {
-    //   throw new Error('Network response was not ok')
-    // }
-    // const result = await response.json()
-    // console.log(result.message)
-    // Optionally, fetch the updated list of areas
-    // fetchAreas()
   } catch (error) {
     console.error('Error creating area:', error)
   }
