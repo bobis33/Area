@@ -1,20 +1,23 @@
 # pylint: disable=no-name-in-module
 # pylint: disable=no-self-argument
 from fastapi import APIRouter, Depends, HTTPException, status
-from authlib.integrations.starlette_client import OAuth
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from starlette.requests import Request
-from fastapi_jwt_auth import AuthJWT
-from pydantic import BaseModel
 from fastapi.responses import RedirectResponse
+from fastapi_jwt_auth import AuthJWT
+from authlib.integrations.starlette_client import OAuth
+from starlette.requests import Request
+from pydantic import BaseModel
 
-import datetime
-
-from app.service import login_user, register_user
 from app.config import Config
-from app.database import DAO, get_database
+from app.service import (
+    login_user,
+    register_user,
+    link_to_google,
+    oauth_google_login,
+    area_oauth_google_login
+)
 
-from app.common import secure_endpoint, TokenManager, NameGenerator
+from app.common import secure_endpoint, TokenManager
 
 
 router = APIRouter()
@@ -54,21 +57,11 @@ async def register(credentials: Credentials, authorize: AuthJWT = Depends()):
 @router.post('/link/google')
 @secure_endpoint
 async def link_google(google_token, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
-    username = TokenManager.get_token_subject(token)
-    user = await DAO.find_user_by_username(username)
-
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    google_user = await DAO.find(get_database().google_users, "email", google_token.get("userinfo")["email"])
-
-    google_user["link_to"] = user["_id"]
-    user["link_to"]["google"] = google_user["_id"]
-
-    DAO.update_user(user["username"], user)
-    DAO.update(get_database().google_users, "email", google_token.get("userinfo")["email"], google_user)
-
-    return {"message": "Google account linked successfully"}
+    try:
+        link_to_google(TokenManager.get_token_subject(token), google_token)
+        return {"message": "Google account linked successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.args) from e
 
 @router.get("/login/to/google")
 async def get_google_token(request: Request):
@@ -79,17 +72,13 @@ async def get_google_token(request: Request):
 async def google_token_callback(request: Request):
     try:
         google_token = await oauth.google.authorize_access_token(request)
-        user_info = google_token.get("userinfo")
-        user_account = await DAO.find(get_database().google_users, "email", user_info["email"])
-
-        if user_account is None:
-            user_account = await DAO.insert(get_database().google_users, {"email": user_info["email"], "token": google_token, "link_to": None})
+        oauth_google_login(google_token)
 
         return RedirectResponse(f"{Config.FRONTEND_URL}/?google_token={google_token}")
     except Exception as e:
+        print("Exception occured:", e, flush=True)
         return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
 
-# Google OAuth
 @router.get("/login/with/google")
 async def login_google(request: Request):
     redirect_uri = request.url_for('google_callback')
@@ -99,31 +88,11 @@ async def login_google(request: Request):
 async def google_callback(request: Request, authorize: AuthJWT = Depends()):
     try:
         google_token = await oauth.google.authorize_access_token(request)
-        user_info = google_token.get("userinfo")
-
-        google_account = await DAO.find(get_database().google_users, "email", user_info["email"])
-        linked_account = None
-
-        if google_account is None:
-            await DAO.insert(get_database().google_users, {"email": user_info["email"], "token": google_token, "linked_to": None})
-            google_account = await DAO.find(get_database().google_users, "email", user_info["email"])
-
-        elif "google" in google_account["linked_to"]:
-            linked_account = await DAO.find(get_database().users, "_id", google_account["linked_to"]["google"])
-
-        if linked_account is None:
-            username = NameGenerator.generate_username_from_email(user_info["email"])
-            await DAO.insert(get_database().users, {"username": username, "password": None, "email": user_info["email"], "subscribed_areas": [],
-                                                      "created_at": datetime.datetime.now(), "updated_at": datetime.datetime.now(),
-                                                      "linked_to": {"google" : google_account["_id"]}})
-            linked_account = await DAO.find_user_by_username(username)
-            google_account["linked_to"] = linked_account["_id"]
-            await DAO.update(get_database().google_users, "email", user_info["email"], google_account)
-
-        access_token = authorize.create_access_token(subject=linked_account.username)
+        access_token = authorize.create_access_token(area_oauth_google_login(google_token))
 
         return RedirectResponse(f"{Config.FRONTEND_URL}/?token={access_token}")
     except Exception as e:
+        print("Exception occured:", e, flush=True)
         return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
 
 @router.get('/me', response_model=dict)

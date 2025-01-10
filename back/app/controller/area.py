@@ -1,53 +1,47 @@
+from inspect import getmembers
+
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPAuthorizationCredentials
-from inspect import getmembers, isfunction
 
 from app.database import DAO
-from app.service import actions, reactions
 from app.common import secure_endpoint, auth_scheme, TokenManager
+from app.service import (
+    get_actions_service,
+    get_reactions_service
+)
 
 
 router = APIRouter()
 
-@router.get('/get/actions', response_model=dict)
+@router.get('/get/actions')
 @secure_endpoint
 async def get_actions(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     result = []
-
-    functions = getmembers(actions, isfunction)
-    for function in functions:
-        if function[0] == "build":
-            continue
-
-        if function[0][0] == "_":
-            continue
-
+    
+    actions = await get_actions_service()
+    for action in actions:
         result.append({
-            "name": function[0],
-            "description": function[1].__doc__  # Access the function object (function[1]) and get its __doc__
+            "name": action.name,
+            "description": action.description,
+            "service": action.service.value
         })
 
     return {"actions": result}
 
-@router.get('/get/reactions', response_model=dict)
+@router.get('/get/reactions')
 @secure_endpoint
 async def get_reactions(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     result = []
 
-    functions = getmembers(reactions, isfunction)
-    for function in functions:
-        if function[0] == "build":
-            continue
-
-        if function[0][0] == "_":
-            continue
-
+    reactions = await get_reactions_service()
+    for reaction in reactions:
         result.append({
-            "name": function[0],
-            "description": function[1].__doc__  # Access the function object (function[1]) and get its __doc__
+            "name": reaction.name,
+            "description": reaction.description,
+            "service": reaction.service.value
         })
 
-    return {"actions": result}
+    return {"reactions": result}
 
 # pylint: disable=unused-argument
 @router.get('/get/subscribed', response_model=dict)
