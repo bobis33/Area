@@ -7,7 +7,6 @@ import '../presentation/pages/browse.dart';
 import '/config/constants.dart';
 import '/presentation/layouts/navbar.dart';
 import '/presentation/pages/areas.dart';
-import '/presentation/pages/home.dart';
 import '/presentation/pages/login.dart';
 import '/presentation/pages/profile.dart';
 import '/presentation/pages/register.dart';
@@ -25,11 +24,6 @@ final router = GoRouter(
       name: RouteEnum.areas.name,
       path: '/areas',
       builder: (context, state) => MainLayout(child: AreasPage()),
-    ),
-    GoRoute(
-      name: RouteEnum.home.name,
-      path: '/home',
-      builder: (context, state) => MainLayout(child: HomePage()),
     ),
     GoRoute(
       name: RouteEnum.login.name,
