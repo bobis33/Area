@@ -186,16 +186,33 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF272727),
+      appBar: AppBar(
+        title: Text(
+          'My Account',
+          style: TextStyle(
+            fontFamily: 'IstokWeb',
+            fontWeight: FontWeight.bold,
+            fontSize: 30,
+            color: Colors.white,
+          ),
+        ),
+        centerTitle: true,
+        toolbarHeight: 80,
+        backgroundColor: Color(0xFF343434),
+      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Stack(
               children: [
-                CircleAvatar(
-                  radius: 60,
-                  backgroundImage: AssetImage('assets/images/default_avatar.png'), // Replace with user avatar
-                  backgroundColor: Colors.grey[300],
+                Padding (padding: const EdgeInsets.only(top: 32.0), child:
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundImage: AssetImage('assets/images/default_avatar.png'), // Replace with user avatar
+                    backgroundColor: Colors.grey[300],
+                  ),
                 ),
                 Positioned(
                   bottom: 0,
@@ -239,40 +256,42 @@ class _ProfilePageState extends State<ProfilePage> {
                   label: translate('passwordConfirmation'),
                   obscureText: true,
                 ),
+                const SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed: _submitChanges,
-                  child: Text(translate('submit')),
+                  onPressed: () async => {
+                  await StorageService().clearItem(StorageKeyEnum.authToken.name),
+                  snackBar(context, translate('logoutSuccess'), Theme.of(context).colorScheme.secondary),
+                  context.go(context.namedLocation(RouteEnum.root.name)),
+                  },
+                  style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      translate('Disconnect'),
+                      style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
-          ElevatedButton(
-            onPressed: () async => {
-              await StorageService().clearItem(StorageKeyEnum.authToken.name),
-              snackBar(context, translate('logoutSuccess'), Theme.of(context).colorScheme.secondary),
-              context.go(context.namedLocation(RouteEnum.root.name)),
-            },
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                translate('logout'),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ),
         ],
       ),
-      )
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _submitChanges,
+        backgroundColor: Color(0xFF0F4FC7),
+        child: Icon(Icons.done, color: Colors.white),
+      ),
     );
   }
 }
