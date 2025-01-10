@@ -18,7 +18,7 @@ services:
     volumes:
       - ./back:/app
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
       - PATH=/root/.local:$PATH
       - MONGO_URI=mongodb://mongo:27017/area

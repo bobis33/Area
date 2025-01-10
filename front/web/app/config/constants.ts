@@ -12,7 +12,6 @@ export enum LanguagesEnum {
 export enum RoutesEnum {
     ABOUT = '/about',
     AREAS = '/areas',
-    HOME = '/home',
     LOGIN = '/login',
     REGISTER = '/register',
 }

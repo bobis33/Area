@@ -37,7 +37,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      baseUrlApi: 'http://localhost:8080',
+      baseUrlApi: 'http://localhost:8081',
     },
   },
   vite: {
