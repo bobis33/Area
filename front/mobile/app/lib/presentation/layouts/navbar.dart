@@ -42,18 +42,21 @@ class _MainLayoutState extends State<MainLayout> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      body: widget.child, // Render the current page from GoRouter
+      body: widget.child,
       bottomNavigationBar: Container(
         height: 110,
-        color: const Color(0xFF1A1A1A),
+        color: theme.colorScheme.surface,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: BottomNavigationBar(
-            unselectedItemColor: const Color(0xFF646464),
-            selectedItemColor: _selectedIndex == null ? const Color(0xFF646464) : const Color(0xFF0084FF),
-            backgroundColor: const Color(0xFF1A1A1A),
-            currentIndex: _selectedIndex ?? 0, // Default to 0 for rendering but no button visually highlighted
+            elevation: 0,
+            unselectedItemColor: theme.colorScheme.tertiary,
+            selectedItemColor: _selectedIndex == null ? theme.colorScheme.tertiary : theme.colorScheme.primary,
+            backgroundColor: Colors.transparent,
+            currentIndex: _selectedIndex ?? 0,
             onTap: _onItemTapped,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
@@ -76,7 +79,7 @@ class _MainLayoutState extends State<MainLayout> {
               ),
             ],
             selectedLabelStyle: _selectedIndex == null
-                ? const TextStyle(color: Colors.transparent) // Hide label when no selection
+                ? const TextStyle(color: Colors.transparent)
                 : const TextStyle(fontSize: 16),
           ),
         ),

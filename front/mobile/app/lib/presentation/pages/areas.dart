@@ -60,10 +60,12 @@ class _AreasPageState extends State<AreasPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
         return Scaffold(
-          backgroundColor: Color(0xFF272727),
+          backgroundColor: theme.colorScheme.surfaceTint,
           appBar: AppBar(
             title: Text(
               'My AREAS',
@@ -71,17 +73,17 @@ class _AreasPageState extends State<AreasPage> {
                 fontFamily: 'IstokWeb',
                 fontWeight: FontWeight.bold,
                 fontSize: 30,
-                color: Colors.white,
+                color: theme.colorScheme.onSurface,
               ),
             ),
             centerTitle: true,
             toolbarHeight: 80,
-            backgroundColor: Color(0xFF343434),
+            backgroundColor: theme.colorScheme.surfaceContainerHighest,
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),
                 child: IconButton(
-                  icon: Icon(Icons.account_circle, color: Colors.white, size: 30),
+                  icon: Icon(Icons.account_circle, color: theme.colorScheme.onSurface, size: 30),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -101,7 +103,7 @@ class _AreasPageState extends State<AreasPage> {
                   if (errorMessage != null) ...[
                     Text(
                       errorMessage!,
-                      style: TextStyle(color: Colors.red),
+                      style: TextStyle(color: theme.colorScheme.error),
                     ),
                   ] else ...[
                     ListView.builder(
@@ -119,7 +121,7 @@ class _AreasPageState extends State<AreasPage> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             elevation: 10,
-                            shadowColor: Colors.black,
+                            shadowColor: theme.colorScheme.shadow,
                             child: ListTile(
                               title: Padding(
                                 padding: const EdgeInsets.only(
@@ -160,18 +162,18 @@ class _AreasPageState extends State<AreasPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: Card(
-                      color: Color(0xFF1F1F1F),
+                      color: theme.colorScheme.surface,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                       elevation: 10,
-                      shadowColor: Colors.black,
+                      shadowColor: theme.colorScheme.shadow,
                       child: ListTile(
                         leading: Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Icon(
                             Icons.add,
-                            color: Color(0xFF8E8E8E),
+                            color: theme.colorScheme.tertiary,
                             size: 40,
                           ),
                         ),
@@ -181,7 +183,7 @@ class _AreasPageState extends State<AreasPage> {
                           child: Text(
                             'Create New Area',
                             style: TextStyle(
-                              color: Color(0xFF8E8E8E),
+                              color: theme.colorScheme.tertiary,
                               fontFamily: 'IstokWeb',
                               fontWeight: FontWeight.bold,
                               fontSize: 20,

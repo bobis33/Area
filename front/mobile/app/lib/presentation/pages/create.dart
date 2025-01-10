@@ -52,10 +52,12 @@ class _CreatePageState extends State<CreatePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
         return Scaffold(
-          backgroundColor: Color(0xFF272727),
+          backgroundColor: theme.colorScheme.surfaceTint,
           appBar: AppBar(
             title: Text(
               'Create AREA',
@@ -63,17 +65,17 @@ class _CreatePageState extends State<CreatePage> {
                 fontFamily: 'IstokWeb',
                 fontWeight: FontWeight.bold,
                 fontSize: 30,
-                color: Colors.white,
+                color: theme.colorScheme.onSurface,
               ),
             ),
             centerTitle: true,
             toolbarHeight: 80,
-            backgroundColor: Color(0xFF343434),
+            backgroundColor: theme.colorScheme.surfaceContainerHighest,
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),
                 child: IconButton(
-                  icon: Icon(Icons.account_circle, color: Colors.white, size: 30),
+                  icon: Icon(Icons.account_circle, color: theme.colorScheme.onSurface, size: 30),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -95,7 +97,7 @@ class _CreatePageState extends State<CreatePage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     elevation: 10,
-                    shadowColor: Colors.black,
+                    shadowColor: theme.colorScheme.shadow,
                     child: ListTile(
                       title: Padding(
                         padding: const EdgeInsets.only(
@@ -202,7 +204,7 @@ class _CreatePageState extends State<CreatePage> {
             onPressed: () {
               createArea(action, reaction);
             },
-            backgroundColor: Color(0xFF0F4FC7),
+            backgroundColor: theme.colorScheme.primary,
             child: Icon(Icons.done, color: Colors.white),
             ),
         );

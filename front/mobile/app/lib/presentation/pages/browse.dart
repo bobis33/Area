@@ -99,10 +99,12 @@ class _BrowsePageState extends State<BrowsePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Consumer<LanguageProvider>(
       builder: (context, languageProvider, child) {
         return Scaffold(
-          backgroundColor: Color(0xFF272727),
+          backgroundColor: theme.colorScheme.surfaceTint,
           appBar: AppBar(
             title: Text(
               'Shared AREAS',
@@ -110,17 +112,17 @@ class _BrowsePageState extends State<BrowsePage> {
                 fontFamily: 'IstokWeb',
                 fontWeight: FontWeight.bold,
                 fontSize: 30,
-                color: Colors.white,
+                color: theme.colorScheme.onSurface,
               ),
             ),
             centerTitle: true,
             toolbarHeight: 80,
-            backgroundColor: Color(0xFF343434),
+            backgroundColor: theme.colorScheme.surfaceContainerHighest,
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 16.0),
                 child: IconButton(
-                  icon: Icon(Icons.account_circle, color: Colors.white, size: 30),
+                  icon: Icon(Icons.account_circle, color: theme.colorScheme.onSurface, size: 30),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -145,23 +147,23 @@ class _BrowsePageState extends State<BrowsePage> {
                         controller: _searchController,
                         decoration: InputDecoration(
                           hintText: 'Search by name or service',
-                          hintStyle: TextStyle(color: Colors.white54),
-                          prefixIcon: Icon(Icons.search, color: Colors.white54),
+                          hintStyle: TextStyle(color: theme.colorScheme.outline),
+                          prefixIcon: Icon(Icons.search, color: theme.colorScheme.outline),
                           filled: true,
-                          fillColor: Color(0xFF343434),
+                          fillColor: theme.colorScheme.surfaceContainerHighest,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none,
                           ),
                         ),
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: theme.colorScheme.onSurface),
                       ),
                   ),
                   SizedBox(height: 16),
                   if (errorMessage != null) ...[
                     Text(
                       errorMessage!,
-                      style: TextStyle(color: Colors.red),
+                      style: TextStyle(color: theme.colorScheme.error),
                     ),
                   ] else ...[
                     ListView.builder(
@@ -181,7 +183,7 @@ class _BrowsePageState extends State<BrowsePage> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             elevation: 10,
-                            shadowColor: Colors.black,
+                            shadowColor: theme.colorScheme.shadow,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
@@ -220,7 +222,7 @@ class _BrowsePageState extends State<BrowsePage> {
                                 Container(
                                   padding: const EdgeInsets.all(8.0),
                                   decoration: BoxDecoration(
-                                    color: Color(0xFF343434),
+                                    color: theme.colorScheme.surfaceContainerHighest,
                                     borderRadius: BorderRadius.only(
                                       bottomLeft: Radius.circular(10),
                                       bottomRight: Radius.circular(10),
@@ -229,12 +231,12 @@ class _BrowsePageState extends State<BrowsePage> {
                                   child: Row(
                                     children: [
                                       Icon(Icons.download_rounded,
-                                        color: Colors.white, size: 30),
+                                        color: theme.colorScheme.onSurface, size: 30),
                                       SizedBox(width: 10),
                                       Text(
                                       area['subscribed_users'].length.toString(),
                                       style: TextStyle(
-                                        color: Colors.white,
+                                        color: theme.colorScheme.onSurface,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: 'IstokWeb',
                                         fontSize: 18,
@@ -242,7 +244,7 @@ class _BrowsePageState extends State<BrowsePage> {
                                       ),
                                       Spacer(),
                                       IconButton(
-                                      icon: Icon(Icons.add, color: Colors.white, size: 30),
+                                      icon: Icon(Icons.add, color: theme.colorScheme.onSurface, size: 30),
                                       onPressed: () {
                                         subscribeToArea(area['_id']);
                                       },

@@ -27,8 +27,8 @@ Future<void> main() async {
         ChangeNotifierProvider(
           create: (_) => ThemeProvider(
             (savedTheme ?? 'light') == 'dark'
-                ? darkTheme
-                : lightTheme,
+                ? lightTheme
+                : darkTheme,
           ),
         ),
         ChangeNotifierProvider(

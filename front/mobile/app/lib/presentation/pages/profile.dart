@@ -185,8 +185,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Color(0xFF272727),
+      backgroundColor: theme.colorScheme.surfaceTint,
       appBar: AppBar(
         title: Text(
           'My Account',
@@ -194,12 +195,12 @@ class _ProfilePageState extends State<ProfilePage> {
             fontFamily: 'IstokWeb',
             fontWeight: FontWeight.bold,
             fontSize: 30,
-            color: Colors.white,
+            color: theme.colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
         toolbarHeight: 80,
-        backgroundColor: Color(0xFF343434),
+        backgroundColor: theme.colorScheme.surfaceContainerHighest,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -211,7 +212,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   CircleAvatar(
                     radius: 60,
                     backgroundImage: AssetImage('assets/images/default_avatar.png'), // Replace with user avatar
-                    backgroundColor: Colors.grey[300],
+                    backgroundColor: theme.colorScheme.surface,
                   ),
                 ),
                 Positioned(
@@ -220,9 +221,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: GestureDetector(
                     onTap: _changeAvatar,
                     child: CircleAvatar(
-                      backgroundColor: Theme.of(context).primaryColor,
+                      backgroundColor: theme.colorScheme.primary,
                       radius: 20,
-                      child: const Icon(Icons.edit, color: Colors.white, size: 18),
+                      child: Icon(Icons.edit, color: Colors.white, size: 18),
                     ),
                   ),
                 ),
@@ -289,7 +290,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _submitChanges,
-        backgroundColor: Color(0xFF0F4FC7),
+        backgroundColor: theme.colorScheme.primary,
         child: Icon(Icons.done, color: Colors.white),
       ),
     );
