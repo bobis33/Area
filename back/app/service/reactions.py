@@ -1,45 +1,83 @@
+import aiohttp
 import base64
-from app.config import Config
-from googleapiclient.discovery import build
-from google.oauth2.credentials import Credentials
-from email.message import EmailMessage
-
 import random
+from email.message import EmailMessage
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 
-async def test_reaction(user):
-    print("Reaction triggered", flush=True)
+from app.config import Config
+from .areaComponents import IReaction, Service
 
-async def send_email_to_antoine(user):
-    google_infos = user['external_tokens']['GOOGLE']
+class SendMailReaction(IReaction):
+    def __init__(self):
+        super().__init__()
+        self.name = "Send Mail To Antoine"
+        self.description = "Send an email from the logged in user to antoine's dm"
+        self.service = Service.GMAIL
 
-    creds = Credentials(
-        token=google_infos["access_token"],
-        refresh_token=google_infos["refresh_token"],
-        token_uri="https://oauth2.googleapis.com/token",
-        client_id=Config.GOOGLE_CLIENT_ID,
-        client_secret=Config.GOOGLE_CLIENT_SECRET,  # Replace with your actual client secret
-        scopes=["https://www.googleapis.com/auth/gmail.send"]
-    )
+    async def react(self, user):
+        google_infos = user['external_tokens']['GOOGLE']
 
-    # Build Gmail service
-    service = build("gmail", "v1", credentials=creds)
+        creds = Credentials(
+            token=google_infos["access_token"],
+            refresh_token=google_infos["refresh_token"],
+            token_uri="https://oauth2.googleapis.com/token",
+            client_id=Config.GOOGLE_CLIENT_ID,
+            client_secret=Config.GOOGLE_CLIENT_SECRET,
+            scopes=["https://www.googleapis.com/auth/gmail.send"]
+        )
 
-    message = EmailMessage()
+        service = build("gmail", "v1", credentials=creds)
 
-    message.set_content("passe TS " + str(random.randint(0, 100000000)))
-    message["To"] = "cretace@icloud.com"
-    message["From"] = user["email"]
-    message["Subject"] = "J'ai remarque que tu avais beaucoup de paladium sur toi"
+        message = EmailMessage()
 
-    encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
-    create_message = {"raw": encoded_message}
+        message.set_content("passe TS " + str(random.randint(0, 100000000)))
+        message["To"] = "cretace@icloud.com"
+        message["From"] = user["email"]
+        message["Subject"] = "J'ai remarque que tu avais beaucoup de paladium sur toi"
 
-    # pylint: disable=E1101
-    send_message = (
-        service.users()
-        .messages()
-        .send(userId="me", body=create_message)
-        .execute()
-    )
+        encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
+        create_message = {"raw": encoded_message}
 
-    print(f'Message Id: {send_message["id"]}', flush=True)
+        # pylint: disable=E1101
+        send_message = (
+            service.users()
+            .messages()
+            .send(userId="me", body=create_message)
+            .execute()
+        )
+
+        print(f'Message Id: {send_message["id"]}', flush=True)
+
+class RepoCreationReaction(IReaction):
+    def __init__(self):
+        super().__init__()
+        self.name = "Create repo"
+        self.description = "Create a repo on the logged in user's github account"
+        self.service = Service.GMAIL
+
+    async def react(self, user):
+        """Create a private GitHub repository named 'ok'"""
+        try:
+            github_infos = user['external_tokens']['GITHUB']
+            access_token = github_infos["access_token"]
+
+            async with aiohttp.ClientSession() as session:
+                headers = {
+                    'Authorization': f'Bearer {access_token}',
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+                data = {
+                    "name": "area_reaction",
+                    "private": True
+                }
+                async with session.post('https://api.github.com/user/repos', headers=headers, json=data) as response:
+                    if response.status != 201:
+                        raise Exception(f"GitHub API request failed with status {response.status}")
+                    repo_info = await response.json()
+                    print(f"Repository created: {repo_info['html_url']}", flush=True)
+                    return True
+
+        except Exception as error:
+            print(f"An error occurred: {error}", flush=True)
+            return False

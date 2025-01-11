@@ -1,18 +1,24 @@
 # pylint: disable=no-name-in-module
 # pylint: disable=no-self-argument
 from fastapi import APIRouter, Depends, HTTPException, status
-from authlib.integrations.starlette_client import OAuth
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from starlette.requests import Request
-from fastapi_jwt_auth import AuthJWT
-from pydantic import BaseModel
 from fastapi.responses import RedirectResponse
+from fastapi_jwt_auth import AuthJWT
+from authlib.integrations.starlette_client import OAuth
+from starlette.requests import Request
+from pydantic import BaseModel
 
-from app.service import login_user, register_user
 from app.config import Config
-from app.database import DAO
+from app.service import (
+    login_user,
+    register_user,
+    link_to_google,
+    oauth_google_login,
+    area_oauth_google_login
+)
 
-from app.common import secure_endpoint
+from app.common import secure_endpoint, TokenManager
+
 
 router = APIRouter()
 auth_scheme = HTTPBearer()
@@ -48,30 +54,46 @@ async def register(credentials: Credentials, authorize: AuthJWT = Depends()):
 
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="username already exists")
 
-# Google OAuth
-@router.get("/login/google")
+@router.post('/link/google')
+@secure_endpoint
+async def link_google(google_token, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    try:
+        link_to_google(TokenManager.get_token_subject(token), google_token)
+        return {"message": "Google account linked successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.args) from e
+
+@router.get("/login/to/google")
+async def get_google_token(request: Request):
+    redirect_uri = request.url_for('google_token_callback')
+    return await oauth.google.authorize_redirect(request, redirect_uri, access_type="offline", prompt="consent")
+
+@router.get("/login/to/google/callback", include_in_schema=False)
+async def google_token_callback(request: Request):
+    try:
+        google_token = await oauth.google.authorize_access_token(request)
+        oauth_google_login(google_token)
+
+        return RedirectResponse(f"{Config.FRONTEND_URL}/?google_token={google_token}")
+    except Exception as e:
+        print("Exception occured:", e, flush=True)
+        return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
+
+@router.get("/login/with/google")
 async def login_google(request: Request):
     redirect_uri = request.url_for('google_callback')
     return await oauth.google.authorize_redirect(request, redirect_uri, access_type="offline", prompt="consent")
 
-@router.get("/google/callback", include_in_schema=False)
+@router.get("/login/with/google/callback", include_in_schema=False)
 async def google_callback(request: Request, authorize: AuthJWT = Depends()):
     try:
         google_token = await oauth.google.authorize_access_token(request)
-        user_info = google_token.get("userinfo")
-        user_email = user_info["email"]
+        access_token = authorize.create_access_token(area_oauth_google_login(google_token))
 
-        access_token = authorize.create_access_token(subject=user_email)
-        user = await DAO.find_user_by_email(user_email)
-        user["external_tokens"]["GOOGLE"] = google_token
-        await DAO.update_user(user_email, user)
-
-        frontend_url = request.client.host
-        return RedirectResponse(f"{frontend_url}/?token={access_token}")
+        return RedirectResponse(f"{Config.FRONTEND_URL}/?token={access_token}")
     except Exception as e:
-        print(e, flush=True)
-        frontend_url = request.client.host
-        return RedirectResponse(f"{frontend_url}/?error=OAuthFailed")
+        print("Exception occured:", e, flush=True)
+        return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
 
 @router.get('/me', response_model=dict)
 @secure_endpoint

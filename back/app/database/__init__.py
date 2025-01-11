@@ -1,1 +1,1 @@
-from .Dao import DAO
+from .Dao import DAO, get_database
