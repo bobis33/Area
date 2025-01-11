@@ -6,8 +6,10 @@ import '/config/constants.dart';
 import '/data/models/data.dart';
 import '/data/models/user.dart';
 import '/data/repositories/user.dart';
+import '/data/sources/request_service.dart';
 import '/data/sources/storage_service.dart';
 import '/domain/use-cases/user.dart';
+import '/presentation/widgets/oauth_link_button.dart';
 import '/presentation/widgets/text_field.dart';
 import '/presentation/widgets/snack_bar.dart';
 
@@ -31,7 +33,34 @@ class _ProfilePageState extends State<ProfilePage> {
     _initializeUserData();
   }
 
-  void _initializeUserData() async {
+  Future<void> linkToGoogle(BuildContext context, String googleToken) async {
+    const String endpoint = '/auth/link/google';
+    final _requestService = RequestService();
+    final _storageService = StorageService();
+    final token = await _storageService.getItem(StorageKeyEnum.authToken.name);
+
+    try {
+      final response = await _requestService.makeRequest<String>(
+        endpoint: '$endpoint?google_token=$googleToken',
+        method: 'POST',
+        parse: (response) => response.body,
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response is DataSuccess) {
+        snackBar(context, translate('linkGoogleSuccess'), Theme.of(context).colorScheme.secondary);
+      } else if (response is DataError) {
+        snackBar(context, response.error ?? translate('anErrorOccurred'), Theme.of(context).colorScheme.error);
+      }
+    } catch (error) {
+      debugPrint('Erreur lors de la requête: $error');
+    }
+  }
+  Future<void> linkToDiscord(BuildContext context, String googleToken) async {}
+  Future<void> linkToGithub(BuildContext context, String googleToken) async {}
+  Future<void> linkToMicrosoft(BuildContext context, String googleToken) async {}
+
+    void _initializeUserData() async {
     await _loadUserData();
     setState(() {
       _usernameController.text = _initialUsername;
@@ -213,6 +242,66 @@ class _ProfilePageState extends State<ProfilePage> {
                 ElevatedButton(
                   onPressed: _submitChanges,
                   child: Text(translate('submit')),
+                ),
+                OauthLinkButton(
+                  iconUrl: '$apiUrl/assets/discord.png',
+                  text: translate('linkDiscord'),
+                  authUrl: '$apiUrl/auth/login/to/discord',
+                  callbackUrlScheme: 'myapp',
+                  onAuthSuccess: linkToDiscord,
+                  backgroundColor: Colors.purple
+                ),
+                const SizedBox(height: 16),
+                OauthLinkButton(
+                  iconUrl: '$apiUrl/assets/github.png',
+                  text: translate('linkGithub'),
+                  authUrl: '$apiUrl/auth/login/to/github',
+                  callbackUrlScheme: 'myapp',
+                  onAuthSuccess: linkToGithub,
+                  backgroundColor: Colors.white24,
+                ),
+                const SizedBox(height: 16),
+                OauthLinkButton(
+                  iconUrl: '$apiUrl/assets/google.png',
+                  text: translate('linkGoogle'),
+                  authUrl: '$apiUrl/auth/login/to/google',
+                  callbackUrlScheme: 'myapp',
+                  onAuthSuccess: linkToGoogle,
+                  backgroundColor: Colors.blueAccent,
+                ),
+                const SizedBox(height: 16),
+                OauthLinkButton(
+                  iconUrl: '$apiUrl/assets/microsoft.png',
+                  text: translate('linkMicrosoft'),
+                  authUrl: '$apiUrl/auth/login/to/microsoft',
+                  callbackUrlScheme: 'myapp',
+                  onAuthSuccess: linkToMicrosoft,
+                  backgroundColor: Colors.green,
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () async => {
+                    await StorageService().clearItem(StorageKeyEnum.authToken.name),
+                    snackBar(context, translate('logoutSuccess'), Theme.of(context).colorScheme.secondary),
+                    context.go(context.namedLocation(RouteEnum.root.name)),
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    backgroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      translate('logout'),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

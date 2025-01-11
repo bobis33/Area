@@ -85,11 +85,6 @@ class MainLayout extends StatelessWidget {
                 ),
                 if (user is DataSuccess<User>) ...[
                   ListTile(
-                    leading: const Icon(Icons.home),
-                    title: Text(translate('home')),
-                    onTap: () => context.go(context.namedLocation(RouteEnum.home.name)),
-                  ),
-                  ListTile(
                     leading: const Icon(Icons.device_hub),
                     title: Text(translate('areas')),
                     onTap: () => context.go(context.namedLocation(RouteEnum.areas.name)),

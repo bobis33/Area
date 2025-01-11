@@ -13,7 +13,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     }
 
     if (token && isPublicRoute) {
-        return window.location.href = RoutesEnum.HOME.toString()
+        return window.location.href = RoutesEnum.AREAS.toString()
     }
 
     if (token) {

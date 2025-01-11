@@ -1,6 +1,5 @@
 <template>
   <div>
-      <button @click="router.push(RoutesEnum.HOME.toString())" class="btn-back-home">{{ $t('goBackHome') }}</button>
     <h1>{{ $t('allAreas') }}</h1>
     <div v-if="data && data.areas.length">
       <ul>
@@ -49,15 +48,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Areas } from '~/infrastructure/repositories/AreaRepository'
-import { useRouter } from '#app'
-import {CookiesEnum, RoutesEnum} from "~/config/constants";
-import { useCookie } from "#app";
+import {ref} from 'vue'
+import {useCookie} from '#app'
+
+import {CookiesEnum} from "~/config/constants";
+import {Areas} from '~/infrastructure/repositories/AreaRepository'
 
 const token = useCookie(CookiesEnum.TOKEN.toString()).value
 const config = useRuntimeConfig()
-const router = useRouter()
 
 interface Area {
   _id: string;
@@ -82,8 +80,7 @@ const { data, error } = await useFetch<{ areas: Area[] }>(`${config.public.baseU
 const fetchSubscribedAreas = async () => {
   try {
     if (token) {
-      const response = await new Areas().fetchSubscribedAreas(token);
-      subscribedAreas.value = response
+      subscribedAreas.value = await new Areas().fetchSubscribedAreas(token)
     } else {
       console.error('Token is not available');
     }
@@ -133,14 +130,4 @@ const createArea = async () => {
 </script>
 
 <style scoped lang="scss">
-.btn-back-home {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 14px;
-  margin-top: 20px;
-}
 </style>

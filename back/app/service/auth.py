@@ -31,6 +31,9 @@ async def link_to_google(username, google_token):
     google_account = await DAO.find(get_database().google_users,
                                  "token.access_token", google_token)
 
+    if "linked_to" not in user or user["linked_to"] is None:
+        user["linked_to"] = {}
+
     google_account["linked_to"] = user["_id"]
     user["linked_to"]["google"] = google_account["_id"]
 

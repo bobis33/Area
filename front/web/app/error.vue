@@ -10,27 +10,21 @@
 </template>
 
 <script setup lang="ts">
-import {CookiesEnum, RoutesEnum} from '~/config/constants'
+import { CookiesEnum, RoutesEnum } from '~/config/constants'
+import { LinkToGoogle } from "~/domain/use-cases/oauth";
+import { OauthRepository } from "~/infrastructure/repositories/OauthRepository";
 
 const error = useError()
 const errorCode = error.value?.statusCode || 'unknownError'
 const errorMessage = error.value?.statusMessage || 'anErrorOccurred'
 
-const linkToGoogle = async (accessToken) => {
-  const JWTToken = useCookie(CookiesEnum.TOKEN.toString()).value;
+const linkToGoogle = async (accessToken: string) => {
   try {
-    const response = await fetch(`http://0.0.0.0:8080/auth/link/google?google_token=${accessToken}`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${JWTToken}`,
-        'Content-Type': 'application/json',
-      },
-    })
+    await new LinkToGoogle(new OauthRepository()).execute(useCookie(CookiesEnum.TOKEN.toString()).value!, accessToken);
   } catch (error) {
-    console.error('There was a problem with the fetch operation:', error)
+    console.error('Error linking to Google:', error);
   }
 }
-
 
 if (window.location.search.includes('google_token')) {
   const token = window.location.search.split('google_token=')[1];
@@ -43,6 +37,7 @@ if (window.location.search.includes('google_token')) {
     console.log('Access Token:', accessToken);
     linkToGoogle(accessToken);
   }
+  window.location.href = RoutesEnum.PROFILE.toString();
 }
 
 </script>

@@ -1,6 +1,6 @@
 import type { SubscribedArea } from "~/domain/models/Area";
 
-export interface AreasInterface {
+export interface AreasRepositoryInterface {
     fetchSubscribedAreas(token: string): Promise<SubscribedArea[]>;
     subscribeUser(areaId: string, token: string): void;
     unsubscribeUser(areaId: string, token:string ): void;

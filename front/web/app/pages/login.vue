@@ -2,6 +2,7 @@
   <div class="form-container">
     <ImageComponent fileName="area.png" altText="area" class="auth-logo" />
     <h1 class="form-title">{{ $t('login') }}</h1>
+
     <form @submit.prevent="handleSubmit">
       <div class="mb-4">
         <label for="username" class="label">{{ $t('username') }}</label>
@@ -13,7 +14,30 @@
       </div>
       <button type="submit" class="btn-primary w-full mt-8">{{ $t('login') }}</button>
     </form>
+
     <p v-if="errorMessage" class="error-message">{{ $t(errorMessage) }}</p>
+
+    <div class="separator">
+    </div>
+    <div class="oauth-buttons">
+      <button class="btn-oauth discord" @click="handleOAuth('discord')">
+        <ImageComponent fileName="discord.png" altText="Discord logo" class="oauth-logo" />
+        {{ $t('loginWithDiscord') }}
+      </button>
+      <button class="btn-oauth github" @click="handleOAuth('github')">
+        <ImageComponent fileName="github.png" altText="GitHub logo" class="oauth-logo" />
+        {{ $t('loginWithGithub') }}
+      </button>
+      <button class="btn-oauth google" @click="handleOAuth('google')">
+        <ImageComponent fileName="google.png" altText="Google logo" class="oauth-logo" />
+        {{ $t('loginWithGoogle') }}
+      </button>
+      <button class="btn-oauth microsoft" @click="handleOAuth('microsoft')">
+        <ImageComponent fileName="microsoft.png" altText="Microsoft logo" class="oauth-logo" />
+        {{ $t('loginWithMicrosoft') }}
+      </button>
+    </div>
+
     <div class="text-link mt-4">
       <p>{{ $t('noAccount') }}
         <button @click="router.push(RoutesEnum.REGISTER.toString())" class="btn-link">{{ $t('registerHere') }}</button>
@@ -23,8 +47,8 @@
 </template>
 
 <script setup lang="ts">
-import {ref} from 'vue'
-import {useCookie, useRouter} from '#app'
+import { ref } from 'vue'
+import { useCookie, useRouter } from '#app'
 import ImageComponent from '~/components/Assets.vue'
 
 import { useSnackbar } from '~/composables/useSnackBar'
@@ -47,9 +71,23 @@ async function handleSubmit() {
     }
     tokenCookie.value = await new LoginUser(new AuthRepository()).execute({ username: username.value, password: password.value })
     showSnackbar('loginSuccess', 'success')
-    await router.push(RoutesEnum.HOME.toString())
+    await router.push(RoutesEnum.AREAS.toString())
   } catch (error: any) {
     errorMessage.value = error.message
+  }
+}
+
+function handleOAuth(provider: string) {
+  const apiUrl = useRuntimeConfig().public.baseUrlApi
+  const oauthUrls = {
+    discord: `${apiUrl}/auth/login/with/discord`,
+    github: `${apiUrl}/auth/login/with/github`,
+    google: `${apiUrl}/auth/login/with/google`,
+    microsoft: `${apiUrl}/auth/login/with/microsoft`,
+  }
+
+  if (oauthUrls[provider]) {
+    window.location.href = oauthUrls[provider]
   }
 }
 </script>
@@ -59,4 +97,56 @@ async function handleSubmit() {
 @use 'assets/styles/errors' as *;
 @use 'assets/styles/forms' as *;
 @use 'assets/styles/logo' as *;
+
+.oauth-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  .btn-oauth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    color: white;
+
+    &.discord {
+      background-color: #858585;
+    }
+
+    &.github {
+      background-color: #858585;
+    }
+
+    &.google {
+      background-color: #858585;
+    }
+
+    &.microsoft {
+      background-color: #858585;
+    }
+
+    .oauth-logo {
+      width: 20px;
+      height: 20px;
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.separator {
+  margin: 1rem 0;
+  color: #aaa;
+
+  span {
+    background-color: white;
+    padding: 0 0.5rem;
+  }
+}
+
 </style>

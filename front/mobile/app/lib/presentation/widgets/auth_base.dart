@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '/config/constants.dart';
+import '/presentation/widgets/oauth_login_buttons.dart';
 
 class AuthPage extends StatelessWidget {
   final String title;
@@ -10,6 +11,7 @@ class AuthPage extends StatelessWidget {
   final String footerText;
   final String footerActionText;
   final VoidCallback onFooterActionPressed;
+  final bool oauthButtons;
   final String? errorMessage;
 
   const AuthPage({
@@ -21,6 +23,7 @@ class AuthPage extends StatelessWidget {
     required this.footerText,
     required this.footerActionText,
     required this.onFooterActionPressed,
+    required this.oauthButtons,
     this.errorMessage,
   });
 
@@ -72,6 +75,7 @@ class AuthPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
+          if (oauthButtons) loginOauthButtons(),
           if (errorMessage != null)
             Text(
               errorMessage!,
