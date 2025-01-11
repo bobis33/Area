@@ -16,6 +16,8 @@ The AREA project is a project that aims to create a platform that allows users t
 
 - [Docker](https://docs.docker.com/get-docker/)
 
+You will need to create a `.env` file at the root of each service with the following content, refer to the documentation of each service for more information.
+
 ### Launch
 
 ```bash

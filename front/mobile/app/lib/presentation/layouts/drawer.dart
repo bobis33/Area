@@ -50,7 +50,7 @@ class MainLayout extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 30,
-                        backgroundImage: AssetImage('assets/images/default_avatar.png'),
+                        backgroundImage: NetworkImage('$apiUrl/assets/avatar.png'),
                         backgroundColor: Colors.white,
                       ),
                       const SizedBox(height: 10),

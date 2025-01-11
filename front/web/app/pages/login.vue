@@ -1,6 +1,6 @@
 <template>
   <div class="form-container">
-    <img src="~/assets/icon.png" alt="Area icon" class="auth-logo" />
+    <ImageComponent fileName="area.png" altText="area" class="auth-logo" />
     <h1 class="form-title">{{ $t('login') }}</h1>
     <form @submit.prevent="handleSubmit">
       <div class="mb-4">
@@ -22,10 +22,10 @@
   </div>
 </template>
 
-
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useCookie, useRouter } from '#app'
+import {ref} from 'vue'
+import {useCookie, useRouter} from '#app'
+import ImageComponent from '~/components/Assets.vue'
 
 import { useSnackbar } from '~/composables/useSnackBar'
 import { LoginUser } from '~/domain/use-cases/auth'

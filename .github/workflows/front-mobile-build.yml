@@ -25,6 +25,10 @@ jobs:
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose --version
 
+      - name: Create .env file
+        run: |
+          echo "API_URL=http://10.0.2.2:8080" > ./front/mobile/app/.env
+
       - name: Build with Docker Compose
         run: |
           docker-compose build client_mobile

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '/config/constants.dart';
+
 class AuthPage extends StatelessWidget {
   final String title;
   final List<Widget> formFields;
@@ -33,8 +35,8 @@ class AuthPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Center(
-            child: Image.asset(
-              'assets/images/icon.png',
+            child: Image.network(
+              '$apiUrl/assets/area.png',
               height: 120,
               width: 120,
               fit: BoxFit.contain,

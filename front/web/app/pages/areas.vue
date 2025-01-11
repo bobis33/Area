@@ -49,9 +49,8 @@
 </template>
 
 <script setup lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
-import { Areas } from '~/areas/areas'
-import type { AreasInterface } from '~/areas/areasInterface'
+import { ref } from 'vue'
+import { Areas } from '~/infrastructure/repositories/AreaRepository'
 import { useRouter } from '#app'
 import {CookiesEnum, RoutesEnum} from "~/config/constants";
 import { useCookie } from "#app";
