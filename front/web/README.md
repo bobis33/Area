@@ -6,6 +6,9 @@ This is the web front-end for the area project. It is build with [Nuxt.js](https
 
 ## Setup
 
+First create a .env file in the root of the project and copy the content of the .env.example file in it.
+In Production, you should change the value of the API_URL variable to the production API URL.
+
 Make sure to install dependencies:
 
 ```bash

@@ -1,6 +1,6 @@
 <template>
   <div class="form-container">
-    <img src="~/assets/icon.png" alt="AREA icon" class="auth-logo" />
+    <ImageComponent fileName="area.png" altText="area" class="auth-logo" />
     <h1 class="form-title">{{ $t('register') }}</h1>
     <form @submit.prevent="handleRegister">
       <div class="mb-4">
@@ -36,6 +36,7 @@ import { useSnackbar } from '~/composables/useSnackBar'
 import { RoutesEnum } from '~/config/constants'
 import { AuthRepository } from '~/infrastructure/repositories/AuthRepository'
 import { RegisterUser } from '~/domain/use-cases/auth'
+import ImageComponent from "~/components/Assets.vue";
 
 const username = ref('')
 const password = ref('')

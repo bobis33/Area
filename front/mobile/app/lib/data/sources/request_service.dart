@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:http/http.dart' as http;
 
+import '/config/constants.dart';
 import '/data/models/data.dart';
 
 class RequestService {
   const RequestService();
-  static const String _baseUrl = 'http://10.0.2.2:8080';
   static const _headers = {'Content-Type': 'application/json'};
 
   Future<DataState<T>> makeRequest<T>({
@@ -17,7 +17,7 @@ class RequestService {
     required T Function(http.Response response) parse,
   }) async {
     try {
-      final url = Uri.parse('$_baseUrl$endpoint');
+      final url = Uri.parse('$apiUrl$endpoint');
       http.Response response;
 
       switch (method) {
