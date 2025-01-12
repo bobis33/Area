@@ -10,7 +10,6 @@ enum LangEnum {
 enum RouteEnum {
   about,
   areas,
-  home,
   login,
   profile,
   register,

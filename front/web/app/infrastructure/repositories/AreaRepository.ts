@@ -1,7 +1,7 @@
-import type { AreasInterface } from "~/domain/repositories/AreaRepositoryInterface";
+import type { AreasRepositoryInterface } from "~/domain/repositories/AreaRepositoryInterface";
 import type { SubscribedArea } from "~/domain/models/Area";
 
-export class Areas implements AreasInterface {
+export class Areas implements AreasRepositoryInterface {
     private baseUrlAPI = useRuntimeConfig().public.baseUrlApi
 
     async fetchSubscribedAreas(token: string): Promise<SubscribedArea[]> {

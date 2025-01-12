@@ -1,14 +1,10 @@
 import type { AssetsRepositoryInterface } from "~/domain/repositories/AssetsRepositoryInterface";
 
 export class AssetsRepository implements AssetsRepositoryInterface {
-    private readonly baseUrl: string;
-
-    constructor(baseUrl: string) {
-        this.baseUrl = baseUrl;
-    }
+    private baseUrlAPI = useRuntimeConfig().public.baseUrlApi
 
     getAssetUrl(path: string): string {
-        return `${this.baseUrl}/assets/${path}`;
+        return `${this.baseUrlAPI}/assets/${path}`;
     }
 
     async fetchAsset(path: string): Promise<Blob> {

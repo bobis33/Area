@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
 
     if (authResponse is DataSuccess) {
       snackBar(context, translate('loginSuccess'), Theme.of(context).colorScheme.secondary);
-      context.go(context.namedLocation(RouteEnum.home.name));
+      context.go(context.namedLocation(RouteEnum.areas.name));
     } else if (authResponse is DataError) {
       setState(() {
         errorMessage = authResponse.error ?? translate('anErrorOccurred');
@@ -69,6 +69,7 @@ class _LoginPageState extends State<LoginPage> {
           footerText: translate('noAccount'),
           footerActionText: translate('register'),
           onFooterActionPressed: () => context.go(context.namedLocation(RouteEnum.register.name)),
+          oauthButtons: true,
           errorMessage: errorMessage,
         );
       },

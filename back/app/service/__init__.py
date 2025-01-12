@@ -4,6 +4,7 @@ from .auth import (
     login_user,
     register_user,
     link_to_google,
+    is_linked_google_service,
     oauth_google_login,
     area_oauth_google_login,
 )

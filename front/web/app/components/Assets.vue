@@ -1,10 +1,12 @@
 <template>
-    <img :src="assetUrl" :alt="altText" v-if="fileName" />
+  <img :src="assetUrl" :alt="altText" />
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useNuxtApp } from '#app';
+import { ref, watch, onMounted } from 'vue';
+
+import { getAssetUrl } from "~/domain/use-cases/assets";
+import { AssetsRepository } from "~/infrastructure/repositories/AssetsRepository";
 
 const props = defineProps({
   fileName: {
@@ -18,11 +20,23 @@ const props = defineProps({
 });
 
 const { fileName, altText } = toRefs(props);
+const assetUrl = ref<string>('');
 
-const { $assetsRepository } = useNuxtApp();
+const fetchAssetUrl = async () => {
+  try {
+    assetUrl.value = new getAssetUrl(new AssetsRepository()).execute(fileName.value);
+  } catch (error) {
+    console.error("Error fetching asset URL:", error);
+    assetUrl.value = '';
+  }
+};
 
-const assetUrl = computed(() => {
-  return $assetsRepository.getAssetUrl(fileName.value);
+watch(fileName, () => {
+  fetchAssetUrl();
+});
+
+onMounted(() => {
+  fetchAssetUrl();
 });
 </script>
 

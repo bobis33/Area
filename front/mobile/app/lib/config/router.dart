@@ -23,11 +23,6 @@ final router = GoRouter(
       builder: (context, state) => MainLayout(child: AreasPage()),
     ),
     GoRoute(
-      name: RouteEnum.home.name,
-      path: '/home',
-      builder: (context, state) => MainLayout(child: HomePage()),
-    ),
-    GoRoute(
       name: RouteEnum.login.name,
       path: '/login',
       builder: (context, state) => MainLayout(child: LoginPage()),

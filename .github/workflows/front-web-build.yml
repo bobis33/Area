@@ -27,8 +27,9 @@ jobs:
 
       - name: create .env file
         run: |
-          echo "API_URL=http://0.0.0.0:8080" > ./front/web/.env
-          echo "PORT=8081" >> ./front/web/.env
+          echo "API_URL=http://0.0.0.0:8080" > ./front/web/app/.env
+          echo "PORT=8081" >> ./front/web/app/.env
+          echo "API_URL=http://10.0.2.2:8080" >> ./front/mobile/app/.env
 
       - name: Build with Docker Compose
         run: |
