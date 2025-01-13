@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import '/config/constants.dart';
 import '/presentation/layouts/drawer.dart';
 import '/presentation/pages/areas.dart';
-import '/presentation/pages/home.dart';
 import '/presentation/pages/login.dart';
 import '/presentation/pages/profile.dart';
 import '/presentation/pages/register.dart';
