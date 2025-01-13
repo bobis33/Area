@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:area_front_mobile/presentation/pages/profile.dart';
+import 'package:area_front_mobile/presentation/pages/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:provider/provider.dart';
@@ -79,18 +80,30 @@ class _AreasPageState extends State<AreasPage> {
             centerTitle: true,
             toolbarHeight: 80,
             backgroundColor: theme.colorScheme.surfaceContainerHighest,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: IconButton(
+              icon: Icon(Icons.account_circle, color: theme.colorScheme.onSurface, size: 30),
+              onPressed: () {
+                Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfilePage()),
+                );
+              },
+              ),
+            ),
             actions: [
               Padding(
-                padding: const EdgeInsets.only(right: 16.0),
-                child: IconButton(
-                  icon: Icon(Icons.account_circle, color: theme.colorScheme.onSurface, size: 30),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ProfilePage()),
-                    );
-                  },
-                ),
+              padding: const EdgeInsets.only(right: 20.0),
+              child: IconButton(
+                icon: Icon(Icons.settings, color: theme.colorScheme.onSurface, size: 30),
+                onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                );
+                },
+              ),
               ),
             ],
           ),
