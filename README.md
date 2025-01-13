@@ -9,14 +9,14 @@ The AREA project is a project that aims to create a platform that allows users t
 - A web frontend that allows users to create and manage their automation scenarios.
 - A mobile frontend that allows users to create and manage their automation scenarios.
 
-
 ## Getting Started
 
 ### Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/)
 
-You will need to create a `.env` file at the root of each service with the following content, refer to the documentation of each service for more information.
+You will have to create a `.env` file at the root of each service and copy the content of the `.env.example` file in it.
+You will have to fill the variables with your own values. For more information, please refer to the documentation of each service.
 
 ### Launch
 
@@ -33,7 +33,6 @@ For more information, please refer to the documentation of each service:
 - [Backend](back/README.md)
 - [Frontend-web](front/web/README.md)
 - [Frontend-mobile](front/mobile/README.md)
-
 
 ## Commit Norms
 
