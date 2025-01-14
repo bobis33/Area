@@ -1,4 +1,5 @@
 import datetime
+import aiohttp
 
 from passlib.context import CryptContext
 from fastapi_jwt_auth import AuthJWT
@@ -22,6 +23,62 @@ async def register_user(username, password):
     await DAO.insert_user(username, hashed_password)
     return True
 
+async def oauth_discord_login(discord_token):
+    async with aiohttp.ClientSession() as session:
+        async with session.get('https://discord.com/api/users/@me', headers={'Authorization': f'Bearer {discord_token["access_token"]}'}) as response:
+            user_info = await response.json()
+            if not user_info:
+                raise RuntimeError("Failed to retrieve user info from Discord")
+
+            discord_username = user_info.get("username")
+            if not discord_username:
+                raise RuntimeError("Discord username not found in user info")
+
+            user_email = user_info.get("email")
+            if not user_email:
+                raise RuntimeError("Email not found in user info")
+
+    user_account = await DAO.find(get_database().discord_users, "email", user_email)
+
+    if not user_account:
+        await DAO.insert(get_database().discord_users, {"email": user_info.get("email"), "user_info": user_info, "token": discord_token, "linked_to": None})
+
+async def area_oauth_discord_login(discord_token):
+    async with aiohttp.ClientSession() as session:
+        async with session.get('https://discord.com/api/users/@me', headers={'Authorization': f'Bearer {discord_token["access_token"]}'}) as response:
+            user_info = await response.json()
+            if not user_info:
+                raise RuntimeError("Failed to retrieve user info from Discord")
+
+            discord_username = user_info.get("username")
+            if not discord_username:
+                raise RuntimeError("Discord username not found in user info")
+
+            user_email = user_info.get("email")
+            if not user_email:
+                raise RuntimeError("Email not found in user info")
+
+    discord_account = await DAO.find(get_database().discord_users, "email", user_email)
+    linked_account = None
+    
+    if discord_account is None:
+        await DAO.insert(get_database().discord_users, {"email": user_info.get("email"), "user_info": user_info, "token": discord_token, "linked_to": None})
+        discord_account = await DAO.find(get_database().discord_users, "email", user_info.get("email"))
+
+    elif discord_account["linked_to"] is not None:
+        linked_account = await DAO.find(get_database().users, "_id", discord_account["linked_to"])
+
+    if linked_account is None:
+        username = NameGenerator.generate_username_from_email(user_info["email"])
+        await DAO.insert(get_database().users, {"username": username, "password": None, "email": user_info["email"], "subscribed_areas": [],
+                                                      "created_at": datetime.datetime.now(), "updated_at": datetime.datetime.now(),
+                                                      "linked_to": {"discord" : discord_account["_id"]}})
+        linked_account = await DAO.find_user_by_username(username)
+        discord_account["linked_to"] = linked_account["_id"]
+        await DAO.update(get_database().discord_users, "email", user_info["email"], discord_account)
+
+    return linked_account.username
+
 async def link_to_google(username, google_token):
     user = await DAO.find_user_by_username(username)
 
@@ -37,6 +94,7 @@ async def link_to_google(username, google_token):
     DAO.update_user(user["username"], user)
     DAO.update(get_database().google_users,
                "email", google_token.get("userinfo")["email"], google_user)
+
 
 async def oauth_google_login(google_token):
     user_info = google_token.get("userinfo")

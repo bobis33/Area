@@ -1,4 +1,4 @@
-from .AREA import update_actions
+from .periodic_trigger import update_actions
 from.areaComponents import IAction, IReaction, Service
 from .auth import (
     login_user,
@@ -6,6 +6,8 @@ from .auth import (
     link_to_google,
     oauth_google_login,
     area_oauth_google_login,
+    oauth_discord_login,
+    area_oauth_discord_login
 )
 from.area import (
     get_actions_service,

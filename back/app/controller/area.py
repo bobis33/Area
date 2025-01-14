@@ -2,6 +2,9 @@ from inspect import getmembers
 
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPAuthorizationCredentials
+from typing_extensions import TypedDict
+from pydantic import Json
+
 
 from app.database import DAO
 from app.common import secure_endpoint, auth_scheme, TokenManager
@@ -10,20 +13,20 @@ from app.service import (
     get_reactions_service
 )
 
-
 router = APIRouter()
 
 @router.get('/get/actions')
 @secure_endpoint
 async def get_actions(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     result = []
-    
+
     actions = await get_actions_service()
     for action in actions:
         result.append({
             "name": action.name,
             "description": action.description,
-            "service": action.service.value
+            "service": action.service.value,
+            "params": await action.get_params()
         })
 
     return {"actions": result}
@@ -38,7 +41,8 @@ async def get_reactions(token: HTTPAuthorizationCredentials = Depends(auth_schem
         result.append({
             "name": reaction.name,
             "description": reaction.description,
-            "service": reaction.service.value
+            "service": reaction.service.value,
+            "params": await reaction.get_params()
         })
 
     return {"reactions": result}
@@ -64,8 +68,11 @@ async def get_all_areas(token: HTTPAuthorizationCredentials = Depends(auth_schem
 
 @router.post('/create', response_model=dict)
 @secure_endpoint
-async def create_area(action:str, reaction:str, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
-    await DAO.insert_area({"action": action, "reaction": reaction, "subscribed_users": []})
+async def create_area(action:str, reaction:str, action_params:Json, reaction_params:Json, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    await DAO.insert_area({"action": action, "reaction": reaction,
+                           "action_params": action_params, "reaction_params": reaction_params,
+                           "subscribed_users": []})
+
     return {"message": "ok"}
 
 @router.post('/subscribe')

@@ -15,7 +15,10 @@ class SendMailReaction(IReaction):
         self.description = "Send an email from the logged in user to antoine's dm"
         self.service = Service.GMAIL
 
-    async def react(self, user):
+    async def get_params(self):
+        return {"To": "None", "Subject": "None", "Content": "None"}
+
+    async def react(self, user, params):
         google_infos = user['external_tokens']['GOOGLE']
 
         creds = Credentials(
@@ -31,10 +34,10 @@ class SendMailReaction(IReaction):
 
         message = EmailMessage()
 
-        message.set_content("passe TS " + str(random.randint(0, 100000000)))
-        message["To"] = "cretace@icloud.com"
+        message.set_content(params["Content"])
+        message["To"] = params["To"]
         message["From"] = user["email"]
-        message["Subject"] = "J'ai remarque que tu avais beaucoup de paladium sur toi"
+        message["Subject"] = params["Subject"]
 
         encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
         create_message = {"raw": encoded_message}
@@ -56,7 +59,10 @@ class RepoCreationReaction(IReaction):
         self.description = "Create a repo on the logged in user's github account"
         self.service = Service.GMAIL
 
-    async def react(self, user):
+    async def get_params(self):
+        return {"name": "area_reaction"}
+
+    async def react(self, user, params):
         """Create a private GitHub repository named 'ok'"""
         try:
             github_infos = user['external_tokens']['GITHUB']
@@ -68,7 +74,7 @@ class RepoCreationReaction(IReaction):
                     'Accept': 'application/vnd.github.v3+json'
                 }
                 data = {
-                    "name": "area_reaction",
+                    "name": params["name"],
                     "private": True
                 }
                 async with session.post('https://api.github.com/user/repos', headers=headers, json=data) as response:
