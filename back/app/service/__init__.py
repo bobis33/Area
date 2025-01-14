@@ -4,10 +4,15 @@ from .auth import (
     login_user,
     register_user,
     link_to_google,
+    link_to_discord,
+    link_to_spotify,
+    link_to_github,
     oauth_google_login,
     area_oauth_google_login,
     oauth_discord_login,
-    area_oauth_discord_login
+    area_oauth_discord_login,
+    oauth_spotify_login,
+    area_oauth_spotify_login,
 )
 from.area import (
     get_actions_service,

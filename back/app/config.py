@@ -23,6 +23,9 @@ class Config:
     DISCORD_CLIENT_ID = os.getenv('DISCORD_CLIENT_ID', 'None')
     DISCORD_CLIENT_SECRET = os.getenv('DISCORD_CLIENT_SECRET', 'None')
 
+    SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID', 'None')
+    SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET', 'None')
+
     YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY', 'None')
 
     MIDDLEWARE_SECRET_KEY = os.getenv('MIDDLEWARE_SECRET_KEY', 'Default')
