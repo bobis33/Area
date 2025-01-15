@@ -1,9 +1,35 @@
 <template>
   <div>
+    <h1>{{ $t('allActions') }}</h1>
+    <div v-if="actionsData && actionsData.actions && actionsData.actions.length">
+      <ul>
+        <li v-for="action in actionsData.actions" class="area-box">
+          <strong>{{ $t('name') }}:</strong> {{ action.name }} <br>
+          <strong>{{ $t('description') }}:</strong> {{ action.description }}
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      <p>No areas found.</p>
+    </div>
+
+    <h1>{{ $t('allReaction') }}</h1>
+    <div v-if="reactionsData && reactionsData.reactions && reactionsData.reactions.length">
+      <ul>
+        <li v-for="reaction in reactionsData.reactions" class="area-box">
+          <strong>{{ $t('name') }}:</strong> {{ reaction.name }} <br>
+          <strong>{{ $t('description') }}:</strong> {{ reaction.description }}
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      <p>No areas found.</p>
+    </div>
+
     <h1>{{ $t('allAreas') }}</h1>
     <div v-if="data && data.areas.length">
       <ul>
-        <li v-for="area in data.areas" :key="area._id">
+        <li v-for="area in data.areas" :key="area._id" class="area-box">
           <strong>{{ $t('action') }}:</strong> {{ area.action }} <br>
           <strong>{{ $t('reaction') }}:</strong> {{ area.reaction }}
           <button @click="subscribeUser(area._id)">{{ $t('Subscribe') }}</button>
@@ -20,7 +46,7 @@
     </div>
     <div v-if="subscribedAreas.length">
       <ul>
-        <li v-for="area in subscribedAreas" :key="area._id">
+        <li v-for="area in subscribedAreas" :key="area._id" class="area-box">
           <strong>{{ $t('action') }}:</strong> {{ area.action }} <br>
           <strong>{{ $t('reaction') }}:</strong> {{ area.reaction }}
           <button @click="unsubscribeUser(area._id)">{{$t('Unsubscribe')}}</button>
@@ -69,7 +95,35 @@ const newArea = ref({
   reaction: ''
 })
 
+interface Action {
+  name: string;
+  description: string;
+  service: string;
+}
+
+interface Reaction {
+  name: string;
+  description: string;
+  service: string;
+}
+
 const { data, error } = await useFetch<{ areas: Area[] }>(`${config.public.baseUrlApi}/area/get/all`, {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  },
+})
+
+const { data: actionsData, error: actionsError } = await useFetch<{ actions: Action[] }>(`${config.public.baseUrlApi}/area/get/actions`, {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  },
+})
+
+const { data: reactionsData, error: reactionsError } = await useFetch<{ reactions: Reaction[] }>(`${config.public.baseUrlApi}/area/get/reactions`, {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
@@ -130,4 +184,17 @@ const createArea = async () => {
 </script>
 
 <style scoped lang="scss">
+.area-box {
+  border: 1px solid #ccc;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+
+  strong {
+    display: block;
+    margin-bottom: 8px;
+  }
+
+}
 </style>
