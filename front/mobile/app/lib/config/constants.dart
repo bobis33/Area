@@ -1,3 +1,5 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 enum LangEnum {
   // ignore: constant_identifier_names
   en_US,
@@ -8,7 +10,6 @@ enum LangEnum {
 enum RouteEnum {
   about,
   areas,
-  home,
   login,
   profile,
   register,
@@ -20,3 +21,5 @@ enum StorageKeyEnum {
   lang,
   theme
 }
+
+final String apiUrl = dotenv.env['API_URL']!;

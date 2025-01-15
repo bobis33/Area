@@ -50,7 +50,7 @@ class MainLayout extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 30,
-                        backgroundImage: AssetImage('assets/images/default_avatar.png'),
+                        backgroundImage: NetworkImage('$apiUrl/assets/avatar.png'),
                         backgroundColor: Colors.white,
                       ),
                       const SizedBox(height: 10),
@@ -84,11 +84,6 @@ class MainLayout extends StatelessWidget {
                   ),
                 ),
                 if (user is DataSuccess<User>) ...[
-                  ListTile(
-                    leading: const Icon(Icons.home),
-                    title: Text(translate('home')),
-                    onTap: () => context.go(context.namedLocation(RouteEnum.home.name)),
-                  ),
                   ListTile(
                     leading: const Icon(Icons.device_hub),
                     title: Text(translate('areas')),

@@ -48,7 +48,6 @@ const response = token ? await new VerifyToken(new AuthRepository()).execute(tok
 const toggleMenu = () => { isMenuOpen.value = !isMenuOpen.value }
 const isActive = (path: string) => route.path === path
 const menuItems = [
-  { path: RoutesEnum.HOME.toString(), label: 'home' },
   { path: RoutesEnum.AREAS.toString(), label: 'myAreas' },
   { path: RoutesEnum.LOGIN.toString(), label: 'login' },
   { path: RoutesEnum.PROFILE.toString(), label: 'profile' },
@@ -58,7 +57,7 @@ const filteredMenuItems = computed(() => {
   if (response) {
     return menuItems.filter((item) => item.path !== RoutesEnum.LOGIN.toString() && item.path !== RoutesEnum.REGISTER.toString())
   } else {
-    return menuItems.filter((item) => item.path !== RoutesEnum.HOME.toString() && item.path !== RoutesEnum.AREAS.toString() && item.path !== RoutesEnum.PROFILE.toString())
+    return menuItems.filter((item) => item.path !== RoutesEnum.AREAS.toString() && item.path !== RoutesEnum.PROFILE.toString())
   }
 })
 

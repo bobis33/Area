@@ -184,7 +184,7 @@ async def login_google(request: Request):
 async def google_callback(request: Request, authorize: AuthJWT = Depends()):
     try:
         google_token = await oauth.google.authorize_access_token(request)
-        access_token = authorize.create_access_token(area_oauth_google_login(google_token))
+        access_token = authorize.create_access_token(await area_oauth_google_login(google_token))
 
         return RedirectResponse(f"{Config.FRONTEND_URL}/?token={access_token}")
     except Exception as e:
@@ -195,8 +195,6 @@ async def google_callback(request: Request, authorize: AuthJWT = Depends()):
 @secure_endpoint
 async def is_login(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     return {"detail": "Connected"}
-
-
 
 @router.post('/link/spotify')
 @secure_endpoint

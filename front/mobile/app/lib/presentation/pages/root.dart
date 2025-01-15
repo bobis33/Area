@@ -18,7 +18,7 @@ class RootPage extends StatelessWidget {
         }
         if (snapshot.hasData && snapshot.data == true) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.go(context.namedLocation(RouteEnum.home.name));
+            context.go(context.namedLocation(RouteEnum.areas.name));
           });
         } else {
           WidgetsBinding.instance.addPostFrameCallback((_) {
