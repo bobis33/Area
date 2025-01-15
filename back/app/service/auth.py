@@ -107,20 +107,13 @@ async def area_oauth_google_login(google_token):
 
     google_account = await DAO.find(get_database().google_users, "email", user_info["email"])
     linked_account = None
-    print("BRUH1", google_account, flush=True)
 
     if google_account is None:
-        print("HERE12", flush=True)
         await DAO.insert(get_database().google_users, {"email": user_info["email"], "token": google_token, "linked_to": None})
         google_account = await DAO.find(get_database().google_users, "email", user_info["email"])
-        print("HERE22", flush=True)
 
     elif google_account["linked_to"] != None:
-        print("HERE1", flush=True)
         linked_account = await DAO.find(get_database().users, "_id", google_account["linked_to"])
-        print("HERE2", flush=True)
-
-    print("BRUH2", flush=True)
 
     if linked_account is None:
         username = NameGenerator.generate_username_from_email(user_info["email"])
