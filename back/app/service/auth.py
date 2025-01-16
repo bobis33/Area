@@ -3,6 +3,7 @@ import aiohttp
 
 from passlib.context import CryptContext
 from fastapi_jwt_auth import AuthJWT
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.database import DAO, get_database
 from app.common import NameGenerator
@@ -166,10 +167,10 @@ async def link_to_github(username, github_token):
         raise RuntimeError("Couldn't find user")
 
     github_user = await DAO.find(get_database().github_users,
-                                 "email", github_token.get("userinfo")["email"])
+                                 "email", github_token["userinfo"]["email"])
 
     github_user["link_to"] = user["_id"]
-    user["link_to"]["google"] = github_user["_id"]
+    user["link_to"]["github"] = github_user["_id"]
 
     DAO.update_user(user["username"], user)
     DAO.update(get_database().github_users,
@@ -233,20 +234,17 @@ async def area_oauth_spotify_login(spotify_token):
 
 async def oauth_github_login(github_token):
     async with aiohttp.ClientSession() as session:
-        async with session.get('https://api.github.com/user', headers={'Authorization': f'token {github_token["access_token"]}'}) as response:
+        async with session.get('https://api.github.com/user', headers={'Authorization': f'Bearer {github_token["access_token"]}'}) as response:
             user_info = await response.json()
             if not user_info:
-                raise RuntimeError("Failed to retrieve user info from github")
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Failed to retrieve user info from GitHub")
 
-            github_username = user_info.get("login")
-            if not github_username:
-                raise RuntimeError("github username not found in user info")
-
-            user_email = user_info.get("email")
-            if not user_email:
-                raise RuntimeError("Email not found in user info")
+            async with session.get('https://api.github.com/user/emails', headers={'Authorization': f'Bearer {github_token["access_token"]}'}) as email_response:
+                emails = await email_response.json()
+                user_email = next((email["email"] for email in emails if email["primary"]), None)
+                if not user_email:
+                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email not found in user info")
 
     user_account = await DAO.find(get_database().github_users, "email", user_email)
-
     if not user_account:
         await DAO.insert(get_database().github_users, {"email": user_info.get("email"), "user_info": user_info, "token": github_token, "linked_to": None})
