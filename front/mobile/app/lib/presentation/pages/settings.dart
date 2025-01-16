@@ -51,7 +51,7 @@ class _SettingsPageState extends State<SettingsPage> {
               style: TextStyle(
                 fontFamily: 'IstokWeb',
                 fontWeight: FontWeight.bold,
-                fontSize: 30,
+                fontSize: 25,
                 color: theme.colorScheme.onSurface,
               ),
             ),

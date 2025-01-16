@@ -73,7 +73,7 @@ class _AreasPageState extends State<AreasPage> {
               style: TextStyle(
                 fontFamily: 'IstokWeb',
                 fontWeight: FontWeight.bold,
-                fontSize: 30,
+                fontSize: 25,
                 color: theme.colorScheme.onSurface,
               ),
             ),
