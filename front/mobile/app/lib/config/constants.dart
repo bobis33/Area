@@ -14,6 +14,8 @@ enum RouteEnum {
   profile,
   register,
   root,
+  create,
+  browse,
 }
 
 enum StorageKeyEnum {
