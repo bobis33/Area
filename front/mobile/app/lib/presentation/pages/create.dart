@@ -207,79 +207,85 @@ class _CreatePageState extends State<CreatePage> {
                     shadowColor: theme.colorScheme.shadow,
                     child: ListTile(
                       title: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 16.0, left: 32.0, right: 32.0),
-                        child: Text(
-                          "Action",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'IstokWeb',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
-                          ),
+                      padding: const EdgeInsets.only(
+                        top: 16.0, left: 32.0, right: 32.0),
+                      child: Text(
+                        "Action",
+                        style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'IstokWeb',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
                         ),
                       ),
+                      ),
                       subtitle: Padding(
-                        padding: const EdgeInsets.only(
-                        bottom: 16.0, left: 32.0, right: 32.0),
-                        child: Column(
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: DropdownButton<String>(
-                                  hint: Text("Select Service"),
-                                  value: selectedActionService,
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      selectedActionService = newValue;
-                                      selectedAction = null;
-                                      actionParamControllers.clear();
-                                    });
-                                  },
-                                  items: allActionsServices.map<DropdownMenuItem<String>>((dynamic value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                ),
-                            ),
-                            if (selectedActionService != null)
-                              Align(
-                              alignment: Alignment.centerLeft,
-                              child: DropdownButton<ActionReaction>(
-                                  hint: Text("Select Action"),
-                                  value: selectedAction,
-                                  onChanged: (ActionReaction? newValue) {
-                                    setState(() {
-                                      selectedAction = newValue;
-                                      actionParamControllers.clear();
-                                      if (selectedAction != null) {
-                                        selectedAction!.params.forEach((key, value) {
-                                          actionParamControllers[key] = TextEditingController();
-                                        });
-                                      }
-                                    });
-                                  },
-                                  items: allActions
-                                      .where((action) => action.service == selectedActionService)
-                                      .map<DropdownMenuItem<ActionReaction>>((ActionReaction value) {
-                                    return DropdownMenuItem<ActionReaction>(
-                                      value: value,
-                                      child: Text(value.name),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            if (selectedAction != null)
-                              ...selectedAction!.params.keys.map((String key) {
-                                return TextField(
-                                  controller: actionParamControllers[key],
-                                  decoration: InputDecoration(labelText: key),
-                                );
-                              }).toList(),
-                          ],
+                      padding: const EdgeInsets.only(
+                      bottom: 16.0, left: 32.0, right: 32.0),
+                      child: Column(
+                        children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: DropdownButton<String>(
+                            hint: Text("Select Service", style: TextStyle(color: Colors.white)),
+                            value: selectedActionService,
+                            dropdownColor: Colors.black,
+                            onChanged: (String? newValue) {
+                            setState(() {
+                              selectedActionService = newValue;
+                              selectedAction = null;
+                              actionParamControllers.clear();
+                            });
+                            },
+                            items: allActionsServices.map<DropdownMenuItem<String>>((dynamic value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value, style: TextStyle(color: Colors.white)),
+                            );
+                            }).toList(),
+                          ),
                         ),
+                        if (selectedActionService != null)
+                          Align(
+                          alignment: Alignment.centerLeft,
+                          child: DropdownButton<ActionReaction>(
+                            hint: Text("Select Action", style: TextStyle(color: Colors.white)),
+                            value: selectedAction,
+                            dropdownColor: Colors.black,
+                            onChanged: (ActionReaction? newValue) {
+                            setState(() {
+                              selectedAction = newValue;
+                              actionParamControllers.clear();
+                              if (selectedAction != null) {
+                              selectedAction!.params.forEach((key, value) {
+                                actionParamControllers[key] = TextEditingController();
+                              });
+                              }
+                            });
+                            },
+                            items: allActions
+                              .where((action) => action.service == selectedActionService)
+                              .map<DropdownMenuItem<ActionReaction>>((ActionReaction value) {
+                            return DropdownMenuItem<ActionReaction>(
+                              value: value,
+                              child: Text(value.name, style: TextStyle(color: Colors.white)),
+                            );
+                            }).toList(),
+                          ),
+                          ),
+                        if (selectedAction != null)
+                          ...selectedAction!.params.keys.map((String key) {
+                          return TextField(
+                            controller: actionParamControllers[key],
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                            labelText: key,
+                            labelStyle: TextStyle(color: Colors.white),
+                            ),
+                          );
+                          }).toList(),
+                        ],
+                      ),
                       ),
                     ),
                   ),
@@ -295,80 +301,85 @@ class _CreatePageState extends State<CreatePage> {
                     shadowColor: Colors.black,
                     child: ListTile(
                       title: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 16.0, left: 32.0, right: 32.0),
-                        child: Text(
-                          "Reaction",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'IstokWeb',
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
-                          ),
+                      padding: const EdgeInsets.only(
+                        top: 16.0, left: 32.0, right: 32.0),
+                      child: Text(
+                        "Reaction",
+                        style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'IstokWeb',
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
                         ),
                       ),
+                      ),
                       subtitle: Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: 16.0, left: 32.0, right: 32.0),
-                        child: Column(
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child:
-                            DropdownButton<String>(
-                              hint: Text("Select Service"),
-                              value: selectedReactionService,
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  selectedReactionService = newValue;
-                                  selectedReaction = null;
-                                  reactionParamControllers.clear();
-                                });
-                              },
-                              items: allReactionsServices.map<DropdownMenuItem<String>>((dynamic value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                            ),
-                            ),
-                            if (selectedReactionService != null)
-                              Align(
-                              alignment: Alignment.centerLeft,
-                              child: DropdownButton<ActionReaction>(
-                                hint: Text("Select Reaction"),
-                                value: selectedReaction,
-                                onChanged: (ActionReaction? newValue) {
-                                  setState(() {
-                                    selectedReaction = newValue;
-                                    reactionParamControllers.clear();
-                                    if (selectedReaction != null) {
-                                      selectedReaction!.params.forEach((key, value) {
-                                        reactionParamControllers[key] = TextEditingController();
-                                      });
-                                    }
-                                  });
-                                },
-                                items: allReactions
-                                    .where((reaction) => reaction.service == selectedReactionService)
-                                    .map<DropdownMenuItem<ActionReaction>>((ActionReaction value) {
-                                  return DropdownMenuItem<ActionReaction>(
-                                    value: value,
-                                    child: Text(value.name),
-                                  );
-                                }).toList(),
-                              ),
-                              ),
-                            if (selectedReaction != null)
-                              ...selectedReaction!.params.keys.map((String key) {
-                                return TextField(
-                                  controller: reactionParamControllers[key],
-                                  decoration: InputDecoration(labelText: key),
-                                );
-                              }).toList(),
-                          ],
+                      padding: const EdgeInsets.only(
+                        bottom: 16.0, left: 32.0, right: 32.0),
+                      child: Column(
+                        children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: DropdownButton<String>(
+                          hint: Text("Select Service", style: TextStyle(color: Colors.white)),
+                          value: selectedReactionService,
+                          dropdownColor: Colors.black,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                            selectedReactionService = newValue;
+                            selectedReaction = null;
+                            reactionParamControllers.clear();
+                            });
+                          },
+                          items: allReactionsServices.map<DropdownMenuItem<String>>((dynamic value) {
+                            return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value, style: TextStyle(color: Colors.white)),
+                            );
+                          }).toList(),
+                          ),
                         ),
+                        if (selectedReactionService != null)
+                          Align(
+                          alignment: Alignment.centerLeft,
+                          child: DropdownButton<ActionReaction>(
+                            hint: Text("Select Reaction", style: TextStyle(color: Colors.white)),
+                            value: selectedReaction,
+                            dropdownColor: Colors.black,
+                            onChanged: (ActionReaction? newValue) {
+                            setState(() {
+                              selectedReaction = newValue;
+                              reactionParamControllers.clear();
+                              if (selectedReaction != null) {
+                              selectedReaction!.params.forEach((key, value) {
+                                reactionParamControllers[key] = TextEditingController();
+                              });
+                              }
+                            });
+                            },
+                            items: allReactions
+                              .where((reaction) => reaction.service == selectedReactionService)
+                              .map<DropdownMenuItem<ActionReaction>>((ActionReaction value) {
+                            return DropdownMenuItem<ActionReaction>(
+                              value: value,
+                              child: Text(value.name, style: TextStyle(color: Colors.white)),
+                            );
+                            }).toList(),
+                          ),
+                          ),
+                        if (selectedReaction != null)
+                          ...selectedReaction!.params.keys.map((String key) {
+                          return TextField(
+                            controller: reactionParamControllers[key],
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                            labelText: key,
+                            labelStyle: TextStyle(color: Colors.grey[400]),
+                            ),
+                          );
+                          }).toList(),
+                        ],
+                      ),
                       ),
                     ),
                   ),
