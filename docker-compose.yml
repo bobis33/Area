@@ -68,9 +68,9 @@ services:
     volumes:
       - shared-client:/shared
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
-      - PORT=8080
+      - PORT=8081
       - NODE_ENV=production
     depends_on:
       - server
