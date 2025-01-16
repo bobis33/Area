@@ -22,6 +22,7 @@ from app.service import (
     area_oauth_discord_login,
     oauth_spotify_login,
     area_oauth_spotify_login,
+    oauth_github_login,
 )
 
 from app.common import secure_endpoint, TokenManager
@@ -94,6 +95,7 @@ async def register(credentials: Credentials, authorize: AuthJWT = Depends()):
 
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="username already exists")
 
+
 @router.post('/link/github')
 @secure_endpoint
 async def link_github(github_token, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
@@ -104,9 +106,21 @@ async def link_github(github_token, token: HTTPAuthorizationCredentials = Depend
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.args) from e
 
 @router.get("/login/to/github")
-async def get_github_token(request: Request):
+async def get_github_login(request: Request):
     redirect_uri = request.url_for('github_callback')
     return await oauth.github.authorize_redirect(request, redirect_uri)
+
+@router.get("/login/to/github/callback", include_in_schema=False)
+async def github_callback(request: Request):
+    try:
+        github_token = await oauth.github.authorize_access_token(request)
+        await oauth_github_login(github_token)
+
+        return RedirectResponse(f"{Config.FRONTEND_URL}/?github_token={github_token}")
+    except Exception as e:
+        print("Exception occured:", e, flush=True)
+        return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
+
 
 @router.post('/link/discord')
 @secure_endpoint
@@ -149,6 +163,7 @@ async def discord_token_callback(request: Request, authorize: AuthJWT = Depends(
     except Exception as e:
         print("Exception occured:", e, flush=True)
         return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
+
 
 @router.post('/link/google')
 @secure_endpoint

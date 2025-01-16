@@ -229,3 +229,23 @@ async def area_oauth_spotify_login(spotify_token):
         await DAO.update(get_database().spotify_users, "email", user_info["email"], spotify_account)
 
     return linked_account["username"]
+
+async def oauth_github_login(github_token):
+    async with aiohttp.ClientSession() as session:
+        async with session.get('https://api.github.com/user', headers={'Authorization': f'token {github_token["access_token"]}'}) as response:
+            user_info = await response.json()
+            if not user_info:
+                raise RuntimeError("Failed to retrieve user info from github")
+
+            github_username = user_info.get("login")
+            if not github_username:
+                raise RuntimeError("github username not found in user info")
+
+            user_email = user_info.get("email")
+            if not user_email:
+                raise RuntimeError("Email not found in user info")
+
+    user_account = await DAO.find(get_database().github_users, "email", user_email)
+
+    if not user_account:
+        await DAO.insert(get_database().github_users, {"email": user_info.get("email"), "user_info": user_info, "token": github_token, "linked_to": None})

@@ -13,6 +13,7 @@ from .auth import (
     area_oauth_discord_login,
     oauth_spotify_login,
     area_oauth_spotify_login,
+    oauth_github_login,
 )
 from.area import (
     get_actions_service,
