@@ -18,27 +18,122 @@ class CreatePage extends StatefulWidget {
   State<CreatePage> createState() => _CreatePageState();
 }
 
+class ActionReaction {
+  final String name;
+  final String description;
+  final String service;
+  final Map<String, dynamic> params;
+
+  ActionReaction({
+    required this.name,
+    required this.description,
+    required this.service,
+    required this.params,
+  });
+
+  factory ActionReaction.fromJson(Map<String, dynamic> json) {
+    return ActionReaction(
+      name: json['name'],
+      description: json['description'],
+      service: json['service'],
+      params: json['params'],
+    );
+  }
+}
+
 class _CreatePageState extends State<CreatePage> {
   String? errorMessage;
   bool showAreas = true;
 
+  List<ActionReaction> allActions = [];
+  List<dynamic> allActionsServices = [];
+  String? selectedActionService;
+  ActionReaction? selectedAction;
+
+  List<ActionReaction> allReactions = [];
+  List<dynamic> allReactionsServices = [];
+  String? selectedReactionService;
+  ActionReaction? selectedReaction;
+
+  Map<String, TextEditingController> actionParamControllers = {};
+  Map<String, TextEditingController> reactionParamControllers = {};
+
   final StorageService _storageService = StorageService();
   final RequestService _requestService = const RequestService();
 
-  Future<void> createArea(String action, String reaction) async {
+  Future<void> createArea() async {
+    if (selectedAction == null || selectedReaction == null) {
+      setState(() {
+      errorMessage = translate('selectActionAndReactionError');
+      });
+      return;
+    }
+    final actionParams = actionParamControllers.map((key, controller) => MapEntry(key, controller.text));
+    final reactionParams = reactionParamControllers.map((key, controller) => MapEntry(key, controller.text));
     final token = await _storageService.getItem(StorageKeyEnum.authToken.name);
     final response = await _requestService.makeRequest<bool>(
-      endpoint: '/area/create?action=$action&reaction=$reaction',
+      endpoint: '/area/create?action=${Uri.encodeComponent(selectedAction!.name)}&reaction=${Uri.encodeComponent(selectedReaction!.name)}&action_params=${Uri.encodeComponent(json.encode(actionParams))}&reaction_params=${Uri.encodeComponent(json.encode(reactionParams))}',
       method: 'POST',
       headers: {'Authorization': 'Bearer $token'},
       parse: (response) => response.statusCode == 200,
     );
 
     if (response is DataSuccess) {
-
     } else if (response is DataError) {
       setState(() {
-        errorMessage = '${translate('subscribeToAreaError')}: ${response.data}';
+      errorMessage = '${translate('subscribeToAreaError')}: ${response.data}';
+      });
+    }
+  }
+
+  Future<void> fetchAllActions() async {
+    final token = await _storageService.getItem(StorageKeyEnum.authToken.name);
+    final response = await _requestService.makeRequest<List<dynamic>>(
+      endpoint: '/area/get/actions',
+      method: 'GET',
+      headers: {'Authorization': 'Bearer $token'},
+      parse: (response) {
+        final responseBody = response.body;
+        return json.decode(responseBody)['actions'];
+      },
+    );
+
+    if (response is DataSuccess) {
+      setState(() {
+        allActions = (response.data as List)
+            .map((actionJson) => ActionReaction.fromJson(actionJson))
+            .toList();
+        allActionsServices = allActions.map((action) => action.service).toSet().toList();
+      });
+    } else if (response is DataError) {
+      setState(() {
+        errorMessage = '${translate('fetchSubscribedAreasError')}: ${response.error}';
+      });
+    }
+  }
+
+  Future<void> fetchAllReactions() async {
+    final token = await _storageService.getItem(StorageKeyEnum.authToken.name);
+    final response = await _requestService.makeRequest<List<dynamic>>(
+      endpoint: '/area/get/reactions',
+      method: 'GET',
+      headers: {'Authorization': 'Bearer $token'},
+      parse: (response) {
+        final responseBody = response.body;
+        return json.decode(responseBody)['reactions'];
+      },
+    );
+
+    if (response is DataSuccess) {
+      setState(() {
+        allReactions = (response.data as List)
+            .map((reactionJson) => ActionReaction.fromJson(reactionJson))
+            .toList();
+        allReactionsServices = allReactions.map((reaction) => reaction.service).toSet().toList();
+      });
+    } else if (response is DataError) {
+      setState(() {
+        errorMessage = '${translate('fetchSubscribedAreasError')}: ${response.error}';
       });
     }
   }
@@ -46,10 +141,9 @@ class _CreatePageState extends State<CreatePage> {
   @override
   void initState() {
     super.initState();
+    fetchAllActions();
+    fetchAllReactions();
   }
-
-  String action = '';
-  String reaction = '';
 
   @override
   Widget build(BuildContext context) {
@@ -127,30 +221,64 @@ class _CreatePageState extends State<CreatePage> {
                       ),
                       subtitle: Padding(
                         padding: const EdgeInsets.only(
-                          bottom: 16.0, left: 32.0, right: 32.0),
-                        child: TextField(
-                          onChanged: (value) {
-                            setState(() {
-                              action = value;
-                            });
-                          },
-                          decoration: InputDecoration(
-                          hintText: 'Enter action',
-                          hintStyle: TextStyle(
-                            color: Colors.white70,
-                            fontFamily: 'IstokWeb',
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
-                          ),
-                          style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'IstokWeb',
-                          ),
+                        bottom: 16.0, left: 32.0, right: 32.0),
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: DropdownButton<String>(
+                                  hint: Text("Select Service"),
+                                  value: selectedActionService,
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedActionService = newValue;
+                                      selectedAction = null;
+                                      actionParamControllers.clear();
+                                    });
+                                  },
+                                  items: allActionsServices.map<DropdownMenuItem<String>>((dynamic value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                ),
+                            ),
+                            if (selectedActionService != null)
+                              Align(
+                              alignment: Alignment.centerLeft,
+                              child: DropdownButton<ActionReaction>(
+                                  hint: Text("Select Action"),
+                                  value: selectedAction,
+                                  onChanged: (ActionReaction? newValue) {
+                                    setState(() {
+                                      selectedAction = newValue;
+                                      actionParamControllers.clear();
+                                      if (selectedAction != null) {
+                                        selectedAction!.params.forEach((key, value) {
+                                          actionParamControllers[key] = TextEditingController();
+                                        });
+                                      }
+                                    });
+                                  },
+                                  items: allActions
+                                      .where((action) => action.service == selectedActionService)
+                                      .map<DropdownMenuItem<ActionReaction>>((ActionReaction value) {
+                                    return DropdownMenuItem<ActionReaction>(
+                                      value: value,
+                                      child: Text(value.name),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            if (selectedAction != null)
+                              ...selectedAction!.params.keys.map((String key) {
+                                return TextField(
+                                  controller: actionParamControllers[key],
+                                  decoration: InputDecoration(labelText: key),
+                                );
+                              }).toList(),
+                          ],
                         ),
                       ),
                     ),
@@ -182,29 +310,64 @@ class _CreatePageState extends State<CreatePage> {
                       subtitle: Padding(
                         padding: const EdgeInsets.only(
                           bottom: 16.0, left: 32.0, right: 32.0),
-                        child: TextField(
-                          onChanged: (value) {
-                            setState(() {
-                              reaction = value;
-                            });
-                          },
-                          decoration: InputDecoration(
-                          hintText: 'Enter reaction',
-                          hintStyle: TextStyle(
-                            color: Colors.white70,
-                            fontFamily: 'IstokWeb',
-                          ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.white),
-                          ),
-                          ),
-                          style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'IstokWeb',
-                          ),
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child:
+                            DropdownButton<String>(
+                              hint: Text("Select Service"),
+                              value: selectedReactionService,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectedReactionService = newValue;
+                                  selectedReaction = null;
+                                  reactionParamControllers.clear();
+                                });
+                              },
+                              items: allReactionsServices.map<DropdownMenuItem<String>>((dynamic value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                            ),
+                            ),
+                            if (selectedReactionService != null)
+                              Align(
+                              alignment: Alignment.centerLeft,
+                              child: DropdownButton<ActionReaction>(
+                                hint: Text("Select Reaction"),
+                                value: selectedReaction,
+                                onChanged: (ActionReaction? newValue) {
+                                  setState(() {
+                                    selectedReaction = newValue;
+                                    reactionParamControllers.clear();
+                                    if (selectedReaction != null) {
+                                      selectedReaction!.params.forEach((key, value) {
+                                        reactionParamControllers[key] = TextEditingController();
+                                      });
+                                    }
+                                  });
+                                },
+                                items: allReactions
+                                    .where((reaction) => reaction.service == selectedReactionService)
+                                    .map<DropdownMenuItem<ActionReaction>>((ActionReaction value) {
+                                  return DropdownMenuItem<ActionReaction>(
+                                    value: value,
+                                    child: Text(value.name),
+                                  );
+                                }).toList(),
+                              ),
+                              ),
+                            if (selectedReaction != null)
+                              ...selectedReaction!.params.keys.map((String key) {
+                                return TextField(
+                                  controller: reactionParamControllers[key],
+                                  decoration: InputDecoration(labelText: key),
+                                );
+                              }).toList(),
+                          ],
                         ),
                       ),
                     ),
@@ -215,7 +378,7 @@ class _CreatePageState extends State<CreatePage> {
           ),
             floatingActionButton: FloatingActionButton(
             onPressed: () {
-              createArea(action, reaction);
+              createArea();
             },
             backgroundColor: theme.colorScheme.primary,
             child: Icon(Icons.done, color: Colors.white),
