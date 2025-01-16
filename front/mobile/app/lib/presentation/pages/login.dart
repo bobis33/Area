@@ -69,6 +69,7 @@ class _LoginPageState extends State<LoginPage> {
           footerText: translate('noAccount'),
           footerActionText: translate('register'),
           onFooterActionPressed: () => context.go(context.namedLocation(RouteEnum.register.name)),
+          oauthButtons: true,
           errorMessage: errorMessage,
         );
       },

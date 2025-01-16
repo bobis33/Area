@@ -1,56 +1,55 @@
 <template>
-    <div class="language-switcher">
-      <button
-          v-for="lang in [LanguagesEnum.EN, LanguagesEnum.FR]"
+  <div class="language-switcher">
+    <select v-model="languageCookie" @change="updateLanguage" class="language-select">
+      <option
+          v-for="lang in Object.values(LanguagesEnum)"
           :key="lang"
-          @click="changeLanguage(lang)"
-          :class="{ active: lang === languageCookie }"
+          :value="lang"
       >
         {{ lang.toUpperCase() }}
-      </button>
-    </div>
+      </option>
+    </select>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { useCookie } from '#app'
-
 import { CookiesEnum, LanguagesEnum } from '~/config/constants'
+import { useI18n } from 'vue-i18n'
 
 const { setLocale } = useI18n()
-const languageCookie = useCookie(CookiesEnum.LANGUAGE.toString())
+const languageCookie = useCookie(CookiesEnum.LANGUAGE)
 
-const changeLanguage = (lang: LanguagesEnum) => {
-  setLocale(lang)
-  languageCookie.value = lang
+const updateLanguage = () => {
+  if (languageCookie.value) {
+    setLocale(languageCookie.value as LanguagesEnum)
+  }
 }
 
 if (languageCookie.value) {
-  setLocale(languageCookie.value as LanguagesEnum.EN | LanguagesEnum.FR)
+  setLocale(languageCookie.value as LanguagesEnum)
 }
 </script>
 
 <style scoped lang="scss">
 .language-switcher {
-  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 
-  button {
-    padding: 5px 10px;
-    border: 1px solid var(--border-color);
-    background-color: var(--button-bg);
-    color: var(--text-on-primary);
-    cursor: pointer;
-    border-radius: 5px;
+  .language-select {
+    margin-top: 15px;
+    padding: 10px;
     font-weight: bold;
+    background-color: var(--bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 16px;
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: var(--button-bg-hover);
-    }
-
-    &.active {
-      background-color: var(--color-primary);
-      color: var(--reverse-border-color);
-      border-color: var(--reverse-border-color);;
+      background-color: var(--dropdown-button-bg);
     }
   }
 }

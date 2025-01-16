@@ -25,18 +25,23 @@ jobs:
           sudo chmod +x /usr/local/bin/docker-compose
           docker-compose --version
 
+      - name: create .env file
+        run: |
+          echo "API_URL=http://0.0.0.0:8080" > ./front/web/app/.env
+          echo "PORT=8081" >> ./front/web/app/.env
+          echo "API_URL=http://10.0.2.2:8080" >> ./front/mobile/app/.env
+
       - name: Build with Docker Compose
         run: |
           docker-compose build client_mobile client_web_build client_web
 
       - name: Start services with Docker Compose
         run: |
-          docker-compose up -d client_mobile client_web_build client_web && sleep 20
+          docker-compose up -d client_mobile client_web_build client_web && sleep 30
 
       - name: Check if front web is running
         run: |
-          sleep 10
-          curl -f http://localhost:8080/login || exit 1
+          curl -f http://localhost:8081/login || exit 1
 
       - name: Shutdown services
         run: |

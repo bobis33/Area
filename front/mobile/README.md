@@ -9,16 +9,16 @@ This is the mobile front-end for the area project. It is build with [Flutter](ht
 - [Dart](https://dart.dev/get-dart)
 - [Flutter](https://flutter.dev/docs/get-started/install)
 
+First create a `.env` file in the `app/` folder and copy the content of the `.env.example` file in it. You will have to fill the variables with your own values.
+In Production, you will have to change the value of the `API_URL` variable to the production API URL.
 
-## Usage
-
-### Flutter dependencies
+Then run the following command to get the dependencies:
 
 ```bash
 $> flutter pub get
 ```
 
-### Build and run
+## Usage
 
 ```bash
 $> flutter build [ apk | appbundle ]

@@ -76,6 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
           footerText: translate('alreadyHaveAccount'),
           footerActionText: translate('login'),
           onFooterActionPressed: () => context.go(context.namedLocation(RouteEnum.login.name)),
+          oauthButtons: false,
           errorMessage: errorMessage,
         );
       },

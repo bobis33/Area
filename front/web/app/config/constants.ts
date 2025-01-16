@@ -10,8 +10,8 @@ export enum LanguagesEnum {
 }
 
 export enum RoutesEnum {
-    ABOUT = '/about',
     AREAS = '/areas',
     LOGIN = '/login',
+    PROFILE = '/profile',
     REGISTER = '/register',
 }

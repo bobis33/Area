@@ -1,11 +1,6 @@
-import { resolve } from 'path'
-
 import { LanguagesEnum } from './config/constants'
 
 export default defineNuxtConfig({
-  alias: {
-    '@assets': resolve(__dirname, '../../../assets'),
-  },
   colorMode: {
     preference: 'system',
     fallback: 'light',
@@ -13,7 +8,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   css: ['~/assets/styles/main.scss'],
   devServer: {
-    port: 8080,
+    port: Number(process.env.PORT),
   },
   devtools: { enabled: true },
   i18n: {
@@ -37,7 +32,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      baseUrlApi: 'http://localhost:8080',
+      baseUrlApi: process.env.API_URL,
     },
   },
   vite: {
