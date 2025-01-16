@@ -1,13 +1,37 @@
 <template>
   <div>
-      <button @click="router.push(RoutesEnum.HOME.toString())" class="btn-back-home">{{ $t('goBackHome') }}</button>
+    <h1>{{ $t('allActions') }}</h1>
+    <div v-if="actionsData && actionsData.actions && actionsData.actions.length">
+      <ul>
+        <li v-for="action in actionsData.actions" class="area-box">
+          <strong>{{ $t('name') }}:</strong> {{ action.name }} <br>
+          <strong>{{ $t('description') }}:</strong> {{ action.description }}
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      <p>No areas found.</p>
+    </div>
+
+    <h1>{{ $t('allReaction') }}</h1>
+    <div v-if="reactionsData && reactionsData.reactions && reactionsData.reactions.length">
+      <ul>
+        <li v-for="reaction in reactionsData.reactions" class="area-box">
+          <strong>{{ $t('name') }}:</strong> {{ reaction.name }} <br>
+          <strong>{{ $t('description') }}:</strong> {{ reaction.description }}
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      <p>No areas found.</p>
+    </div>
+
     <h1>{{ $t('allAreas') }}</h1>
     <div v-if="data && data.areas.length">
       <ul>
-        <li v-for="area in data.areas" :key="area._id">
+        <li v-for="area in data.areas" :key="area._id" class="area-box">
           <strong>{{ $t('action') }}:</strong> {{ area.action }} <br>
           <strong>{{ $t('reaction') }}:</strong> {{ area.reaction }}
-          <input type="email" v-model="userEmails[area._id]" :placeholder="$t('enterEmail')" required />
           <button @click="subscribeUser(area._id)">{{ $t('Subscribe') }}</button>
         </li>
       </ul>
@@ -18,12 +42,11 @@
 
     <h2>{{$t('subscribedArea')}}</h2>
     <div>
-      <input type="email" v-model="userEmail" placeholder="enterEmailToSeeSubscribedAreas" required />
       <button @click="fetchSubscribedAreas">{{$t('fetchSubscribedAreas')}}</button>
     </div>
     <div v-if="subscribedAreas.length">
       <ul>
-        <li v-for="area in subscribedAreas" :key="area._id">
+        <li v-for="area in subscribedAreas" :key="area._id" class="area-box">
           <strong>{{ $t('action') }}:</strong> {{ area.action }} <br>
           <strong>{{ $t('reaction') }}:</strong> {{ area.reaction }}
           <button @click="unsubscribeUser(area._id)">{{$t('Unsubscribe')}}</button>
@@ -51,81 +74,97 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from '#app'
+import {ref} from 'vue'
+import {useCookie} from '#app'
 
-import { RoutesEnum } from '~/config/constants'
+import {CookiesEnum} from "~/config/constants";
+import {Areas} from '~/infrastructure/repositories/AreaRepository'
 
+const token = useCookie(CookiesEnum.TOKEN.toString()).value
 const config = useRuntimeConfig()
-const router = useRouter()
 
-const userEmails = ref({})
-const userEmail = ref('')
-const subscribedAreas = ref([])
+interface Area {
+  _id: string;
+  action: string;
+  reaction: string;
+}
+
+const subscribedAreas = ref<Area[]>([])
 const newArea = ref({
   action: '',
   reaction: ''
 })
 
-const { data, error } = await useFetch(`${config.public.baseUrlApi}/area/get/all`, {
+interface Action {
+  name: string;
+  description: string;
+  service: string;
+}
+
+interface Reaction {
+  name: string;
+  description: string;
+  service: string;
+}
+
+const { data, error } = await useFetch<{ areas: Area[] }>(`${config.public.baseUrlApi}/area/get/all`, {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  },
+})
+
+const { data: actionsData, error: actionsError } = await useFetch<{ actions: Action[] }>(`${config.public.baseUrlApi}/area/get/actions`, {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  },
+})
+
+const { data: reactionsData, error: reactionsError } = await useFetch<{ reactions: Reaction[] }>(`${config.public.baseUrlApi}/area/get/reactions`, {
+  method: 'GET',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
   },
 })
 
 const fetchSubscribedAreas = async () => {
-  if (!userEmail.value) {
-    alert('Please enter your email.')
-    return
-  }
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/get/subscribed?user_email=${(userEmail.value)}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    const result = await response.json()
-    subscribedAreas.value = result['subscribed_areas']
+    if (token) {
+      subscribedAreas.value = await new Areas().fetchSubscribedAreas(token)
+    } else {
+      console.error('Token is not available');
+    }
   } catch (error) {
     console.error('Error fetching subscribed areas:', error)
   }
 }
 
-const subscribeUser = async (area_id) => {
-  const email = userEmails.value[area_id]
-  if (!email) {
-    alert('Please enter your email.')
-    return
-  }
+const subscribeUser = async (area_id: string) => {
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/subscribe?user_email=${(email)}&area_id=${area_id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    const result = await response.json()
-    await fetchSubscribedAreas()
+    if (token) {
+      console.log(area_id)
+      const response = await new Areas().subscribeUser(area_id, token);
+      await fetchSubscribedAreas()
+    } else {
+      console.error('Token is not available');
+    }
   } catch (error) {
     console.error('Error subscribing user:', error)
   }
 }
 
-const unsubscribeUser = async (area_id) => {
-  if (!userEmail.value) {
-    alert('Please enter your email.')
-    return
-  }
+const unsubscribeUser = async (area_id: string) => {
   try {
-    const response = await fetch(`${config.public.baseUrlApi}/area/unsubscribe?user_email=${(userEmail.value)}&area_id=${area_id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-    const result = await response.json()
-    await fetchSubscribedAreas()
+    if (token) {
+      const response = await new Areas().unsubscribeUser(area_id, token);
+      await fetchSubscribedAreas()
+    } else {
+      console.error('Token is not available');
+    }
   } catch (error) {
     console.error('Error unsubscribing user:', error)
   }
@@ -133,20 +172,11 @@ const unsubscribeUser = async (area_id) => {
 
 const createArea = async () => {
   try {
-    const url = `${config.public.baseUrlApi}/area/create?action=${(newArea.value.action)}&reaction=${(newArea.value.reaction)}`
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    })
-    if (!response.ok) {
-      throw new Error('Network response was not ok')
+    if (token) {
+      const response = await new Areas().createArea(token, newArea.value.action, newArea.value.reaction);
+    } else {
+      console.error('Token is not available');
     }
-    const result = await response.json()
-    console.log(result.message)
-    // Optionally, fetch the updated list of areas
-    // fetchAreas()
   } catch (error) {
     console.error('Error creating area:', error)
   }
@@ -154,14 +184,17 @@ const createArea = async () => {
 </script>
 
 <style scoped lang="scss">
-.btn-back-home {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 14px;
-  margin-top: 20px;
+.area-box {
+  border: 1px solid #ccc;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+
+  strong {
+    display: block;
+    margin-bottom: 8px;
+  }
+
 }
 </style>

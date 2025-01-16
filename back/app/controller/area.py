@@ -19,7 +19,6 @@ router = APIRouter()
 @secure_endpoint
 async def get_actions(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     result = []
-
     actions = await get_actions_service()
     for action in actions:
         result.append({

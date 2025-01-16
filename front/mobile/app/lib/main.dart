@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ import '/presentation/providers/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load();
   final storageService = StorageService();
   final String? savedTheme = await storageService.getItem(StorageKeyEnum.theme.name);
   final String? savedLang = await storageService.getItem(StorageKeyEnum.lang.name);
@@ -27,8 +29,8 @@ Future<void> main() async {
         ChangeNotifierProvider(
           create: (_) => ThemeProvider(
             (savedTheme ?? 'light') == 'dark'
-                ? darkTheme
-                : lightTheme,
+                ? lightTheme
+                : darkTheme,
           ),
         ),
         ChangeNotifierProvider(

@@ -2,7 +2,7 @@
   <div class="profile-page">
     <h1>{{ $t('profile') }}</h1>
 
-    <form @submit.prevent="confirmUsernameUpdate" class="profile-form">
+    <form @submit.prevent="changeUsername" class="profile-form">
       <h2>{{ $t('changeUsername') }}</h2>
       <label for="username">{{ $t('username') }}</label>
       <input
@@ -28,10 +28,43 @@
       <button type="submit">{{ $t('update') }}</button>
     </form>
 
+    <div>
+      <button @click="logout" class="btn-logout m-5">{{ $t('logout') }}</button>
+
+      <button
+          v-if="!isLinkedGoogle"
+          @click="linkGoogleAccount"
+          class="btn-google m-5"
+      >
+        <ImageComponent fileName="google.png" altText="Google logo" class="google-logo" />
+        {{ $t('linkGoogleAccount') }}
+      </button>
+
+      <button v-else-if="isLinkedGoogle" class="btn-google-disabled m-5" disabled>
+        <ImageComponent fileName="google.png" altText="Google logo" class="google-logo" />
+        {{ $t('googleAccountLinked') }}
+      </button>
+
+      <button class="btn-google-disabled m-5" disabled>
+        <ImageComponent fileName="github.png" altText="Github logo" class="google-logo" />
+        {{ $t('disabled') }}
+      </button>
+
+      <button class="btn-google-disabled m-5" disabled>
+        <ImageComponent fileName="discord.png" altText="Discord logo" class="google-logo" />
+        {{ $t('disabled') }}
+      </button>
+
+      <button class="btn-google-disabled m-5" disabled>
+        <ImageComponent fileName="microsoft.png" altText="Microsoft logo" class="google-logo" />
+        {{ $t('disabled') }}
+      </button>
+    </div>
+
     <div v-if="showConfirmModal" class="modal">
       <div class="modal-content">
         <p>{{ $t('usernameUpdateMessage') }}</p>
-        <button @click="proceedWithUsernameUpdate">{{ $t('continue') }}</button>
+        <button @click="confirmUsernameUpdate">{{ $t('continue') }}</button>
         <button @click="cancelUsernameUpdate">{{ $t('cancel') }}</button>
       </div>
     </div>
@@ -39,43 +72,34 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from 'vue'
 import { UserRepository } from "~/infrastructure/repositories/UserRepository";
 import { getUser, updatePassword, updateUsername } from "~/domain/use-cases/user";
 import { useCookie, useRouter } from '#app'
 import {CookiesEnum, RoutesEnum} from "~/config/constants";
 import { useSnackbar } from "~/composables/useSnackBar";
+import ImageComponent from "~/components/Assets.vue";
 
 const username = ref("")
 const password = ref("")
 const showConfirmModal = ref(false)
 const router = useRouter()
 const { showSnackbar } = useSnackbar()
+const config = useRuntimeConfig()
+const isLinkedGoogle = ref<boolean | null>(null)
 
-onMounted(async () => {
-  const userData = await user();
-  if (userData) {
-    username.value = userData['username'] || "";
-  }
-});
-
-async function user() {
-  try {
-    return await new getUser(new UserRepository()).execute()
-  } catch (error: any) {
-    console.error(error.message)
-    return null
-  }
-}
-
-async function confirmUsernameUpdate() {
+async function changeUsername() {
   if (!username.value) {
     return
   }
   showConfirmModal.value = true
 }
 
-async function proceedWithUsernameUpdate() {
+function cancelUsernameUpdate() {
+  showConfirmModal.value = false
+}
+
+async function confirmUsernameUpdate() {
   try {
     const response = await new updateUsername(new UserRepository()).execute(username.value)
     useCookie(CookiesEnum.TOKEN.toString()).value = null
@@ -88,10 +112,6 @@ async function proceedWithUsernameUpdate() {
   }
 }
 
-function cancelUsernameUpdate() {
-  showConfirmModal.value = false
-}
-
 async function changePassword() {
   if (!password.value) {
     return
@@ -102,9 +122,70 @@ async function changePassword() {
     console.error(error.message)
   }
 }
+
+async function logout() {
+  useCookie(CookiesEnum.TOKEN.toString()).value = null
+  await router.push(RoutesEnum.LOGIN.toString())
+  showSnackbar('logoutSuccess', 'success')
+}
+
+async function fetchIsLinkedGoogle() {
+  const JWTToken = useCookie(CookiesEnum.TOKEN.toString()).value
+  if (!JWTToken) {
+    isLinkedGoogle.value = false
+    return
+  }
+
+  try {
+    const response = await fetch(`${config.public.baseUrlApi}/auth/is/linked/google`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${JWTToken}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch Google link status')
+    }
+
+    const data = await response.json()
+    isLinkedGoogle.value = data.linked
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error)
+    isLinkedGoogle.value = false
+  }
+}
+
+async function linkGoogleAccount() {
+  try {
+    window.location.href = `${config.public.baseUrlApi}/auth/login/to/google`
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error)
+  }
+}
+
+async function user() {
+  try {
+    return await new getUser(new UserRepository()).execute()
+  } catch (error: any) {
+    console.error(error.message)
+    return null
+  }
+}
+
+onMounted(async () => {
+  await fetchIsLinkedGoogle()
+  const userData = await user();
+  if (userData) {
+    username.value = userData['username'] || "";
+  }
+})
+
 </script>
 
 <style scoped lang="scss">
+
 .profile-page {
   max-width: 600px;
   margin: 2rem auto;
@@ -193,6 +274,64 @@ async function changePassword() {
       background-color: #ccc;
       color: #000;
     }
+  }
+}
+
+.btn-logout {
+  background-color: var(--error-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1.125rem;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #dc3545;
+  }
+}
+
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #4285F4;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  gap: 10px;
+
+  &:hover {
+    background-color: #357ae8;
+  }
+
+  .google-logo {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.btn-google-disabled {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ddd;
+  color: #aaa;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  gap: 10px;
+
+  .google-logo {
+    width: 20px;
+    height: 20px;
+    opacity: 0.6;
   }
 }
 </style>
