@@ -66,6 +66,18 @@
               <ImageComponent fileName="google.png" altText="Google logo" class="google-logo" />
               {{ $t('googleAccountLinked') }}
             </button>
+            <button @click="linkDiscordAccount" class="button is-link">
+              <ImageComponent fileName="discord.png" altText="Discord logo" class="google-logo" />
+              {{ $t('linkDiscordAccount') }}
+            </button>
+            <button @click="linkGithubAccount" class="button is-link">
+              <ImageComponent fileName="github.png" altText="Github logo" class="google-logo" />
+              {{ $t('linkGithubAccount') }}
+            </button>
+            <button @click="linkSpotifyAccount" class="button is-link">
+              <ImageComponent fileName="spotify.png" altText="Spotify logo" class="google-logo" />
+              {{ $t('linkSpotifyAccount') }}
+            </button>
           </div>
 
           <div class="buttons is-centered">
@@ -74,11 +86,7 @@
               {{ $t('disabled') }}
             </button>
             <button class="button is-link is-disabled" disabled>
-              <ImageComponent fileName="discord.png" altText="Discord logo" class="google-logo" />
-              {{ $t('disabled') }}
-            </button>
-            <button class="button is-link is-disabled" disabled>
-              <ImageComponent fileName="microsoft.png" altText="Microsoft logo" class="google-logo" />
+              <ImageComponent fileName="spotify.png" altText="Spotify logo" class="google-logo" />
               {{ $t('disabled') }}
             </button>
           </div>
@@ -193,6 +201,31 @@ async function linkGoogleAccount() {
     console.error('There was a problem with the fetch operation:', error)
   }
 }
+
+async function linkDiscordAccount() {
+  try {
+    window.location.href = `${config.public.baseUrlApi}/auth/login/to/discord`
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error)
+  }
+}
+
+async function linkSpotifyAccount() {
+  try {
+    window.location.href = `${config.public.baseUrlApi}/auth/login/to/spotify`
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error)
+  }
+}
+
+async function linkGithubAccount() {
+  try {
+    window.location.href = `${config.public.baseUrlApi}/auth/login/to/github`
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error)
+  }
+}
+
 
 async function user() {
   try {

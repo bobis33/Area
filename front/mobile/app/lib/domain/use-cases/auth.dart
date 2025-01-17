@@ -41,3 +41,13 @@ class LinkToGoogle {
     return repository.linkToGoogle(googleToken);
   }
 }
+
+class LinkTo {
+  final AuthRepository repository;
+
+  LinkTo(this.repository);
+
+  Future<DataState<String>> execute(String endpoint) {
+    return repository.linkTo(endpoint);
+  }
+}

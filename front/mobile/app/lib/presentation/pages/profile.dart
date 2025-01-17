@@ -265,7 +265,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 OauthLinkButton(
                   iconUrl: '$_apiUrl/assets/google.png',
                   text: translate('linkGoogle'),
-                  _authUrl: '$apiUrl/auth/login/to/google',
+                  authUrl: '$_apiUrl/auth/login/to/google',
                   backgroundColor: Colors.blueAccent,
                 ),
                 const SizedBox(height: 16),

@@ -3,11 +3,8 @@ import 'package:flutter_translate/flutter_translate.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '/config/api_config.dart';
-import '/data/sources/request_service.dart';
-import '/data/sources/storage_service.dart';
 
-
-Future<Map<String, String>> fetchSocialIcons() async {
+Future<Map<String, String>> _fetchSocialIcons() async {
   final apiUrl = ApiConfig().apiUrl;
   return {
     'discord': '$apiUrl/assets/discord.png',
@@ -52,6 +49,7 @@ Widget _button({
 }
 
 Widget loginOauthButtons() {
+  final apiUrl = ApiConfig().apiUrl;
   return FutureBuilder<Map<String, String>>(
     future: _fetchSocialIcons(),
     builder: (context, snapshot) {
@@ -67,12 +65,12 @@ Widget loginOauthButtons() {
             _button(
               imageUrl: icons['discord']!,
               label: 'Discord',
-              onPressed: () {},
+              onPressed: () { _handleAuth(context, '$apiUrl/auth/login/with/discord'); },
             ),
             _button(
               imageUrl: icons['github']!,
               label: 'GitHub',
-              onPressed: () {},
+              onPressed: () { _handleAuth(context, '$apiUrl/auth/login/with/github'); },
             ),
             _button(
               imageUrl: icons['google']!,
@@ -82,7 +80,7 @@ Widget loginOauthButtons() {
             _button(
               imageUrl: icons['spotify']!,
               label: 'Spotify',
-              onPressed: () {},
+              onPressed: () { _handleAuth(context, '$apiUrl/auth/login/with/spotify'); },
             ),
           ],
         );

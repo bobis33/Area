@@ -24,6 +24,45 @@ class DeepLinkListener {
     }
   }
 
+  Future<void> _linkToGithub(BuildContext context, String githubToken) async {
+    try {
+      final authResponse = await LinkTo(AuthRepositoryImpl()).execute('github?github_token=$githubToken');
+      if (authResponse is DataSuccess) {
+        snackBar(context, translate('linkGithubSuccess'), Theme.of(context).colorScheme.secondary);
+      } else if (authResponse is DataError) {
+        snackBar(context, authResponse.error ?? translate('anErrorOccurred'), Theme.of(context).colorScheme.error);
+      }
+    } catch (error) {
+      debugPrint('Erreur lors de la requête: $error');
+    }
+  }
+
+  Future<void> _linkToDiscord(BuildContext context, String discordToken) async {
+    try {
+      final authResponse = await LinkTo(AuthRepositoryImpl()).execute('discord?discord_token=$discordToken');
+      if (authResponse is DataSuccess) {
+        snackBar(context, translate('linkDiscordSuccess'), Theme.of(context).colorScheme.secondary);
+      } else if (authResponse is DataError) {
+        snackBar(context, authResponse.error ?? translate('anErrorOccurred'), Theme.of(context).colorScheme.error);
+      }
+    } catch (error) {
+      debugPrint('Erreur lors de la requête: $error');
+    }
+  }
+
+  Future<void> _linkToSpotify(BuildContext context, String spotifyToken) async {
+    try {
+      final authResponse = await LinkTo(AuthRepositoryImpl()).execute('spotify?spotify_token=$spotifyToken');
+      if (authResponse is DataSuccess) {
+        snackBar(context, translate('linkSpotifySuccess'), Theme.of(context).colorScheme.secondary);
+      } else if (authResponse is DataError) {
+        snackBar(context, authResponse.error ?? translate('anErrorOccurred'), Theme.of(context).colorScheme.error);
+      }
+    } catch (error) {
+      debugPrint('Erreur lors de la requête: $error');
+    }
+  }
+
   void initDeepLinkListener(BuildContext context) async {
     final appLinks = AppLinks();
     appLinks.uriLinkStream.listen((Uri? uri) {
@@ -33,6 +72,21 @@ class DeepLinkListener {
         RegExp exp = RegExp(r"'access_token':\s*\+?'([^']+)'");
         final match = exp.firstMatch(googleToken!);
         _linkToGoogle(context, match![1]!);
+      } else if (uri.queryParameters['github_token'] != null) {
+        final googleToken = uri.queryParameters['github_token'];
+        RegExp exp = RegExp(r"'access_token':\s*\+?'([^']+)'");
+        final match = exp.firstMatch(googleToken!);
+        _linkToGithub(context, match![1]!);
+      } else if (uri.queryParameters['discord_token'] != null) {
+        final googleToken = uri.queryParameters['discord_token'];
+        RegExp exp = RegExp(r"'access_token':\s*\+?'([^']+)'");
+        final match = exp.firstMatch(googleToken!);
+        _linkToDiscord(context, match![1]!);
+      } else if (uri.queryParameters['spotify_token'] != null) {
+        final googleToken = uri.queryParameters['spotify_token'];
+        RegExp exp = RegExp(r"'access_token':\s*\+?'([^']+)'");
+        final match = exp.firstMatch(googleToken!);
+        _linkToSpotify(context, match![1]!);
       } else if (uri.queryParameters['token'] != null) {
         final token = uri.queryParameters['token'];
         final storageService = StorageService();

@@ -2,7 +2,7 @@ import { defineNuxtRouteMiddleware, useCookie } from '#app'
 
 import { CookiesEnum, RoutesEnum } from '~/config/constants'
 import { VerifyToken } from '~/domain/use-cases/auth'
-import { LinkToGoogle } from "~/domain/use-cases/oauth";
+import {LinkToDiscord, LinkToGithub, LinkToGoogle, LinkToSpotify} from "~/domain/use-cases/oauth";
 import { AuthRepository } from '~/infrastructure/repositories/AuthRepository'
 import { OauthRepository } from "~/infrastructure/repositories/OauthRepository";
 
@@ -12,12 +12,55 @@ const handleGoogleLink = async (googleToken: string) => {
     console.log('decodedToken: ', decodedToken)
     const accessTokenMatch = decodedToken.match(/'access_token':\s*\+?'([^']+)'/)
     if (accessTokenMatch) {
-        const accessToken = accessTokenMatch[1]
-        console.log('Access Token:', accessToken)
         try {
-            await new LinkToGoogle(new OauthRepository()).execute(useCookie(CookiesEnum.TOKEN.toString()).value!, accessToken);
+            await new LinkToGoogle(new OauthRepository()).execute(useCookie(CookiesEnum.TOKEN.toString()).value!, accessTokenMatch[1]);
         } catch (error) {
             console.error('Error linking to Google:', error);
+        }
+        return window.location.href = RoutesEnum.AREAS.toString()
+    }
+}
+
+const handleDiscordLink = async (discordToken: string) => {
+    const decodedToken = decodeURIComponent(discordToken)
+
+    console.log('decodedToken: ', decodedToken)
+    const accessTokenMatch = decodedToken.match(/'access_token':\s*\+?'([^']+)'/)
+    if (accessTokenMatch) {
+        try {
+            await new LinkToDiscord(new OauthRepository()).execute(useCookie(CookiesEnum.TOKEN.toString()).value!, accessTokenMatch[1]);
+        } catch (error) {
+            console.error('Error linking to Discord:', error);
+        }
+        return window.location.href = RoutesEnum.AREAS.toString()
+    }
+}
+
+const handleGithubLink = async (githubToken: string) => {
+    const decodedToken = decodeURIComponent(githubToken)
+
+    console.log('decodedToken: ', decodedToken)
+    const accessTokenMatch = decodedToken.match(/'access_token':\s*\+?'([^']+)'/)
+    if (accessTokenMatch) {
+        try {
+            await new LinkToGithub(new OauthRepository()).execute(useCookie(CookiesEnum.TOKEN.toString()).value!, accessTokenMatch[1]);
+        } catch (error) {
+            console.error('Error linking to Github:', error);
+        }
+        return window.location.href = RoutesEnum.AREAS.toString()
+    }
+}
+
+const handleSpotifyLink = async (spotifyToken: string) => {
+    const decodedToken = decodeURIComponent(spotifyToken)
+
+    console.log('decodedToken: ', decodedToken)
+    const accessTokenMatch = decodedToken.match(/'access_token':\s*\+?'([^']+)'/)
+    if (accessTokenMatch) {
+        try {
+            await new LinkToSpotify(new OauthRepository()).execute(useCookie(CookiesEnum.TOKEN.toString()).value!, accessTokenMatch[1]);
+        } catch (error) {
+            console.error('Error linking to Spotify:', error);
         }
         return window.location.href = RoutesEnum.AREAS.toString()
     }
@@ -36,6 +79,18 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
     if (query.google_token) {
         await handleGoogleLink(query.google_token as string)
+    }
+
+    if (query.discord_token) {
+        await handleDiscordLink(query.discord_token as string)
+    }
+
+    if (query.github_token) {
+        await handleGithubLink(query.github_token as string)
+    }
+
+    if (query.spotify_token) {
+        await handleSpotifyLink(query.spotify_token as string)
     }
 
     if (query.token) {

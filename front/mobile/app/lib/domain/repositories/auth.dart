@@ -6,4 +6,5 @@ abstract class AuthRepository {
   Future<DataState<String>> loginUser(User user);
   Future<DataState<String>> registerUser(User user);
   Future<DataState<String>> linkToGoogle(String googleToken);
+  Future<DataState<String>> linkTo(String endpoint);
 }

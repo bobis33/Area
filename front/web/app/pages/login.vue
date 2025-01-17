@@ -44,9 +44,9 @@
               <ImageComponent fileName="google.png" altText="Google logo" class="oauth-logo" />
               {{ $t('loginWithGoogle') }}
             </button>
-            <button class="button is-link is-fullwidth" @click="handleOAuth('microsoft')">
-              <ImageComponent fileName="microsoft.png" altText="Microsoft logo" class="oauth-logo" />
-              {{ $t('loginWithMicrosoft') }}
+            <button class="button is-link is-fullwidth" @click="handleOAuth('spotify')">
+              <ImageComponent fileName="spotify.png" altText="Microsoft logo" class="oauth-logo" />
+              {{ $t('loginWithSpotify') }}
             </button>
           </div>
 
@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useCookie, useRouter } from '#app'
 import ImageComponent from '~/components/Assets.vue'
 
@@ -93,7 +93,7 @@ async function handleSubmit() {
   }
 }
 
-function handleOAuth(provider: 'discord' | 'github' | 'google' | 'microsoft') {
+function handleOAuth(provider: 'discord' | 'github' | 'google' | 'spotify') {
   const apiUrl = useRuntimeConfig().public.baseUrlApi
   const oauthUrls = {
     discord: `${apiUrl}/auth/login/with/discord`,
@@ -111,10 +111,6 @@ function handleOAuth(provider: 'discord' | 'github' | 'google' | 'microsoft') {
 <style scoped>
 @import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
 
-.auth-logo {
-  margin-bottom: 20px;
-}
-
 .oauth-logo {
   width: 20px;
   height: 20px;
@@ -129,11 +125,4 @@ function handleOAuth(provider: 'discord' | 'github' | 'google' | 'microsoft') {
   margin-top: 20px;
 }
 
-.button.is-text {
-  background: none;
-  border: none;
-  color: #3273dc;
-  cursor: pointer;
-  text-decoration: underline;
-}
 </style>

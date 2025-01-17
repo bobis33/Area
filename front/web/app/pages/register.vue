@@ -59,7 +59,6 @@ import { useSnackbar } from '~/composables/useSnackBar'
 import { RoutesEnum } from '~/config/constants'
 import { AuthRepository } from '~/infrastructure/repositories/AuthRepository'
 import { RegisterUser } from '~/domain/use-cases/auth'
-import ImageComponent from "~/components/Assets.vue";
 
 const username = ref('')
 const password = ref('')
