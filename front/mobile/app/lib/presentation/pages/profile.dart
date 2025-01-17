@@ -12,6 +12,7 @@ import '/domain/use-cases/user.dart';
 import '/presentation/widgets/oauth_link_button.dart';
 import '/presentation/widgets/text_field.dart';
 import '/presentation/widgets/snack_bar.dart';
+import '/presentation/layouts/appbar.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -195,20 +196,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: theme.colorScheme.surfaceTint,
-      appBar: AppBar(
-        title: Text(
-          'My Account',
-          style: TextStyle(
-            fontFamily: 'IstokWeb',
-            fontWeight: FontWeight.bold,
-            fontSize: 25,
-            color: theme.colorScheme.onSurface,
-          ),
-        ),
-        centerTitle: true,
-        toolbarHeight: 80,
-        backgroundColor: theme.colorScheme.surfaceContainerHighest,
-      ),
+      appBar: CustomAppBar(title: 'My Account', hideAccountButton: true, hideSettingsButton: true),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

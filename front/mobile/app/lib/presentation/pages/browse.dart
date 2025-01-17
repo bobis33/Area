@@ -10,6 +10,7 @@ import '/data/models/data.dart';
 import '/data/sources/request_service.dart';
 import '/data/sources/storage_service.dart';
 import '/presentation/providers/language.dart';
+import '/presentation/layouts/appbar.dart';
 import 'profile.dart';
 
 class BrowsePage extends StatefulWidget {
@@ -106,46 +107,7 @@ class _BrowsePageState extends State<BrowsePage> {
       builder: (context, languageProvider, child) {
         return Scaffold(
           backgroundColor: theme.colorScheme.surfaceTint,
-          appBar: AppBar(
-            title: Text(
-              'Shared AREAS',
-              style: TextStyle(
-                fontFamily: 'IstokWeb',
-                fontWeight: FontWeight.bold,
-                fontSize: 25,
-                color: theme.colorScheme.onSurface,
-              ),
-            ),
-            centerTitle: true,
-            toolbarHeight: 80,
-            backgroundColor: theme.colorScheme.surfaceContainerHighest,
-            leading: Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: IconButton(
-              icon: Icon(Icons.account_circle, color: theme.colorScheme.onSurface, size: 30),
-              onPressed: () {
-                Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProfilePage()),
-                );
-              },
-              ),
-            ),
-            actions: [
-              Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: IconButton(
-                icon: Icon(Icons.settings, color: theme.colorScheme.onSurface, size: 30),
-                onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SettingsPage()),
-                );
-                },
-              ),
-              ),
-            ],
-          ),
+          appBar: CustomAppBar(title: "Shared Areas"),
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),

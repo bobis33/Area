@@ -10,6 +10,7 @@ import '/data/sources/storage_service.dart';
 import '/data/sources/request_service.dart';
 import '/presentation/providers/language.dart';
 import '/presentation/providers/theme.dart';
+import '/presentation/layouts/appbar.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -45,20 +46,7 @@ class _SettingsPageState extends State<SettingsPage> {
       builder: (context, languageProvider, themeProvider, child) {
         return Scaffold(
           backgroundColor: theme.colorScheme.surfaceTint,
-          appBar: AppBar(
-            title: Text(
-              'Settings',
-              style: TextStyle(
-                fontFamily: 'IstokWeb',
-                fontWeight: FontWeight.bold,
-                fontSize: 25,
-                color: theme.colorScheme.onSurface,
-              ),
-            ),
-            centerTitle: true,
-            toolbarHeight: 80,
-            backgroundColor: theme.colorScheme.surfaceContainerHighest
-          ),
+          appBar: CustomAppBar(title: "Settings", hideAccountButton: true, hideSettingsButton: true),
           body: ListView(
             padding: const EdgeInsets.all(16.0),
             children: [
