@@ -92,7 +92,7 @@ class PlaySongReaction(IReaction):
     def __init__(self):
         super().__init__()
         self.name = "Play Song"
-        self.description = "Play a specific song on the user's Spotify account."
+        self.description = "Play a specific song on the user's Spotify account. (WARNING: will fail if spotify is not active on the specified device)"
         self.service = Service.SPOTIFY
 
     async def get_params(self):
