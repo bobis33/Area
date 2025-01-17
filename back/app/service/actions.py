@@ -1,5 +1,6 @@
 import time
 import aiohttp
+import requests
 from datetime import datetime, timezone, timedelta
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -7,7 +8,7 @@ from googleapiclient.errors import HttpError
 
 from .areaComponents import IAction, Service
 from app.config import Config
-from app.database import DAO
+from app.database import DAO, get_database
 
 class MailRecvAction(IAction):
     def __init__(self):
@@ -18,7 +19,7 @@ class MailRecvAction(IAction):
 
     async def is_triggered(self, user, params) -> bool:
         try:
-            google_infos = user['external_tokens']['GOOGLE']
+            google_infos = user['linked_to']['GOOGLE']
 
             creds = Credentials(
                 token=google_infos["access_token"],
@@ -56,7 +57,7 @@ class GithubRepoCreatedAction(IAction):
         """'github_repo_created' An action function that triggers when a GitHub repository is created
         """
         try:
-            github_infos = user['external_tokens']['GITHUB']
+            github_infos = user['linked_to']['GITHUB']
             access_token = github_infos["access_token"]
             username = user['github_username']
 
@@ -91,7 +92,7 @@ class NewIssueAssignedAction(IAction):
 
     async def is_triggered(self, user, params) -> bool:
         try:
-            github_infos = user['external_tokens']['GITHUB']
+            github_infos = user['linked_to']['GITHUB']
             access_token = github_infos["access_token"]
             username = user['github_username']
 
@@ -126,7 +127,7 @@ class RepoStarCountUpdatedAction(IAction):
 
     async def is_triggered(self, user, params) -> bool:
         try:
-            github_infos = user['external_tokens']['GITHUB']
+            github_infos = user['linked_to']['GITHUB']
             access_token = github_infos["access_token"]
 
             repo_owner = "Asti0s"
@@ -171,7 +172,7 @@ class RepoForkCountUpdatedAction(IAction):
 
     async def is_triggered(self, user, params) -> bool:
         try:
-            github_infos = user['external_tokens']['GITHUB']
+            github_infos = user['linked_to']['GITHUB']
             access_token = github_infos["access_token"]
 
             repo_owner = "NASA-SW-VnV"
@@ -205,4 +206,82 @@ class RepoForkCountUpdatedAction(IAction):
 
         except Exception as error:
             print(f"An error occurred: {error}", flush=True)
+            return False
+
+class NewLikedTrackAction(IAction):
+    def __init__(self):
+        super().__init__()
+        self.name = "New Liked Track"
+        self.description = "Triggers when a new track is liked by the user."
+        self.service = Service.SPOTIFY
+
+    @staticmethod
+    async def refresh_access_token(refresh_token: str):
+        """
+        Refresh Spotify access token using the provided refresh token.
+        """
+        try:
+            token_url = "https://accounts.spotify.com/api/token"
+            payload = {
+                "grant_type": "refresh_token",
+                "refresh_token": refresh_token,
+                "client_id": Config.SPOTIFY_CLIENT_ID,
+                "client_secret": Config.SPOTIFY_CLIENT_SECRET,
+            }
+            response = requests.post(token_url, data=payload)
+            if response.status_code == 200:
+                return response.json()["access_token"]
+            else:
+                print(f"Failed to refresh token: {response.status_code} {response.text}", flush=True)
+                return None
+        except Exception as e:
+            print(f"Error refreshing token: {e}", flush=True)
+            return None
+
+    @staticmethod
+    async def is_triggered(user, params) -> bool:
+        try:
+            # Retrieve Spotify user info
+            spotify_infos = await DAO.find(get_database().spotify_users, "_id", user['linked_to']['spotify'])
+
+            access_token = spotify_infos["token"]["access_token"]
+            refresh_token = spotify_infos["token"]["refresh_token"]
+            headers = {"Authorization": f"Bearer {access_token}"}
+
+            # Attempt to check recently liked tracks
+            response = requests.get(
+                "https://api.spotify.com/v1/me/tracks?limit=1",
+                headers=headers
+            )
+
+            if response.status_code == 401:  # Access token expired
+                print("Access token expired, refreshing token...", flush=True)
+                new_access_token = await NewLikedTrackAction.refresh_access_token(refresh_token)
+                if new_access_token:
+                    # Update access token in the database
+                    await DAO.update(
+                        get_database().spotify_users,
+                        "_id",
+                        spotify_infos["_id"],
+                        {"token.access_token": new_access_token}
+                    )
+                    # Retry the original request with the new token
+                    headers["Authorization"] = f"Bearer {new_access_token}"
+                    response = requests.get(
+                        "https://api.spotify.com/v1/me/tracks?limit=1",
+                        headers=headers
+                    )
+
+            if response.status_code == 200:
+                recent_track = response.json()["items"][0]["added_at"]
+                now = datetime.utcnow()
+                track_time = datetime.strptime(recent_track, "%Y-%m-%dT%H:%M:%SZ")
+                delta = (now - track_time).total_seconds()
+
+                return delta <= Config.AREA_CHECK_INTERVAL
+
+            print(f"Failed to check liked tracks: {response.status_code} {response.text}", flush=True)
+            return False
+        except Exception as e:
+            print(f"An error occurred: {e}", flush=True)
             return False

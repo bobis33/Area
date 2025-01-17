@@ -12,6 +12,7 @@ import '/domain/use-cases/user.dart';
 import '/presentation/widgets/oauth_link_button.dart';
 import '/presentation/widgets/text_field.dart';
 import '/presentation/widgets/snack_bar.dart';
+import '/presentation/layouts/appbar.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -192,16 +193,22 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    final theme = Theme.of(context);
+    return Scaffold(
+      backgroundColor: theme.colorScheme.surfaceTint,
+      appBar: CustomAppBar(title: 'My Account', hideAccountButton: true, hideSettingsButton: true),
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Stack(
               children: [
-                CircleAvatar(
-                  radius: 60,
-                  backgroundImage: NetworkImage('$apiUrl/assets/avatar.png'), // Replace with user avatar
-                  backgroundColor: Colors.grey[300],
+                Padding (padding: const EdgeInsets.only(top: 32.0), child:
+                  CircleAvatar(
+                    radius: 60,
+                    backgroundImage: NetworkImage('$apiUrl/assets/avatar.png'), // Replace with user avatar
+                    backgroundColor: theme.colorScheme.surface,
+                  ),
                 ),
                 Positioned(
                   bottom: 0,
@@ -209,9 +216,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: GestureDetector(
                     onTap: _changeAvatar,
                     child: CircleAvatar(
-                      backgroundColor: Theme.of(context).primaryColor,
+                      backgroundColor: theme.colorScheme.primary,
                       radius: 20,
-                      child: const Icon(Icons.edit, color: Colors.white, size: 18),
+                      child: Icon(Icons.edit, color: Colors.white, size: 18),
                     ),
                   ),
                 ),
@@ -239,9 +246,30 @@ class _ProfilePageState extends State<ProfilePage> {
                   label: translate('passwordConfirmation'),
                   obscureText: true,
                 ),
+                const SizedBox(height: 32),
                 ElevatedButton(
-                  onPressed: _submitChanges,
-                  child: Text(translate('submit')),
+                  onPressed: () async => {
+                  await StorageService().clearItem(StorageKeyEnum.authToken.name),
+                  snackBar(context, translate('logoutSuccess'), Theme.of(context).colorScheme.secondary),
+                  context.go(context.namedLocation(RouteEnum.root.name)),
+                  },
+                  style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      translate('Disconnect'),
+                      style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      ),
+                    ),
+                  ),
                 ),
                 OauthLinkButton(
                   iconUrl: '$apiUrl/assets/discord.png',
@@ -307,6 +335,12 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ],
+      ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _submitChanges,
+        backgroundColor: theme.colorScheme.primary,
+        child: Icon(Icons.done, color: Colors.white),
       ),
     );
   }

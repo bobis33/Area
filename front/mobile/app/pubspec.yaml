@@ -34,7 +34,14 @@ dev_dependencies:
 flutter:
   assets:
     - assets/i18n/
+    - assets/images/
     - .env
+  fonts:
+    - family: IstokWeb
+      fonts:
+        - asset: assets/fonts/IstokWeb-Regular.ttf
+        - asset: assets/fonts/IstokWeb-Bold.ttf
+          weight: 700
   uses-material-design: true
 
 flutter_launcher_icons:

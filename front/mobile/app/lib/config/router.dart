@@ -1,9 +1,12 @@
+import 'package:area_front_mobile/presentation/pages/create.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
+import '../presentation/pages/browse.dart';
 import '/config/constants.dart';
-import '/presentation/layouts/drawer.dart';
+import '/presentation/layouts/navbar.dart';
 import '/presentation/pages/areas.dart';
-import '/presentation/pages/home.dart';
 import '/presentation/pages/login.dart';
 import '/presentation/pages/profile.dart';
 import '/presentation/pages/register.dart';
@@ -25,7 +28,7 @@ final router = GoRouter(
     GoRoute(
       name: RouteEnum.login.name,
       path: '/login',
-      builder: (context, state) => MainLayout(child: LoginPage()),
+      builder: (context, state) => Scaffold(body: LoginPage()),
     ),
     GoRoute(
       name: RouteEnum.profile.name,
@@ -35,7 +38,17 @@ final router = GoRouter(
     GoRoute(
       name: RouteEnum.register.name,
       path: '/register',
-      builder: (context, state) => MainLayout(child: RegisterPage()),
+      builder: (context, state) => Scaffold(body: RegisterPage()),
+    ),
+    GoRoute(
+      name: RouteEnum.create.name,
+      path: '/create',
+      builder: (context, state) => MainLayout(child: CreatePage()),
+    ),
+    GoRoute(
+      name: RouteEnum.browse.name,
+      path: '/browse',
+      builder: (context, state) => MainLayout(child: BrowsePage()),
     ),
   ],
 );

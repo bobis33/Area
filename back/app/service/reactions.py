@@ -1,6 +1,6 @@
 import aiohttp
 import base64
-import random
+import requests
 from email.message import EmailMessage
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -8,11 +8,13 @@ from googleapiclient.discovery import build
 from app.config import Config
 from .areaComponents import IReaction, Service
 
+from app.database import DAO, get_database
+
 class SendMailReaction(IReaction):
     def __init__(self):
         super().__init__()
-        self.name = "Send Mail To Antoine"
-        self.description = "Send an email from the logged in user to antoine's dm"
+        self.name = "Send Mail"
+        self.description = "Send an email from the logged in user the given user"
         self.service = Service.GMAIL
 
     async def get_params(self):
@@ -50,14 +52,12 @@ class SendMailReaction(IReaction):
             .execute()
         )
 
-        print(f'Message Id: {send_message["id"]}', flush=True)
-
 class RepoCreationReaction(IReaction):
     def __init__(self):
         super().__init__()
         self.name = "Create repo"
         self.description = "Create a repo on the logged in user's github account"
-        self.service = Service.GMAIL
+        self.service = Service.GITHUB
 
     async def get_params(self):
         return {"name": "area_reaction"}
@@ -87,3 +87,69 @@ class RepoCreationReaction(IReaction):
         except Exception as error:
             print(f"An error occurred: {error}", flush=True)
             return False
+
+class PlaySongReaction(IReaction):
+    def __init__(self):
+        super().__init__()
+        self.name = "Play Song"
+        self.description = "Play a specific song on the user's Spotify account."
+        self.service = Service.SPOTIFY
+
+    async def get_params(self):
+        return {"Track URI": "None", "Device ID": "None"}
+
+    async def react(self, user, params):
+        spotify_infos = await DAO.find(get_database().spotify_users, "_id", user['linked_to']['spotify'])
+
+        access_token = spotify_infos["token"]["access_token"]
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json"
+        }
+
+        body = {"uris": [params["Track URI"]]}
+        if params["Device ID"] != "None":
+            body["device_id"] = params["Device ID"]
+
+        response = requests.put(
+            "https://api.spotify.com/v1/me/player/play",
+            headers=headers,
+            json=body
+        )
+
+        if response.status_code == 204:
+            print("Track started successfully.", flush=True)
+        else:
+            print(f"Failed to play track: {response.status_code} {response.text}", flush=True)
+
+class AddToPlaylistReaction(IReaction):
+    def __init__(self):
+        super().__init__()
+        self.name = "Add Song to Playlist"
+        self.description = "Add a specific song to a user's Spotify playlist."
+        self.service = Service.SPOTIFY
+
+    async def get_params(self):
+        return {"Track URI": "None", "Playlist ID": "None"}
+
+    async def react(self, user, params):
+        spotify_infos = await DAO.find(get_database().spotify_users, "_id", user['linked_to']['spotify'])
+
+        access_token = spotify_infos["token"]["access_token"]
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json"
+        }
+
+        body = {"uris": [params["Track URI"]]}
+
+        response = requests.post(
+            f"https://api.spotify.com/v1/playlists/{params['Playlist ID']}/tracks",
+            headers=headers,
+            json=body
+        )
+
+        if response.status_code == 201:
+            print("Track added to playlist successfully.", flush=True)
+        else:
+            print(f"Failed to add track: {response.status_code} {response.text}", flush=True)

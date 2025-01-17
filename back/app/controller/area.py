@@ -1,8 +1,8 @@
-from inspect import getmembers
+# pylint: disable=no-name-in-module
+# pylint: disable=no-self-argument
 
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPAuthorizationCredentials
-from typing_extensions import TypedDict
 from pydantic import Json
 
 
