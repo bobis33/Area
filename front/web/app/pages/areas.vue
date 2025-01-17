@@ -7,7 +7,7 @@
           <input
   type="checkbox"
   :checked="!!selectedAction && selectedAction.name === action.name"
-  @change="selectAction(action)"/>  
+  @change="selectAction(action)"/> 
           <strong>{{ $t('name') }}:</strong> {{ action.name }} <br />
           <strong>{{ $t('description') }}:</strong> {{ action.description }}
           <div v-for="(value, key) in action.params" :key="key">
@@ -16,7 +16,7 @@
               v-if="value || typeof value === 'string'"
               :id="String(key)"
               type="text"
-              v-model="newArea.action.params[key]"
+              v-model="action.params[key]"
             />
           </div>
         </li>
@@ -40,7 +40,7 @@
               v-if="value || typeof value === 'string'"
               :id="String(key)"
               type="text"
-              v-model="newArea.reaction.params[key]"
+              v-model="reaction.params[key]"
             />
           </div>
         </li>
@@ -118,23 +118,6 @@ interface params {
   [key: string]: string;
 }
 const subscribedAreas = ref<Area[]>([])
-const newArea = ref<Area>({
-  _id: '',
-  action: {
-    name: '',
-    description: '',
-    service: '',
-    params: {}
-  },
-  action_params: {},
-  reaction: {
-    name: '',
-    description: '',
-    service: '',
-    params: {}
-  },
-  reaction_params: {}
-})
 
 interface Action {
   name: string;
@@ -158,7 +141,6 @@ const selectAction = (action: Action) => {
     selectedAction.value = null;
   } else {
     selectedAction.value = action;
-    selectedAction.value.params = newArea.value.action.params;
   }
 };
 
@@ -167,7 +149,6 @@ const selectReaction = (reaction: Reaction) => {
     selectedReaction.value = null;
   } else {
     selectedReaction.value = reaction;
-    selectedReaction.value.params = newArea.value.reaction.params;
   }
 };
 const { data, error } = await useFetch<{ areas: Area[] }>(`${config.public.baseUrlApi}/area/get/all`, {
@@ -290,12 +271,10 @@ const getServiceClass = (service: string) => {
 
 .area-box {
   box-sizing: border-box;
-  border: 1px solid #ccc;
   padding: 10px;
-  margin: 5px;
-  width: 200px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  margin: 10px;
+  width: 30%;
 }
 
 input[type="text"] {
@@ -303,6 +282,18 @@ input[type="text"] {
   width: 100%;
   padding: 5px;
   margin-top: 5px;
+  color: #000; /* Ensure text color is visible */
+  background-color: #fff; /* Ensure background color contrasts with text color */
+  border: 1px solid #ccc; /* Optional: Add border for better visibility */
+}
+
+.param-input {
+  color: #000; /* Ensure text color is visible */
+  background-color: #fff; /* Ensure background color contrasts with text color */
+  padding: 5px;
+  margin-top: 5px;
+  width: 100%;
+  border: 1px solid #ccc; /* Optional: Add border for better visibility */
 }
 
 .gmail-box {
