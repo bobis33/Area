@@ -27,6 +27,9 @@ async def about_json(request: Request):
     reactions = await get_reactions_service()
 
     for service in Service:
+        if service == Service.AREA:
+            continue
+
         about["server"]["services"][service] = {"actions": [], "reactions": []}
 
         for action in actions:

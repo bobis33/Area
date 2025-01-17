@@ -32,7 +32,7 @@ class MailRecvAction(IAction):
             service = build('gmail', 'v1', credentials=creds)
 
             now = int(time.time())
-            ten_seconds_ago = now - 10
+            ten_seconds_ago = now - Config.AREA_CHECK_INTERVAL
 
             query = f"after:{ten_seconds_ago}"
 
@@ -238,8 +238,7 @@ class NewLikedTrackAction(IAction):
             print(f"Error refreshing token: {e}", flush=True)
             return None
 
-    @staticmethod
-    async def is_triggered(user, params) -> bool:
+    async def is_triggered(self, user, params) -> bool:
         try:
             # Retrieve Spotify user info
             spotify_infos = await DAO.find(get_database().spotify_users, "_id", user['linked_to']['spotify'])

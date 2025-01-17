@@ -6,11 +6,13 @@ from fastapi.security import HTTPAuthorizationCredentials
 from pydantic import Json
 
 
-from app.database import DAO
+from app.database import DAO, get_database
 from app.common import secure_endpoint, auth_scheme, TokenManager
 from app.service import (
     get_actions_service,
-    get_reactions_service
+    get_reactions_service,
+    get_actions_by_field,
+    get_reactions_by_field
 )
 
 router = APIRouter()
@@ -63,6 +65,9 @@ async def get_subscribed_areas(token: HTTPAuthorizationCredentials = Depends(aut
 @secure_endpoint
 async def get_all_areas(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     areas = await DAO.find_all_areas()
+    for area in areas:
+        area["action_service"] = (await get_actions_by_field("name", area["action"]))[0].service
+        area["reaction_service"] = (await get_reactions_by_field("name", area["reaction"]))[0].service
     return {"areas": areas}
 
 @router.post('/create', response_model=dict)
