@@ -30,7 +30,7 @@
         </div>
       </div>
     </div>
-    
+
     <div v-if="reactionsData && reactionsData.reactions.length" class="area-box reaction-box">
       <h1>{{ $t('Reaction') }}</h1>
       <select v-model="reactionSelectedService" class="dropdown-menu">
@@ -75,7 +75,7 @@ const config = useRuntimeConfig()
 enum services {
   Discord = 'Discord',
   GitHub = 'Github',
-  Google = 'Google',
+  GMail = 'GMail',
   Microsoft = 'Microsoft',
   Spotify = 'Spotify'
 }
@@ -201,7 +201,7 @@ const getServiceClass = (service: string) => {
     background-color: #fff;
     border: 1px solid #ccc;
   }
-  
+
   .param-input {
     color: #000;
     background-color: #fff;
@@ -210,32 +210,32 @@ const getServiceClass = (service: string) => {
     width: 100%;
     border: 1px solid #ccc;
   }
-  
+
   .gmail-box {
     background-color: #B02D2D;
     color: white;
   }
-  
+
   .github-box {
     background-color: #3C2A3D;
     color: white;
   }
-  
+
   .spotify-box {
     background-color: #1db954;
     color: white;
   }
-  
+
     strong {
       display: block;
       margin-bottom: 8px;
     }
-  
+
   .action-box {
     background-color: #007bff;
     color: white;
   }
-  
+
   .reaction-box {
     background-color: #dc3545;
     color: white;
@@ -258,4 +258,3 @@ const getServiceClass = (service: string) => {
   background-color: #0056b3;
 }
 </style>
-  
