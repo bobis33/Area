@@ -19,8 +19,8 @@ async def update_actions():
             for username in area["subscribed_users"]:
                 try:
                     user = await DAO.find_user_by_username(username)
-                    if await action_func(user):
-                        await reaction_func(user)
+                    if await action_func(user, area["action_params"]):
+                        await reaction_func(user, area["reaction_params"])
                 except Exception as e:
                     print(f"Error triggering a/rea for user {username}: {e}\n", flush=True)
 

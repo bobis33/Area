@@ -1,9 +1,12 @@
 <template>
   <div>
-    <h1>{{ $t('allAreas') }}</h1>
-    <div v-if="data && data.areas.length" class="areas-container">
-      <ul class="flex-container">
-        <li v-for="area in data.areas" :key="area._id" class="area-box">
+    <h2>{{$t('subscribedArea')}}</h2>
+    <div>
+      <button @click="fetchSubscribedAreas">{{$t('fetchSubscribedAreas')}}</button>
+    </div>
+    <div v-if="subscribedAreas.length">
+      <ul>
+        <li v-for="area in subscribedAreas" :key="area._id" class="area-box">
           <strong>{{ $t('action') }}:</strong> {{ area.action }} <br>
           <strong>{{ $t('reaction') }}:</strong> {{ area.reaction }}
           <strong>{{ $t('params action') }}:</strong> <br>
@@ -18,12 +21,12 @@
               <strong>{{ $t(key) }}:</strong> {{ value }}
             </li>
           </ul>
-          <button @click="subscribeUser(area._id)">{{ $t('Subscribe') }}</button>
+          <button @click="unsubscribeUser(area._id)">{{$t('Unsubscribe')}}</button>
         </li>
       </ul>
     </div>
     <div v-else>
-      <p>No areas found.</p>
+      <p>No subscribed areas found.</p>
     </div>
 
   </div>
@@ -65,14 +68,6 @@ interface Reaction {
   params: params;
 }
 
-const { data, error } = await useFetch<{ areas: Area[] }>(`${config.public.baseUrlApi}/area/get/all`, {
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
-  },
-})
-
 const fetchSubscribedAreas = async () => {
   try {
     if (token) {
@@ -85,17 +80,16 @@ const fetchSubscribedAreas = async () => {
   }
 }
 
-const subscribeUser = async (area_id: string) => {
+const unsubscribeUser = async (area_id: string) => {
   try {
     if (token) {
-      console.log(area_id)
-      const response = await new Areas().subscribeUser(area_id, token);
+      const response = await new Areas().unsubscribeUser(area_id, token);
       await fetchSubscribedAreas()
     } else {
       console.error('Token is not available');
     }
   } catch (error) {
-    console.error('Error subscribing user:', error)
+    console.error('Error unsubscribing user:', error)
   }
 }
 
@@ -111,6 +105,11 @@ const getServiceClass = (service: string) => {
       return '';
   }
 }
+
+onMounted(() => {
+  fetchSubscribedAreas();
+});
+
 </script>
 
 <style scoped lang="scss">

@@ -4,5 +4,5 @@ export interface AreasRepositoryInterface {
     fetchSubscribedAreas(token: string): Promise<SubscribedArea[]>;
     subscribeUser(areaId: string, token: string): void;
     unsubscribeUser(areaId: string, token:string ): void;
-    createArea(action: string, reaction: string, token: string): void;
+    createArea(action: string, reaction: string, token: string, paramsAction:string, paramsReaction:string): void;
 }

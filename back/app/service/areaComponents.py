@@ -5,6 +5,7 @@ class Service(Enum):
     GMAIL = "GMail"
     DISCORD = "Discord"
     GITHUB = "Github"
+    SPOTIFY = "Spotify"
 
 class IAction:
     def __init__(self):
@@ -12,7 +13,10 @@ class IAction:
         self.description = "No description where provided"
         self.service = Service.AREA
 
-    async def is_triggered(self, user) -> bool:
+    async def get_params(self):
+        return {}
+
+    async def is_triggered(self, user, params) -> bool:
         if user is None:
             return False
         return True
@@ -23,5 +27,8 @@ class IReaction:
         self.description = "No description where provided"
         self.service = Service.AREA
 
-    async def react(self, user):
-        print(f"IReaction was triggered for user {user['username']}")
+    async def get_params(self):
+        return {}
+
+    async def react(self, user, params):
+        print(f"IReaction was triggered for user {user['username']} with params {params}")

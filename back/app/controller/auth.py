@@ -2,20 +2,15 @@
 # pylint: disable=no-self-argument
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi.responses import RedirectResponse
 from fastapi_jwt_auth import AuthJWT
 from authlib.integrations.starlette_client import OAuth
-from starlette.requests import Request
 from pydantic import BaseModel
 
 from app.config import Config
 from app.service import (
     login_user,
     register_user,
-    link_to_google,
-    is_linked_google_service,
-    oauth_google_login,
-    area_oauth_google_login,
+    is_linked_google_service
 )
 
 from app.common import secure_endpoint, TokenManager
@@ -33,10 +28,42 @@ oauth.register(
     client_kwargs = Config.GOOGLE_CLIENT_KWARGS
 )
 
+oauth.register(
+    name='github',
+    client_id=Config.GITHUB_CLIENT_ID,
+    client_secret=Config.GITHUB_CLIENT_SECRET,
+    authorize_url='https://github.com/login/oauth/authorize',
+    authorize_params=None,
+    access_token_url='https://github.com/login/oauth/access_token',
+    access_token_params=None,
+    client_kwargs={'scope': 'user:email repo read:user public_repo'},
+)
+
+oauth.register(
+    name='discord',
+    client_id=Config.DISCORD_CLIENT_ID,
+    client_secret=Config.DISCORD_CLIENT_SECRET,
+    authorize_url='https://discord.com/api/oauth2/authorize',
+    authorize_params=None,
+    access_token_url='https://discord.com/api/oauth2/token',
+    access_token_params=None,
+    client_kwargs={'scope': 'identify email'},
+)
+
+oauth.register(
+    name='spotify',
+    client_id=Config.SPOTIFY_CLIENT_ID,
+    client_secret=Config.SPOTIFY_CLIENT_SECRET,
+    authorize_url='https://accounts.spotify.com/authorize',
+    authorize_params=None,
+    access_token_url='https://accounts.spotify.com/api/token',
+    access_token_params=None,
+    client_kwargs={'scope': 'user-read-email user-read-private user-read-playback-state user-modify-playback-state user-read-currently-playing user-library-read user-library-modify user-read-playback-position user-read-recently-played user-top-read playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-follow-read user-follow-modify user-read-email user-read-private'},
+)
+
 class Credentials(BaseModel):
     username: str
     password: str
-
 
 # User login and registration
 @router.post('/login', response_model=dict)
@@ -55,15 +82,6 @@ async def register(credentials: Credentials, authorize: AuthJWT = Depends()):
 
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="username already exists")
 
-@router.post('/link/google')
-@secure_endpoint
-async def link_google(google_token, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
-    try:
-        await link_to_google(TokenManager.get_token_subject(token), google_token)
-        return {"message": "Google account linked successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.args) from e
-
 @router.get("/is/linked/google")
 @secure_endpoint
 async def is_linked_google(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
@@ -73,43 +91,6 @@ async def is_linked_google(token: HTTPAuthorizationCredentials = Depends(auth_sc
         return {"linked": True}
     else:
         return {"linked": False}
-
-@router.get("/login/to/google")
-async def get_google_token(request: Request):
-    redirect_uri = request.url_for('google_token_callback')
-    return await oauth.google.authorize_redirect(request, redirect_uri, access_type="offline", prompt="consent")
-
-@router.get("/login/to/google/callback", include_in_schema=False)
-async def google_token_callback(request: Request):
-    try:
-        google_token = await oauth.google.authorize_access_token(request)
-        await oauth_google_login(google_token)
-
-        return RedirectResponse(f"{Config.FRONTEND_URL}/?google_token={google_token}")
-    except Exception as e:
-        print("Exception occured:", e, flush=True)
-        return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
-
-@router.get("/login/with/google")
-async def login_google(request: Request):
-    redirect_uri = request.url_for('google_callback')
-    return await oauth.google.authorize_redirect(request, redirect_uri, access_type="offline", prompt="consent")
-
-@router.get("/login/with/google/callback", include_in_schema=False)
-async def google_callback(request: Request, authorize: AuthJWT = Depends()):
-    try:
-        google_token = await oauth.google.authorize_access_token(request)
-
-        username = await area_oauth_google_login(google_token)
-        if not username:
-            raise ValueError("Failed to authenticate with Google")
-
-        access_token = authorize.create_access_token(subject=username)
-
-        return RedirectResponse(f"{Config.FRONTEND_URL}/?token={access_token}")
-    except Exception as e:
-        print("Exception occured:", e, flush=True)
-        return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
 
 @router.get('/me', response_model=dict)
 @secure_endpoint

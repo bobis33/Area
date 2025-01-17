@@ -11,6 +11,8 @@ export enum LanguagesEnum {
 
 export enum RoutesEnum {
     AREAS = '/areas',
+    SUBSCRIBED_AREAS = '/subscribedAreas',
+    CREATE_AREAS = '/createAreas',
     LOGIN = '/login',
     PROFILE = '/profile',
     REGISTER = '/register',

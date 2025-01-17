@@ -1,15 +1,19 @@
-from inspect import getmembers
+# pylint: disable=no-name-in-module
+# pylint: disable=no-self-argument
 
 from fastapi import APIRouter, Depends
 from fastapi.security import HTTPAuthorizationCredentials
+from pydantic import Json
 
-from app.database import DAO
+
+from app.database import DAO, get_database
 from app.common import secure_endpoint, auth_scheme, TokenManager
 from app.service import (
     get_actions_service,
-    get_reactions_service
+    get_reactions_service,
+    get_actions_by_field,
+    get_reactions_by_field
 )
-
 
 router = APIRouter()
 
@@ -17,13 +21,13 @@ router = APIRouter()
 @secure_endpoint
 async def get_actions(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     result = []
-    
     actions = await get_actions_service()
     for action in actions:
         result.append({
             "name": action.name,
             "description": action.description,
-            "service": action.service.value
+            "service": action.service.value,
+            "params": await action.get_params()
         })
 
     return {"actions": result}
@@ -38,7 +42,8 @@ async def get_reactions(token: HTTPAuthorizationCredentials = Depends(auth_schem
         result.append({
             "name": reaction.name,
             "description": reaction.description,
-            "service": reaction.service.value
+            "service": reaction.service.value,
+            "params": await reaction.get_params()
         })
 
     return {"reactions": result}
@@ -60,12 +65,18 @@ async def get_subscribed_areas(token: HTTPAuthorizationCredentials = Depends(aut
 @secure_endpoint
 async def get_all_areas(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     areas = await DAO.find_all_areas()
+    for area in areas:
+        area["action_service"] = (await get_actions_by_field("name", area["action"]))[0].service
+        area["reaction_service"] = (await get_reactions_by_field("name", area["reaction"]))[0].service
     return {"areas": areas}
 
 @router.post('/create', response_model=dict)
 @secure_endpoint
-async def create_area(action:str, reaction:str, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
-    await DAO.insert_area({"action": action, "reaction": reaction, "subscribed_users": []})
+async def create_area(action:str, reaction:str, action_params:Json, reaction_params:Json, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    await DAO.insert_area({"action": action, "reaction": reaction,
+                           "action_params": action_params, "reaction_params": reaction_params,
+                           "subscribed_users": []})
+
     return {"message": "ok"}
 
 @router.post('/subscribe')
