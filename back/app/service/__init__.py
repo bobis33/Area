@@ -14,6 +14,7 @@ from .auth import (
     oauth_spotify_login,
     area_oauth_spotify_login,
     oauth_github_login,
+    is_linked_google_service
 )
 from.area import (
     get_actions_service,

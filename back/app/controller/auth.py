@@ -9,10 +9,11 @@ from pydantic import BaseModel
 from app.config import Config
 from app.service import (
     login_user,
-    register_user
+    register_user,
+    is_linked_google_service
 )
 
-from app.common import secure_endpoint
+from app.common import secure_endpoint, TokenManager
 
 
 router = APIRouter()
@@ -80,6 +81,16 @@ async def register(credentials: Credentials, authorize: AuthJWT = Depends()):
         return {"token": access_token}
 
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="username already exists")
+
+@router.get("/is/linked/google")
+@secure_endpoint
+async def is_linked_google(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    username = TokenManager.get_token_subject(token)
+    response = await is_linked_google_service(username)
+    if response == True:
+        return {"linked": True}
+    else:
+        return {"linked": False}
 
 @router.get('/me', response_model=dict)
 @secure_endpoint

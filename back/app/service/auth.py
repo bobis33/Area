@@ -248,3 +248,12 @@ async def oauth_github_login(github_token):
     user_account = await DAO.find(get_database().github_users, "email", user_email)
     if not user_account:
         await DAO.insert(get_database().github_users, {"email": user_info.get("email"), "user_info": user_info, "token": github_token, "linked_to": None})
+
+async def is_linked_google_service(token):
+    user = await DAO.find_user_by_username(token)
+    if user is None:
+        return False
+    if "google" in user["linked_to"]:
+        return True
+
+    return False
