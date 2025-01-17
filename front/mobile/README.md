@@ -15,14 +15,14 @@ In Production, you will have to change the value of the `API_URL` variable to th
 Then run the following command to get the dependencies:
 
 ```bash
-$> flutter pub get
+flutter pub get
 ```
 
 ## Usage
 
 ```bash
-$> flutter build [ apk | appbundle ]
+flutter build [ apk | appbundle ]
 [...]
-$> flutter run --release
+flutter run --release
 ```
-> You should use android studio to run the app on an emulator or a real device.
+In development, you should use android studio, and run the command `adb reverse tcp:8080 tcp:8080` to forward the port to your local machine.
