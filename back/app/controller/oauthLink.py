@@ -48,10 +48,14 @@ async def get_github_login(request: Request):
 @router.get("/login/to/github/callback", include_in_schema=False)
 async def github_callback(request: Request):
     try:
+        client_type = "mobile" if "mobile" in request.headers.get("User-Agent", "").lower() else "web"
         github_token = await oauth.github.authorize_access_token(request)
         await oauth_github_login(github_token)
 
-        return RedirectResponse(f"{Config.FRONTEND_URL}/?github_token={github_token}")
+        if client_type == "mobile":
+            return RedirectResponse(f"{Config.MOBILE_URL}?spotify_token={github_token}")
+
+        return RedirectResponse(f"{Config.FRONTEND_URL}/?spotify_token={github_token}")
     except Exception as e:
         print("Exception occured:", e, flush=True)
         return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
@@ -74,10 +78,14 @@ async def get_discord_login(request: Request):
 @router.get("/login/to/discord/callback", include_in_schema=False)
 async def discord_callback(request: Request):
     try:
+        client_type = "mobile" if "mobile" in request.headers.get("User-Agent", "").lower() else "web"
         discord_token = await oauth.discord.authorize_access_token(request)
         await oauth_discord_login(discord_token)
 
-        return RedirectResponse(f"{Config.FRONTEND_URL}/?discord_token={discord_token}")
+        if client_type == "mobile":
+            return RedirectResponse(f"{Config.MOBILE_URL}?spotify_token={discord_token}")
+
+        return RedirectResponse(f"{Config.FRONTEND_URL}/?spotify_token={discord_token}")
     except Exception as e:
         print("Exception occured:", e, flush=True)
         return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
@@ -105,14 +113,14 @@ async def google_token_callback(request: Request):
         await oauth_google_login(google_token)
 
         if client_type == "mobile":
-            return RedirectResponse(f"myapp://auth/success?google_token={google_token}")
-        else:
-            return RedirectResponse(f"{Config.FRONTEND_URL}/?google_token={google_token}")
+            return RedirectResponse(f"{Config.MOBILE_URL}?google_token={google_token}")
+
+        return RedirectResponse(f"{Config.FRONTEND_URL}/?google_token={google_token}")
 
     except Exception as e:
         print("Exception occured:", e, flush=True)
         return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
-    
+
 # ----------------------------------------------------------------------- SPOTIFY -------------------------------------------------------------
 @router.post('/link/spotify')
 @secure_endpoint
@@ -131,8 +139,12 @@ async def get_spotify_login(request: Request):
 @router.get("/login/to/spotify/callback", include_in_schema=False)
 async def spotify_callback(request: Request):
     try:
+        client_type = "mobile" if "mobile" in request.headers.get("User-Agent", "").lower() else "web"
         spotify_token = await oauth.spotify.authorize_access_token(request)
         await oauth_spotify_login(spotify_token)
+
+        if client_type == "mobile":
+            return RedirectResponse(f"{Config.MOBILE_URL}?spotify_token={spotify_token}")
 
         return RedirectResponse(f"{Config.FRONTEND_URL}/?spotify_token={spotify_token}")
     except Exception as e:

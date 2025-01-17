@@ -24,19 +24,23 @@ auth_scheme = HTTPBearer()
 @router.get("/login/with/discord")
 async def login_discord(request: Request):
     redirect_uri = request.url_for('discord_token_callback')
-    print(redirect_uri, flush=True)
     return await oauth.discord.authorize_redirect(request, redirect_uri)
 
 @router.get("/login/with/discord/callback", include_in_schema=False)
 async def discord_token_callback(request: Request, authorize: AuthJWT = Depends()):
     try:
+        client_type = "mobile" if "mobile" in request.headers.get("User-Agent", "").lower() else "web"
         discord_token = await oauth.discord.authorize_access_token(request)
         access_token = authorize.create_access_token(await area_oauth_discord_login(discord_token))
+
+        if client_type == "mobile":
+            return RedirectResponse(f"{Config.MOBILE_URL}?token={access_token}")
 
         return RedirectResponse(f"{Config.FRONTEND_URL}/?token={access_token}")
     except Exception as e:
         print("Exception occured:", e, flush=True)
         return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
+
 
 # ----------------------------------------------------------------------- GOOGLE -------------------------------------------------------------
 @router.get("/login/with/google")
@@ -47,8 +51,12 @@ async def login_google(request: Request):
 @router.get("/login/with/google/callback", include_in_schema=False)
 async def google_callback(request: Request, authorize: AuthJWT = Depends()):
     try:
+        client_type = "mobile" if "mobile" in request.headers.get("User-Agent", "").lower() else "web"
         google_token = await oauth.google.authorize_access_token(request)
         access_token = authorize.create_access_token(await area_oauth_google_login(google_token))
+
+        if client_type == "mobile":
+            return RedirectResponse(f"{Config.MOBILE_URL}?token={access_token}")
 
         return RedirectResponse(f"{Config.FRONTEND_URL}/?token={access_token}")
     except Exception as e:
@@ -66,8 +74,12 @@ async def login_spotify(request: Request):
 @router.get("/login/with/spotify/callback", include_in_schema=False)
 async def spotify_token_callback(request: Request, authorize: AuthJWT = Depends()):
     try:
+        client_type = "mobile" if "mobile" in request.headers.get("User-Agent", "").lower() else "web"
         spotify_token = await oauth.spotify.authorize_access_token(request)
         access_token = authorize.create_access_token(await area_oauth_spotify_login(spotify_token))
+
+        if client_type == "mobile":
+            return RedirectResponse(f"{Config.MOBILE_URL}?token={access_token}")
 
         return RedirectResponse(f"{Config.FRONTEND_URL}/?token={access_token}")
     except Exception as e:

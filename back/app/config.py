@@ -31,4 +31,6 @@ class Config:
     MIDDLEWARE_SECRET_KEY = os.getenv('MIDDLEWARE_SECRET_KEY', 'Default')
 
     AREA_CHECK_INTERVAL = int(os.getenv('AREA_CHECK_INTERVAL', '10'))
+
     FRONTEND_URL = os.getenv('FRONTEND_URL', 'None')
+    MOBILE_URL = os.getenv('MOBILE_URL', 'None')
