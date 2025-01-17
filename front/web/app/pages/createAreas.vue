@@ -1,70 +1,119 @@
 <template>
-  <div>
-    <div class="area-container">
-      <div v-if="actionsData && actionsData.actions.length" class="area-box action-box">
-        <h1>{{ $t('Action') }}</h1>
-        <select v-model="actionSelectedService" class="dropdown-menu">
-          <option disabled selected value="" style="color: black;">{{ $t('Service') }}</option>
-          <option v-for="service in services" :key="service" :value="service" style="color: black;">
-            {{ service }}
-          </option>
-        </select>
-        <select v-if="actionSelectedService && filteredActions" v-model="selectedAction" class="dropdown-menu">
-          <option disabled selected value="" style="color: black;">{{ $t('Action') }}</option>
-          <option v-for="action in filteredActions" :key="action.name" :value="action" style="color: black;">
-            {{ action.name }}
-        </option>
-      </select>
-      <div v-if="selectedAction && selectedAction.params">
-        <div v-for="(value, key) in selectedAction.params" :key="key">
-          <label :for="String(key)">{{ $t(String(key)) }}:</label>
-          <input
-          v-if="value || typeof value === 'string'"
-          :id="String(key)"
-          type="text"
-          v-model="selectedAction.params[key]"
-          />
+  <section class="hero is-fullheight" style="background-color: #272727;">
+    <div class="container">
+    <div class="columns is-vcentered" style="padding-top: 5%; padding-bottom: 2%; color: white;">
+        <div class="column is-4"></div>
+        <div class="column is-4 has-text-centered">
+          <h1 class="title">{{ $t('Create AREA') }}</h1>
         </div>
-        <div v-if="selectedAction && selectedAction.description">
-          <p>{{ selectedAction.description }}</p>
+        <div class="column is-4 has-text-right">
+          <div style="display: flex; justify-content: flex-end; margin-right: 10%;">
+            <div style="display: flex; align-items: center; margin-right: 20px;">
+              <nuxt-link to="/subscribedAreas" class="link-button" style="color: white;">{{$t('My AREAS')}}</nuxt-link>
+            </div>
+            <div style="display: flex; align-items: center;">
+              <nuxt-link to="/areas" class="link-button" style="color: white;">{{$t('Shared AREAS')}}</nuxt-link>
+            </div>
+            <nuxt-link to="/profile" class="link-button" style="color: white;">
+              <img src="@/assets/icons/account.png" alt="Plus Icon" style="width: 30; height: 30px; filter: invert(1); margin: 3px; padding-left: 20px;"/>
+            </nuxt-link>
+          </div>
+      </div>
+      </div>
+    <div class="columns">
+      <div class="column is-2"></div>
+      <div v-if="actionsData && actionsData.actions.length" class="box action-box column is-3" style="background-color: #B23737; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);">
+        <h1 class="title is-6">{{ $t('Action') }}</h1>
+        <div class="select is-fullwidth">
+          <select v-model="actionSelectedService">
+            <option disabled selected value="">{{ $t('Service') }}</option>
+            <option v-for="service in services" :key="service" :value="service">
+              {{ service }}
+            </option>
+          </select>
+        </div>
+        <div class="select is-fullwidth" v-if="actionSelectedService && filteredActions" style="margin-top: 10px;">
+          <select v-model="selectedAction">
+            <option disabled selected value="">{{ $t('Action') }}</option>
+            <option v-for="action in filteredActions" :key="action.name" :value="action">
+              {{ action.name }}
+            </option>
+          </select>
+        </div>
+        <div v-if="selectedAction && selectedAction.params">
+          <div v-for="(value, key) in selectedAction.params" :key="key" class="field">
+            <label class="label" :for="String(key)">{{ $t(String(key)) }}:</label>
+            <div class="control">
+              <input
+                v-if="value || typeof value === 'string'"
+                :id="String(key)"
+                type="text"
+                v-model="selectedAction.params[key]"
+                class="input"
+              />
+            </div>
+          </div>
+          <div v-if="selectedAction && selectedAction.description">
+            <p>{{ selectedAction.description }}</p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div v-if="reactionsData && reactionsData.reactions.length" class="area-box reaction-box">
-      <h1>{{ $t('Reaction') }}</h1>
-      <select v-model="reactionSelectedService" class="dropdown-menu">
-        <option disabled selected value="" style="color: black;">{{ $t('Service') }}</option>
-        <option v-for="service in services" :key="service" :value="service" style="color: black;">
-          {{ service }}
-        </option>
-      </select>
-      <select v-if="reactionSelectedService && filteredReactions" v-model="selectedReaction" class="dropdown-menu">
-        <option disabled selected value="" style="color: black;">{{ $t('Reaction') }}</option>
-        <option v-for="reaction in filteredReactions" :key="reaction.name" :value="reaction" style="color: black;">
-          {{ reaction.name }}
-        </option>
-      </select>
-      <div v-if="selectedReaction && selectedReaction.params">
-        <div v-for="(value, key) in selectedReaction.params" :key="key">
-        <label :for="String(key)">{{ $t(String(key)) }}:</label>
-        <input v-if="value || typeof value === 'string'":id="String(key)" type="text" v-model="selectedReaction.params[key]"/>
+      <div class="column is-2">
+        <div class="is-flex is-justify-content-center is-align-items-center" style="height: 100%;">
+          <img src="@/assets/icons/right-arrow.png" alt="Right arrow" style="width: 30px; height: 30px; filter: invert(1); margin: 3px;"/>
+        </div>
       </div>
-      <div v-if="selectedReaction && selectedReaction.description">
-        <p>{{ selectedReaction.description }}</p>
-      </div>
-      </div>
+
+      <div v-if="reactionsData && reactionsData.reactions.length" class="box reaction-box column is-3" style="background-color: #0F4FC7; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);">
+        <h1 class="title is-6">{{ $t('Reaction') }}</h1>
+        <div class="select is-fullwidth">
+          <select v-model="reactionSelectedService">
+            <option disabled selected value="">{{ $t('Service') }}</option>
+            <option v-for="service in services" :key="service" :value="service">
+              {{ service }}
+            </option>
+          </select>
+        </div>
+        <div class="select is-fullwidth" v-if="reactionSelectedService && filteredReactions" style="margin-top: 10px;">
+          <select v-model="selectedReaction">
+            <option disabled selected value="">{{ $t('Reaction') }}</option>
+            <option v-for="reaction in filteredReactions" :key="reaction.name" :value="reaction">
+              {{ reaction.name }}
+            </option>
+          </select>
+        </div>
+        <div v-if="selectedReaction && selectedReaction.params">
+          <div v-for="(value, key) in selectedReaction.params" :key="key" class="field">
+            <label class="label" :for="String(key)">{{ $t(String(key)) }}:</label>
+            <div class="control">
+              <input
+                v-if="value || typeof value === 'string'"
+                :id="String(key)"
+                type="text"
+                v-model="selectedReaction.params[key]"
+                class="input"
+              />
+            </div>
+          </div>
+          <div v-if="selectedReaction && selectedReaction.description">
+            <p>{{ selectedReaction.description }}</p>
+          </div>
+        </div>
         <div v-else>
           <p>No reactions found.</p>
         </div>
       </div>
-      <button @click="createArea" class="save-button">{{$t('save')}}</button>
+      <div class="column is-2"></div>
+
+      <button @click="createArea" class="button is-primary is-fixed-bottom-right">{{$t('save')}}</button>
     </div>
   </div>
+  </section>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useCookie } from '#app'
 import { CookiesEnum } from "~/config/constants";
 import { Areas } from '~/infrastructure/repositories/AreaRepository'
@@ -156,105 +205,11 @@ const getServiceClass = (service: string) => {
 </script>
 
 <style scoped lang="scss">
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
 
-.area-container {
-  display: flex;
-  gap: 10px;
-  align-content: stretch;
-  flex-wrap: nowrap;
-  flex-direction: row;
-}
-
-.flex-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
-  gap: 10px;
-  list-style-type: none;
-  padding: 0;
-}
-
-.area-box {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  text-align: left;
-  min-height: 200px;
-}
-
-.dropdown-menu {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 5px;
-  margin-top: 5px;
-  color: #000;
-  background-color: #fff;
-  border: 1px solid #ccc;
-}
-
-  input[type="text"] {
-    box-sizing: border-box;
-    width: 100%;
-    padding: 5px;
-    margin-top: 5px;
-    color: #000;
-    background-color: #fff;
-    border: 1px solid #ccc;
-  }
-
-  .param-input {
-    color: #000;
-    background-color: #fff;
-    padding: 5px;
-    margin-top: 5px;
-    width: 100%;
-    border: 1px solid #ccc;
-  }
-
-  .gmail-box {
-    background-color: #B02D2D;
-    color: white;
-  }
-
-  .github-box {
-    background-color: #3C2A3D;
-    color: white;
-  }
-
-  .spotify-box {
-    background-color: #1db954;
-    color: white;
-  }
-
-    strong {
-      display: block;
-      margin-bottom: 8px;
-    }
-
-  .action-box {
-    background-color: #007bff;
-    color: white;
-  }
-
-  .reaction-box {
-    background-color: #dc3545;
-    color: white;
-  }
-
-.save-button {
+.is-fixed-bottom-right {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 25px;
-  background-color: #007BFF;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.save-button:hover {
-  background-color: #0056b3;
 }
 </style>
