@@ -4,12 +4,36 @@ import requests
 from email.message import EmailMessage
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+from discord import Client, Intents
+from discord.ext import commands
+from app.fast import app
+import asyncio
 
 from app.config import Config
 from .areaComponents import IReaction, Service
 
 from app.database import DAO, get_database
 
+
+# ------------------------------------- Discord Bot -------------------------------------
+intents = Intents.default()
+intents.messages = True
+intents.guilds = True
+intents.message_content = True
+
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+@app.on_event("startup")
+async def start_bot():
+    async def run_bot():
+        await bot.login(Config.DISCORD_BOT_TOKEN)
+        await bot.connect()
+
+    loop = asyncio.get_event_loop()
+    loop.create_task(run_bot())
+
+
+# ------------------------------------- Reactions -------------------------------------
 class SendMailReaction(IReaction):
     def __init__(self):
         super().__init__()
@@ -153,3 +177,17 @@ class AddToPlaylistReaction(IReaction):
             print("Track added to playlist successfully.", flush=True)
         else:
             print(f"Failed to add track: {response.status_code} {response.text}", flush=True)
+
+class SendDiscordMessageReaction(IReaction):
+    def __init__(self):
+        super().__init__()
+        self.name = "Send discord message"
+        self.description = "Send a message to a discord channel"
+        self.service = Service.DISCORD
+
+    async def get_params(self):
+        return {"Channel ID": "None", "Message": "None"}
+
+    async def react(self, user, params):
+        channel = bot.get_channel(int(params["Channel ID"]))
+        await channel.send(params["Message"])
