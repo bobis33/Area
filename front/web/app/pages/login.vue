@@ -99,7 +99,7 @@ function handleOAuth(provider: 'discord' | 'github' | 'google' | 'microsoft') {
     discord: `${apiUrl}/auth/login/with/discord`,
     github: `${apiUrl}/auth/login/with/github`,
     google: `${apiUrl}/auth/login/with/google`,
-    microsoft: `${apiUrl}/auth/login/with/microsoft`,
+    spotify: `${apiUrl}/auth/login/with/spotify`,
   }
 
   if (oauthUrls[provider]) {

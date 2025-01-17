@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
@@ -10,15 +9,12 @@ import 'package:provider/provider.dart';
 import '/config/constants.dart';
 import '/config/router.dart';
 import '/config/themes/themes.dart';
+import '/data/listeners/deep_link.dart';
 import '/data/sources/storage_service.dart';
 import '/presentation/providers/language.dart';
 import '/presentation/providers/theme.dart';
 import '/presentation/providers/settings_provider.dart';
 import 'package:app_links/app_links.dart';
-
-import 'data/models/data.dart';
-import 'data/sources/request_service.dart';
-import 'presentation/widgets/snack_bar.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,62 +43,25 @@ Future<void> main() async {
       ],
       child: LocalizedApp(
         delegate,
-        App(),
+        _App(),
       ),
     ),
   );
 }
 
-class App extends StatefulWidget {
-  _AppState createState() => _AppState();
+class _App extends StatefulWidget {
+  const _App();
 
+  @override
+  _AppState createState() => _AppState();
 }
 
-class _AppState extends State<App> {
+class _AppState extends State<_App> {
 
   @override
   void initState() {
     super.initState();
-    _initDeepLinkListener();
-  }
-
-  Future<void> linkToGoogle(BuildContext context, String googleToken) async {
-    const String endpoint = '/auth/link/google';
-    final _requestService = RequestService();
-    final _storageService = StorageService();
-    final token = await _storageService.getItem(StorageKeyEnum.authToken.name);
-
-    try {
-      final response = await _requestService.makeRequest<String>(
-        endpoint: '$endpoint?google_token=$googleToken',
-        method: 'POST',
-        parse: (response) => response.body,
-        headers: {'Authorization': 'Bearer $token'},
-      );
-
-      if (response is DataSuccess) {
-        snackBar(context, translate('linkGoogleSuccess'), Theme.of(context).colorScheme.secondary);
-      } else if (response is DataError) {
-        snackBar(context, response.error ?? translate('anErrorOccurred'), Theme.of(context).colorScheme.error);
-      }
-    } catch (error) {
-      debugPrint('Erreur lors de la requête: $error');
-    }
-  }
-
-  void _initDeepLinkListener() async {
-    final appLinks = AppLinks();
-    final sub =  appLinks.uriLinkStream.listen((Uri? uri) {
-      if (uri != null) {
-      // json decode
-        final googleToken = uri.queryParameters['google_token'];
-        RegExp exp = RegExp(r"'access_token':\s*\+?'([^']+)'");
-        final match = exp.firstMatch(googleToken!);
-        print(match![1]);
-
-        linkToGoogle(context, match![1]!);
-      }
-    });
+    DeepLinkListener().initDeepLinkListener(context);
   }
 
   @override

@@ -31,3 +31,13 @@ class RegisterUser {
     return repository.registerUser(user);
   }
 }
+
+class LinkToGoogle {
+  final AuthRepository repository;
+
+  LinkToGoogle(this.repository);
+
+  Future<DataState<String>> execute(String googleToken) {
+    return repository.linkToGoogle(googleToken);
+  }
+}

@@ -1,7 +1,6 @@
-import 'package:area_front_mobile/data/models/data.dart';
-import 'package:area_front_mobile/presentation/widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '/config/api_config.dart';
 import '/data/sources/request_service.dart';
@@ -14,32 +13,21 @@ Future<Map<String, String>> fetchSocialIcons() async {
     'discord': '$apiUrl/assets/discord.png',
     'github': '$apiUrl/assets/github.png',
     'google': '$apiUrl/assets/google.png',
-    'microsoft': '$apiUrl/assets/microsoft.png',
+    'spotify': '$apiUrl/assets/spotify.png',
   };
 }
 
-  Future<void> loginToGoogle(BuildContext context) async {
-    final _requestService = RequestService();
-    final _storageService = StorageService();
-    final token = await _storageService.getItem(StorageKeyEnum.authToken.name);
-
-    try {
-      final response = await _requestService.makeRequest<String>(
-        endpoint: '/auth/login/to/google',
-        method: 'GET',
-        parse: (response) => response.body,
-        headers: {'Authorization': 'Bearer $token'},
-      );
-
-      if (response is DataSuccess) {
-        snackBar(context, translate('loginToGoogleSuccess'), Theme.of(context).colorScheme.secondary);
-      } else if (response is DataError) {
-        snackBar(context, response.error ?? translate('anErrorOccurred'), Theme.of(context).colorScheme.error);
-      }
-    } catch (error) {
-      debugPrint('Erreur lors de la requête: $error');
+Future<void> _handleAuth(BuildContext context, String url) async {
+  try {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw Exception('Impossible de lancer l\'URL');
     }
+  } catch (error) {
+    debugPrint('Erreur lors de la connexion : $error');
   }
+}
 
 Widget _button({
   required String imageUrl,
@@ -63,10 +51,9 @@ Widget _button({
   );
 }
 
-
 Widget loginOauthButtons() {
   return FutureBuilder<Map<String, String>>(
-    future: fetchSocialIcons(),
+    future: _fetchSocialIcons(),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return const CircularProgressIndicator();
@@ -90,13 +77,11 @@ Widget loginOauthButtons() {
             _button(
               imageUrl: icons['google']!,
               label: 'Google',
-              onPressed: () {
-                loginToGoogle(context);
-              },
+              onPressed: () { _handleAuth(context, '$apiUrl/auth/login/with/google'); },
             ),
             _button(
-              imageUrl: icons['microsoft']!,
-              label: 'Microsoft',
+              imageUrl: icons['spotify']!,
+              label: 'Spotify',
               onPressed: () {},
             ),
           ],

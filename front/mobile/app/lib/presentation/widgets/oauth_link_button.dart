@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OauthLinkButton extends StatelessWidget {
   final String iconUrl;
   final String text;
   final String authUrl;
-  final String callbackUrlScheme;
-  final Future<void> Function(BuildContext context, String token) onAuthSuccess;
   final Color backgroundColor;
 
   const OauthLinkButton({
@@ -15,14 +12,11 @@ class OauthLinkButton extends StatelessWidget {
     required this.iconUrl,
     required this.text,
     required this.authUrl,
-    required this.callbackUrlScheme,
-    required this.onAuthSuccess,
     this.backgroundColor = Colors.blue,
   });
 
   Future<void> _handleAuth(BuildContext context) async {
     try {
-      print("aaaaaaaaaaaaaaaaaaaaaa");
       if (await canLaunchUrl(Uri.parse(authUrl))) {
         await launchUrl(Uri.parse(authUrl));
       } else {
@@ -30,7 +24,6 @@ class OauthLinkButton extends StatelessWidget {
       }
     } catch (error) {
       debugPrint('Erreur lors de la connexion : $error');
-
     }
   }
 

@@ -54,4 +54,15 @@ class AuthRepositoryImpl implements AuthRepository {
       },
     );
   }
+
+  @override
+  Future<DataState<String>> linkToGoogle(String googleToken) async {
+    final token = await _storageService.getItem(StorageKeyEnum.authToken.name);
+    return await _requestService.makeRequest<String>(
+      endpoint: '/auth/link/google?google_token=$googleToken',
+      method: 'POST',
+      parse: (response) => response.body,
+      headers: {'Authorization': 'Bearer $token'},
+    );
+  }
 }
