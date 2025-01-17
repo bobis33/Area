@@ -60,16 +60,22 @@ class _SettingsPageState extends State<SettingsPage> {
                 color: theme.colorScheme.onSurface,
                 ),
               ),
-              trailing: Switch(
-                value: savedTheme == 'dark',
-                onChanged: (value) async {
-                final newTheme = value ? 'dark' : 'light';
-                themeProvider.toggleTheme();
-                await _storageService.storeItem(StorageKeyEnum.theme.name, newTheme);
-                  setState(() {
-                    savedTheme = newTheme;
-                  });
-                },
+              trailing: Semantics(
+                label: 'Light theme switch',
+                button: true,
+                enabled: true,
+                excludeSemantics: true,
+                child: Switch(
+                  value: savedTheme == 'dark',
+                  onChanged: (value) async {
+                  final newTheme = value ? 'dark' : 'light';
+                  themeProvider.toggleTheme();
+                  await _storageService.storeItem(StorageKeyEnum.theme.name, newTheme);
+                    setState(() {
+                      savedTheme = newTheme;
+                    });
+                  },
+                ),
               ),
               ),
             ],

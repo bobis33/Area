@@ -349,13 +349,20 @@ class _CreatePageState extends State<CreatePage> {
               ],
             ),
           ),
-            floatingActionButton: FloatingActionButton(
+
+          floatingActionButton: Semantics(
+            label: 'Create Area',
+            button: true,
+            enabled: true,
+            excludeSemantics: true,
+            child: FloatingActionButton(
             onPressed: () {
               createArea();
             },
             backgroundColor: theme.colorScheme.primary,
             child: Icon(Icons.done, color: Colors.white),
             ),
+          ),
         );
       },
     );

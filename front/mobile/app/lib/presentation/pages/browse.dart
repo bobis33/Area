@@ -218,11 +218,17 @@ class _BrowsePageState extends State<BrowsePage> {
                                       ),
                                       ),
                                       Spacer(),
-                                      IconButton(
-                                      icon: Icon(Icons.add, color: theme.colorScheme.onSurface, size: 30),
-                                      onPressed: () {
-                                        subscribeToArea(area['_id']);
-                                      },
+                                      Semantics(
+                                        label: 'Subscribe button',
+                                        button: true,
+                                        enabled: true,
+                                        excludeSemantics: true,
+                                        child: IconButton(
+                                        icon: Icon(Icons.add, color: theme.colorScheme.onSurface, size: 30),
+                                        onPressed: () {
+                                          subscribeToArea(area['_id']);
+                                        },
+                                        ),
                                       ),
                                     ],
                                   ),
