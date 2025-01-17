@@ -1,7 +1,12 @@
+import 'package:area_front_mobile/data/models/data.dart';
+import 'package:area_front_mobile/presentation/widgets/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 
 import '/config/api_config.dart';
+import '/data/sources/request_service.dart';
+import '/data/sources/storage_service.dart';
+
 
 Future<Map<String, String>> fetchSocialIcons() async {
   final apiUrl = ApiConfig().apiUrl;
@@ -12,6 +17,29 @@ Future<Map<String, String>> fetchSocialIcons() async {
     'microsoft': '$apiUrl/assets/microsoft.png',
   };
 }
+
+  Future<void> loginToGoogle(BuildContext context) async {
+    final _requestService = RequestService();
+    final _storageService = StorageService();
+    final token = await _storageService.getItem(StorageKeyEnum.authToken.name);
+
+    try {
+      final response = await _requestService.makeRequest<String>(
+        endpoint: '/auth/login/to/google',
+        method: 'GET',
+        parse: (response) => response.body,
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response is DataSuccess) {
+        snackBar(context, translate('loginToGoogleSuccess'), Theme.of(context).colorScheme.secondary);
+      } else if (response is DataError) {
+        snackBar(context, response.error ?? translate('anErrorOccurred'), Theme.of(context).colorScheme.error);
+      }
+    } catch (error) {
+      debugPrint('Erreur lors de la requête: $error');
+    }
+  }
 
 Widget _button({
   required String imageUrl,
@@ -62,7 +90,9 @@ Widget loginOauthButtons() {
             _button(
               imageUrl: icons['google']!,
               label: 'Google',
-              onPressed: () {},
+              onPressed: () {
+                loginToGoogle(context);
+              },
             ),
             _button(
               imageUrl: icons['microsoft']!,
