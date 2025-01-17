@@ -56,8 +56,18 @@
         <li v-for="area in data.areas" :key="area._id" class="area-box">
           <strong>{{ $t('action') }}:</strong> {{ area.action }} <br>
           <strong>{{ $t('reaction') }}:</strong> {{ area.reaction }}
-          <strong>{{ $t('params action') }}:</strong> {{ area.action_params }} <br>
-          <strong>{{ $t('params reaction') }}:</strong> {{ area.reaction_params }}
+          <strong>{{ $t('params action') }}:</strong> <br>
+          <ul>
+            <li v-for="(value, key) in area.action_params" :key="key">
+              <strong>{{ $t(key) }}:</strong> {{ value }}
+            </li>
+          </ul>
+          <strong>{{ $t('params reaction') }}:</strong> <br>
+          <ul>
+            <li v-for="(value, key) in area.reaction_params" :key="key">
+              <strong>{{ $t(key) }}:</strong> {{ value }}
+            </li>
+          </ul>
           <button @click="subscribeUser(area._id)">{{ $t('Subscribe') }}</button>
         </li>
       </ul>
@@ -279,12 +289,20 @@ const getServiceClass = (service: string) => {
 }
 
 .area-box {
+  box-sizing: border-box;
   border: 1px solid #ccc;
   padding: 10px;
   margin: 5px;
   width: 200px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
   background-color: #f9f9f9;
+}
+
+input[type="text"] {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 5px;
+  margin-top: 5px;
 }
 
 .gmail-box {
