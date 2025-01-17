@@ -3,7 +3,7 @@ import type { SubscribedArea } from "~/domain/models/Area";
 
 export class Areas implements AreasRepositoryInterface {
     private baseUrlAPI = useRuntimeConfig().public.baseUrlApi
-
+    
     async fetchSubscribedAreas(token: string): Promise<SubscribedArea[]> {
         try {
             const response = await fetch(`${this.baseUrlAPI}/area/get/subscribed`, {
@@ -51,9 +51,14 @@ export class Areas implements AreasRepositoryInterface {
         }
     }
 
-    async createArea(action: string, reaction: string, token:string): Promise <void> {
+    async createArea(action: string, reaction: string, token:string, paramsAction:string, paramsReaction: string): Promise <void> {
         try {
-            const url = `${this.baseUrlAPI}/area/create?action=${(action)}&reaction=${(reaction)}`
+            const url = `${this.baseUrlAPI}/area/create?action=${action}&reaction=${reaction}&action_params=${paramsAction}&reaction_params=${paramsReaction}`
+            console.log('$url', url)
+            console.log('$action', action)
+            console.log('$reaction', reaction)
+            console.log('$paramsAction', paramsAction)
+            console.log('$paramsReaction', paramsReaction)
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
