@@ -1,36 +1,62 @@
 <template>
-  <div>
-    <h1>{{ $t('allAreas') }}</h1>
-    <div v-if="data && data.areas.length" class="areas-container">
-      <ul class="flex-container">
-        <li v-for="area in data.areas" :key="area._id" class="area-box">
-          <strong>{{ $t('action') }}:</strong> {{ area.action }} <br>
-          <strong>{{ $t('reaction') }}:</strong> {{ area.reaction }}
-          <strong>{{ $t('params action') }}:</strong> <br>
-          <ul>
-            <li v-for="(value, key) in area.action_params" :key="key">
-              <strong>{{ $t(key) }}:</strong> {{ value }}
+  <section class="hero is-fullheight" style="background-color: #272727;">
+      <div class="container">
+        <div class="columns is-vcentered" style="padding-top: 5%; padding-bottom: 2%; color: white;">
+        <div class="column is-4"></div>
+        <div class="column is-4 has-text-centered">
+          <h1 class="title">{{ $t('Shared AREAS') }}</h1>
+        </div>
+        <div class="column is-4 has-text-right">
+            <div style="display: flex; justify-content: flex-end; margin-right: 10%;">
+              <div style="display: flex; align-items: center; margin-right: 20px;">
+                <nuxt-link to="/subscribedAreas" class="link-button" style="color: white;">{{$t('My AREAS')}}</nuxt-link>
+              </div>
+              <div style="display: flex; align-items: center;">
+                <nuxt-link to="/createAreas" class="link-button" style="color: white;">{{$t('Create')}}</nuxt-link>
+              </div>
+              <nuxt-link to="/profile" class="link-button" style="color: white;">
+                <img src="@/assets/icons/account.png" alt="Plus Icon" style="width: 30; height: 30px; filter: invert(1); margin: 3px; padding-left: 20px;"/>
+              </nuxt-link>
+            </div>
+        </div>
+      </div>
+        <div class="field">
+          <div class="control">
+            <div class="is-flex is-justify-content-center">
+              <input class="input is-normal" type="text" placeholder="Search by name or service" v-model="searchQuery" style="max-width: 30%;background-color: #343434">
+            </div>
+          </div>
+        </div>
+        <div v-if="filteredAreas.length" class="areas-container" style="padding-top: 2%">
+          <ul class="columns is-multiline">
+            <li v-for="area in filteredAreas" :key="area._id" class="column is-one-quarter">
+              <div class="card is-flex is-flex-direction-column is-justify-content-space-between" style="height: 100%; background-color: #000000; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);">
+                <div class="has-text-centered" style="padding-bottom: 5%; padding-top: 5%;">
+                  <strong>{{ area.action }}</strong> <br>
+                  <strong>{{ area.reaction }}</strong>
+                </div>
+                <div class="card-footer" style="background-color: #343434; padding: 0.3rem 1rem;">
+                  <img src="@/assets/icons/download.png" alt="Download Icon" style="width: 17px; height: 17px; filter: invert(1); margin: 3px;"/>
+                  <p style="margin-left: 7px;">
+                    {{ area.subscribed_users.length }}
+                  </p>
+                  <a style="margin-left: auto; color: white;" @click="subscribeUser(area._id)">
+                    <img src="@/assets/icons/plus.png" alt="Plus Icon" style="width: 17px; height: 17px; filter: invert(1); margin: 3px;"/>
+                  </a>
+                </div>
+              </div>
             </li>
           </ul>
-          <strong>{{ $t('params reaction') }}:</strong> <br>
-          <ul>
-            <li v-for="(value, key) in area.reaction_params" :key="key">
-              <strong>{{ $t(key) }}:</strong> {{ value }}
-            </li>
-          </ul>
-          <button @click="subscribeUser(area._id)">{{ $t('Subscribe') }}</button>
-        </li>
-      </ul>
+        </div>
+        <div v-else>
+          <p class="notification is-warning">No areas found.</p>
+        </div>
     </div>
-    <div v-else>
-      <p>No areas found.</p>
-    </div>
-
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useCookie } from '#app'
 import { CookiesEnum } from "~/config/constants";
 import { Areas } from '~/infrastructure/repositories/AreaRepository'
@@ -40,16 +66,17 @@ const config = useRuntimeConfig()
 
 interface Area {
   _id: string;
-  action: Action;
-  action_params: {},
-  reaction: Reaction;
-  reaction_params: {}
+  action: string;
+  action_params: {};
+  reaction: string;
+  reaction_params: {};
 }
 
 interface params {
   [key: string]: string;
 }
 const subscribedAreas = ref<Area[]>([])
+const searchQuery = ref('')
 
 interface Action {
   name: string;
@@ -111,96 +138,19 @@ const getServiceClass = (service: string) => {
       return '';
   }
 }
+
+const filteredAreas = computed(() => {
+  if (!data.value || !data.value.areas) return []
+  return data.value.areas.filter(area => {
+    const searchLower = searchQuery.value.toLowerCase()
+    return area.action.toLowerCase().includes(searchLower) || area.reaction.toLowerCase().includes(searchLower)
+  })
+})
 </script>
 
 <style scoped lang="scss">
-.actions-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  flex-direction: column;
-  align-content: stretch;
-}
-
-.reactions-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  flex-direction: column;
-  align-content: stretch;
-}
-
-.areas-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  flex-direction: column;
-  align-content: stretch;
-}
-
-.flex-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(30%, 1fr)); /* Boxes are always 30% wide */
-  gap: 10px;
-  list-style-type: none;
-  padding: 0;
-}
-
-.area-box {
-  box-sizing: border-box; /* Includes padding and border in width calculation */
-  width: 100%;           /* Enforce full width within grid cell */
-  padding: 10px;
-  border: 1px solid #ccc;
-  text-align: left;
-  min-height: 200px;      /* Optional: Enforce consistent height */
-}
-
-input[type="text"] {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 5px;
-  margin-top: 5px;
-  color: #000; /* Ensure text color is visible */
-  background-color: #fff; /* Ensure background color contrasts with text color */
-  border: 1px solid #ccc; /* Optional: Add border for better visibility */
-}
-
-.param-input {
-  color: #000; /* Ensure text color is visible */
-  background-color: #fff; /* Ensure background color contrasts with text color */
-  padding: 5px;
-  margin-top: 5px;
-  width: 100%;
-  border: 1px solid #ccc; /* Optional: Add border for better visibility */
-}
-
-.gmail-box {
-  background-color: #B02D2D;
-  color: white;
-}
-
-.github-box {
-  background-color: #3C2A3D;
-  color: white;
-}
-
-.spotify-box {
-  background-color: #1db954;
-  color: white;
-}
-
-  strong {
-    display: block;
-    margin-bottom: 8px;
-  }
-
-.action-box {
-  background-color: #007bff; /* Blue */
-  color: white;
-}
-
-.reaction-box {
-  background-color: #dc3545; /* Red */
-  color: white;
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
+html, body {
+  height: 100%;
 }
 </style>
