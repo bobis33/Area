@@ -50,6 +50,8 @@ const isActive = (path: string) => route.path === path
 const menuItems = [
   { path: RoutesEnum.AREAS.toString(), label: 'myAreas' },
   { path: RoutesEnum.LOGIN.toString(), label: 'login' },
+  { path: RoutesEnum.SUBSCRIBED_AREAS.toString(), label: 'subscribed areas' },
+  { path: RoutesEnum.CREATE_AREAS.toString(), label: 'create areas' },
   { path: RoutesEnum.PROFILE.toString(), label: 'profile' },
   { path: RoutesEnum.REGISTER.toString(), label: 'register' },
 ]
@@ -57,7 +59,7 @@ const filteredMenuItems = computed(() => {
   if (response) {
     return menuItems.filter((item) => item.path !== RoutesEnum.LOGIN.toString() && item.path !== RoutesEnum.REGISTER.toString())
   } else {
-    return menuItems.filter((item) => item.path !== RoutesEnum.AREAS.toString() && item.path !== RoutesEnum.PROFILE.toString())
+    return menuItems.filter((item) => item.path !== RoutesEnum.AREAS.toString() && item.path !== RoutesEnum.CREATE_AREAS.toString() && item.path !== RoutesEnum.SUBSCRIBED_AREAS.toString() && item.path !== RoutesEnum.PROFILE.toString())
   }
 })
 

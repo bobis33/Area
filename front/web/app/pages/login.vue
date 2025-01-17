@@ -77,7 +77,7 @@ async function handleSubmit() {
   }
 }
 
-function handleOAuth(provider: string) {
+function handleOAuth(provider: 'discord' | 'github' | 'google' | 'microsoft') {
   const apiUrl = useRuntimeConfig().public.baseUrlApi
   const oauthUrls = {
     discord: `${apiUrl}/auth/login/with/discord`,
