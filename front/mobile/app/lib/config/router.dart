@@ -28,7 +28,7 @@ final router = GoRouter(
     GoRoute(
       name: RouteEnum.login.name,
       path: '/login',
-      builder: (context, state) => MainLayout(child: LoginPage()),
+      builder: (context, state) => Scaffold(body: LoginPage()),
     ),
     GoRoute(
       name: RouteEnum.profile.name,
@@ -38,7 +38,7 @@ final router = GoRouter(
     GoRoute(
       name: RouteEnum.register.name,
       path: '/register',
-      builder: (context, state) => MainLayout(child: RegisterPage()),
+      builder: (context, state) => Scaffold(body: RegisterPage()),
     ),
     GoRoute(
       name: RouteEnum.create.name,

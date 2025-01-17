@@ -47,41 +47,38 @@ class _MainLayoutState extends State<MainLayout> {
     return Scaffold(
       body: widget.child,
       bottomNavigationBar: Container(
-        height: 110,
-        color: theme.colorScheme.surface,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: BottomNavigationBar(
-            elevation: 0,
-            unselectedItemColor: theme.colorScheme.tertiary,
-            selectedItemColor: _selectedIndex == null ? theme.colorScheme.tertiary : theme.colorScheme.primary,
-            backgroundColor: Colors.transparent,
-            currentIndex: _selectedIndex ?? 0,
-            onTap: _onItemTapped,
-            items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                icon: Padding(
-                  padding: EdgeInsets.all(5),
-                  child: ImageIcon(
-                    AssetImage('assets/images/puzzle.png'),
-                    size: 30,
-                  ),
+      height: 80,
+      color: theme.colorScheme.surface,
+        child: BottomNavigationBar(
+          elevation: 0,
+          unselectedItemColor: theme.colorScheme.tertiary,
+          selectedItemColor: _selectedIndex == null ? theme.colorScheme.tertiary : theme.colorScheme.primary,
+          backgroundColor: Colors.transparent,
+          currentIndex: _selectedIndex ?? 0,
+          onTap: _onItemTapped,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: EdgeInsets.all(5),
+                child: ImageIcon(
+                  AssetImage('assets/images/puzzle.png'),
+                  size: 30,
                 ),
-                label: 'My AREAS',
               ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.add, size: 40),
-                label: 'Create',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.search, size: 40),
-                label: 'Browse',
-              ),
-            ],
-            selectedLabelStyle: _selectedIndex == null
-                ? const TextStyle(color: Colors.transparent)
-                : const TextStyle(fontSize: 16),
-          ),
+              label: 'My AREAS',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add, size: 42),
+              label: 'Create',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search, size: 40),
+              label: 'Browse',
+            ),
+          ],
+          selectedLabelStyle: _selectedIndex == null
+              ? const TextStyle(color: Colors.transparent)
+              : const TextStyle(fontSize: 12),
         ),
       ),
     );
