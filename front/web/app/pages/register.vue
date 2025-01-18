@@ -1,30 +1,47 @@
 <template>
-  <div class="form-container">
-    <ImageComponent fileName="area.png" altText="area" class="auth-logo" />
-    <h1 class="form-title">{{ $t('register') }}</h1>
-    <form @submit.prevent="handleRegister">
-      <div class="mb-4">
-        <label for="username" class="label">{{ $t('username') }}</label>
-        <input id="username" v-model="username" type="text" class="input-field" :placeholder="$t('username')" />
+  <section class="hero is-fullheight" style="background-color: #272727;">
+    <div class="container">
+      <div class="columns is-centered" style="padding-top: 5%;">
+        <div class="column is-4 has-text-centered">
+          <h1 class="title has-text-white">{{ $t('register') }}</h1>
+
+          <form @submit.prevent="handleRegister" class="box" style="background-color: #343434; color: white;">
+            <div class="field">
+              <label for="username" class="label">{{ $t('username') }}</label>
+              <div class="control">
+                <input id="username" v-model="username" type="text" class="input" :placeholder="$t('username')" required />
+              </div>
+            </div>
+            <div class="field">
+              <label for="password" class="label">{{ $t('password') }}</label>
+              <div class="control">
+                <input id="password" v-model="password" type="password" class="input" :placeholder="$t('password')" required />
+              </div>
+            </div>
+            <div class="field">
+              <label for="confirmPassword" class="label">{{ $t('passwordConfirmation') }}</label>
+              <div class="control">
+                <input id="confirmPassword" v-model="confirmPassword" type="password" class="input" :placeholder="$t('passwordConfirmation')" required />
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <button type="submit" class="button is-link is-fullwidth">{{ $t('register') }}</button>
+              </div>
+            </div>
+          </form>
+
+          <p v-if="errorMessage" class="notification is-danger">{{ $t(errorMessage) }}</p>
+
+          <div class="has-text-centered mt-4">
+            <p class="has-text-white">{{ $t('alreadyHaveAccount') }}
+              <a @click="router.push(RoutesEnum.LOGIN.toString())" class="is-text">{{ $t('loginHere') }}</a>
+            </p>
+          </div>
+        </div>
       </div>
-      <div class="mb-4">
-        <label for="password" class="label">{{ $t('password') }}</label>
-        <input id="password" v-model="password" type="password" class="input-field" :placeholder="$t('password')" />
-      </div>
-      <div class="mb-4">
-        <label for="confirmPassword" class="label">{{ $t('passwordConfirmation') }}</label>
-        <input id="confirmPassword" v-model="confirmPassword" type="password" class="input-field" :placeholder="$t('passwordConfirmation')"
-        />
-      </div>
-      <button type="submit" class="btn-primary w-full mt-8">{{ $t('register') }}</button>
-    </form>
-    <p v-if="errorMessage" class="error-message">{{ $t(errorMessage) }}</p>
-    <div class="text-link mt-4">
-      <p>{{ $t('alreadyHaveAccount') }}
-        <button @click="router.push(RoutesEnum.LOGIN.toString())" class="btn-link">{{ $t('loginHere') }}</button>
-      </p>
     </div>
-  </div>
+  </section>
 </template>
 
 
@@ -72,4 +89,6 @@ const handleRegister = async () => {
 @use 'assets/styles/errors' as *;
 @use 'assets/styles/forms' as *;
 @use 'assets/styles/logo' as *;
+
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
 </style>
