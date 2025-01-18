@@ -22,6 +22,7 @@ class Config:
 
     DISCORD_CLIENT_ID = os.getenv('DISCORD_CLIENT_ID', 'None')
     DISCORD_CLIENT_SECRET = os.getenv('DISCORD_CLIENT_SECRET', 'None')
+    DISCORD_BOT_TOKEN = os.getenv('DISCORD_BOT_TOKEN', 'None')
 
     SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID', 'None')
     SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET', 'None')

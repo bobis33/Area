@@ -1,53 +1,69 @@
 <template>
-  <div class="form-container">
-    <ImageComponent fileName="area.png" altText="area" class="auth-logo" />
-    <h1 class="form-title">{{ $t('login') }}</h1>
+  <section :data-theme="$colorMode.preference" class="hero is-fullheight" :style="{ backgroundColor: 'var(--bg)' }">
+    <div class="container">
+      <div class="columns is-centered" style="padding-top: 5%;">
+        <div class="column is-4">
+          <nuxt-link to="/settings" class="link-button" :style="{color: 'var(--text-color)'}">
+            <img src="@/assets/icons/settings.png" alt="Plus Icon" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
+          </nuxt-link>
+        </div>
+        <div class="column is-4 has-text-centered">
+          <h1 class="title">{{ $t('login') }}</h1>
 
-    <form @submit.prevent="handleSubmit">
-      <div class="mb-4">
-        <label for="username" class="label">{{ $t('username') }}</label>
-        <input id="username" v-model="username" type="text" class="input-field" :placeholder="$t('username')" />
+          <form @submit.prevent="handleSubmit" class="box" :style="{ backgroundColor: 'var(--bg-secondary)', boxShadow: '#00000077 0px 4px 8px'}">
+            <div class="field">
+              <label for="username" class="">{{ $t('username') }}</label>
+              <div class="control">
+                <input id="username" v-model="username" type="text" class="input" :placeholder="$t('username')" required />
+              </div>
+            </div>
+            <div class="field">
+              <label for="password" class="">{{ $t('password') }}</label>
+              <div class="control">
+                <input id="password" v-model="password" type="password" class="input" :placeholder="$t('password')" required />
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <button type="submit" class="button is-link is-fullwidth">{{ $t('login') }}</button>
+              </div>
+            </div>
+          </form>
+
+          <p v-if="errorMessage" class="notification is-danger">{{ $t(errorMessage) }}</p>
+          <div class="buttons is-centered" style="width: 70%; margin: auto">
+            <button class="button is-link is-fullwidth" @click="handleOAuth('discord')">
+              <ImageComponent fileName="discord.png" altText="Discord logo" class="oauth-logo" />
+              {{ $t('loginWithDiscord') }}
+            </button>
+            <button class="button is-link is-fullwidth" @click="handleOAuth('github')">
+              <ImageComponent fileName="github.png" altText="GitHub logo" class="oauth-logo" />
+              {{ $t('loginWithGithub') }}
+            </button>
+            <button class="button is-link is-fullwidth" @click="handleOAuth('google')">
+              <ImageComponent fileName="google.png" altText="Google logo" class="oauth-logo" />
+              {{ $t('loginWithGoogle') }}
+            </button>
+            <button class="button is-link is-fullwidth" @click="handleOAuth('microsoft')">
+              <ImageComponent fileName="microsoft.png" altText="Microsoft logo" class="oauth-logo" />
+              {{ $t('loginWithMicrosoft') }}
+            </button>
+          </div>
+
+          <div class="has-text-centered mt-4">
+            <p class="">{{ $t('noAccount') }}
+              <a @click="router.push(RoutesEnum.REGISTER.toString())" class="is-text">{{ $t('registerHere') }}</a>
+            </p>
+          </div>
+        </div>
+        <div class="column is-4"></div>
       </div>
-      <div class="mb-4">
-        <label for="password" class="label">{{ $t('password') }}</label>
-        <input id="password" v-model="password" type="password" class="input-field" :placeholder="$t('password')" />
-      </div>
-      <button type="submit" class="btn-primary w-full mt-8">{{ $t('login') }}</button>
-    </form>
-
-    <p v-if="errorMessage" class="error-message">{{ $t(errorMessage) }}</p>
-
-    <div class="separator">
     </div>
-    <div class="oauth-buttons">
-      <button class="btn-oauth discord" @click="handleOAuth('discord')">
-        <ImageComponent fileName="discord.png" altText="Discord logo" class="oauth-logo" />
-        {{ $t('loginWithDiscord') }}
-      </button>
-      <button class="btn-oauth github" @click="handleOAuth('github')">
-        <ImageComponent fileName="github.png" altText="GitHub logo" class="oauth-logo" />
-        {{ $t('loginWithGithub') }}
-      </button>
-      <button class="btn-oauth google" @click="handleOAuth('google')">
-        <ImageComponent fileName="google.png" altText="Google logo" class="oauth-logo" />
-        {{ $t('loginWithGoogle') }}
-      </button>
-      <button class="btn-oauth microsoft" @click="handleOAuth('microsoft')">
-        <ImageComponent fileName="microsoft.png" altText="Microsoft logo" class="oauth-logo" />
-        {{ $t('loginWithMicrosoft') }}
-      </button>
-    </div>
-
-    <div class="text-link mt-4">
-      <p>{{ $t('noAccount') }}
-        <button @click="router.push(RoutesEnum.REGISTER.toString())" class="btn-link">{{ $t('registerHere') }}</button>
-      </p>
-    </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useCookie, useRouter } from '#app'
 import ImageComponent from '~/components/Assets.vue'
 
@@ -92,61 +108,32 @@ function handleOAuth(provider: 'discord' | 'github' | 'google' | 'microsoft') {
 }
 </script>
 
-<style scoped lang="scss">
-@use 'assets/styles/buttons' as *;
-@use 'assets/styles/errors' as *;
-@use 'assets/styles/forms' as *;
-@use 'assets/styles/logo' as *;
+<style scoped>
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
 
-.oauth-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
-  .btn-oauth {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.75rem 1rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 1rem;
-    color: white;
-
-    &.discord {
-      background-color: #858585;
-    }
-
-    &.github {
-      background-color: #858585;
-    }
-
-    &.google {
-      background-color: #858585;
-    }
-
-    &.microsoft {
-      background-color: #858585;
-    }
-
-    .oauth-logo {
-      width: 20px;
-      height: 20px;
-      margin-right: 0.5rem;
-    }
-  }
+.auth-logo {
+  margin-bottom: 20px;
 }
 
-.separator {
-  margin: 1rem 0;
-  color: #aaa;
-
-  span {
-    background-color: white;
-    padding: 0 0.5rem;
-  }
+.oauth-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
 }
 
+.notification {
+  margin-top: 20px;
+}
+
+.buttons {
+  margin-top: 20px;
+}
+
+.button.is-text {
+  background: none;
+  border: none;
+  color: #3273dc;
+  cursor: pointer;
+  text-decoration: underline;
+}
 </style>

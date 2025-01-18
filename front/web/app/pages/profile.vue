@@ -1,74 +1,103 @@
 <template>
-  <div class="profile-page">
-    <h1>{{ $t('profile') }}</h1>
+  <section :data-theme="$colorMode.preference" class="hero is-fullheight" :style="{ backgroundColor: 'var(--bg)' }">
+    <div class="container">
+      <div class="columns is-vcentered" style="padding-top: 5%; padding-bottom: 2%; color: var(--text);">
+        <div class="column is-4">
+          <nuxt-link to="/settings" class="link-button" :style="{color: 'var(--text-color)'}">
+            <img src="@/assets/icons/settings.png" alt="Plus Icon" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
+          </nuxt-link>
+        </div>
+        <div class="column is-4 has-text-centered">
+          <h1 class="title">{{ $t('My Account') }}</h1>
+        </div>
+        <div class="column is-4 has-text-right">
+          <div style="display: flex; justify-content: flex-end; margin-right: 10%;">
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+              <nuxt-link to="/subscribedAreas" class="link-button" :style="{color: 'var(--text-color)'}">{{$t('My AREAS')}}</nuxt-link>
+              <nuxt-link to="/createAreas" class="link-button"  :style="{color: 'var(--text-color)'}">{{$t('Create')}}</nuxt-link>
+              <nuxt-link to="/areas" class="link-button"  :style="{color: 'var(--text-color)'}">{{$t('Shared AREAS')}}</nuxt-link>
+            </div>
+          </div>
+        </div>
+      </div>
 
-    <form @submit.prevent="changeUsername" class="profile-form">
-      <h2>{{ $t('changeUsername') }}</h2>
-      <label for="username">{{ $t('username') }}</label>
-      <input
-          id="username"
-          type="text"
-          v-model="username"
-          placeholder="username"
-          required
-      />
-      <button type="submit">{{ $t('update') }}</button>
-    </form>
+      <div class="columns is-centered">
+        <div class="column is-half">
+          <form @submit.prevent="changeUsername" class="box" :style="{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text)', boxShadow: '#00000077 0px 4px 8px' }">
+            <h2 class="title is-4">{{ $t('changeUsername') }}</h2>
+            <div class="field">
+              <label class="label" for="username">{{ $t('username') }}</label>
+              <div class="control">
+                <input id="username" class="input" type="text" v-model="username" placeholder="username" required>
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <button class="button is-link" type="submit">{{ $t('update') }}</button>
+              </div>
+            </div>
+          </form>
 
-    <form @submit.prevent="changePassword" class="profile-form">
-      <h2>{{ $t('changePassword') }}</h2>
-      <label for="password">{{ $t('password') }}</label>
-      <input
-          id="password"
-          type="password"
-          v-model="password"
-          placeholder="password"
-          required
-      />
-      <button type="submit">{{ $t('update') }}</button>
-    </form>
+          <form @submit.prevent="changePassword" class="box" :style="{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text)', boxShadow: '#00000077 0px 4px 8px' }">
+            <h2 class="title is-4">{{ $t('changePassword') }}</h2>
+            <div class="field">
+              <label class="label" for="password">{{ $t('password') }}</label>
+              <div class="control">
+                <input id="password" class="input" type="password" v-model="password" placeholder="password" required>
+              </div>
+            </div>
+            <div class="field">
+              <div class="control">
+                <button class="button is-link" type="submit">{{ $t('update') }}</button>
+              </div>
+            </div>
+          </form>
 
-    <div>
-      <button @click="logout" class="btn-logout m-5">{{ $t('logout') }}</button>
+          <div class="buttons is-centered">
+            <button @click="logout" class="button is-danger">{{ $t('logout') }}</button>
+          </div>
 
-      <button
-          v-if="!isLinkedGoogle"
-          @click="linkGoogleAccount"
-          class="btn-google m-5"
-      >
-        <ImageComponent fileName="google.png" altText="Google logo" class="google-logo" />
-        {{ $t('linkGoogleAccount') }}
-      </button>
+          <div class="buttons is-centered">
+            <button v-if="!isLinkedGoogle" @click="linkGoogleAccount" class="button is-link">
+              <ImageComponent fileName="google.png" altText="Google logo" class="google-logo" />
+              {{ $t('linkGoogleAccount') }}
+            </button>
+            <button v-else class="button is-link is-disabled" disabled>
+              <ImageComponent fileName="google.png" altText="Google logo" class="google-logo" />
+              {{ $t('googleAccountLinked') }}
+            </button>
+          </div>
 
-      <button v-else-if="isLinkedGoogle" class="btn-google-disabled m-5" disabled>
-        <ImageComponent fileName="google.png" altText="Google logo" class="google-logo" />
-        {{ $t('googleAccountLinked') }}
-      </button>
+          <div class="buttons is-centered">
+            <button class="button is-link is-disabled" disabled>
+              <ImageComponent fileName="github.png" altText="Github logo" class="google-logo" />
+              {{ $t('disabled') }}
+            </button>
+            <button class="button is-link is-disabled" disabled>
+              <ImageComponent fileName="discord.png" altText="Discord logo" class="google-logo" />
+              {{ $t('disabled') }}
+            </button>
+            <button class="button is-link is-disabled" disabled>
+              <ImageComponent fileName="microsoft.png" altText="Microsoft logo" class="google-logo" />
+              {{ $t('disabled') }}
+            </button>
+          </div>
+        </div>
+      </div>
 
-      <button class="btn-google-disabled m-5" disabled>
-        <ImageComponent fileName="github.png" altText="Github logo" class="google-logo" />
-        {{ $t('disabled') }}
-      </button>
-
-      <button class="btn-google-disabled m-5" disabled>
-        <ImageComponent fileName="discord.png" altText="Discord logo" class="google-logo" />
-        {{ $t('disabled') }}
-      </button>
-
-      <button class="btn-google-disabled m-5" disabled>
-        <ImageComponent fileName="microsoft.png" altText="Microsoft logo" class="google-logo" />
-        {{ $t('disabled') }}
-      </button>
-    </div>
-
-    <div v-if="showConfirmModal" class="modal">
-      <div class="modal-content">
-        <p>{{ $t('usernameUpdateMessage') }}</p>
-        <button @click="confirmUsernameUpdate">{{ $t('continue') }}</button>
-        <button @click="cancelUsernameUpdate">{{ $t('cancel') }}</button>
+      <div v-if="showConfirmModal" class="modal is-active">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+          <div class="box">
+            <p>{{ $t('usernameUpdateMessage') }}</p>
+            <button @click="confirmUsernameUpdate" class="button is-link">{{ $t('continue') }}</button>
+            <button @click="cancelUsernameUpdate" class="button">{{ $t('cancel') }}</button>
+          </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" @click="cancelUsernameUpdate"></button>
       </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -185,153 +214,31 @@ onMounted(async () => {
 </script>
 
 <style scoped lang="scss">
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
 
 .profile-page {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  h1 {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-
-  .profile-form {
-    margin-bottom: 2rem;
-
-    h2 {
-      margin-bottom: 1rem;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: bold;
-    }
-
-    input {
-      width: 100%;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    button {
-      display: block;
-      width: 100%;
-      padding: 0.75rem;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background-color 0.3s;
-
-      &:hover {
-        background-color: #0056b3;
-      }
-    }
-  }
+  color: white;
 }
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
-
-  .modal-content {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    text-align: center;
-
-    button {
-      margin: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-
-    button:first-of-type {
-      background-color: #007bff;
-      color: #fff;
-    }
-
-    button:last-of-type {
-      background-color: #ccc;
-      color: #000;
-    }
-  }
+.profile-form {
+  background-color: #343434;
+  padding: 20px;
+  border-radius: 5px;
 }
-
 .btn-logout {
-  background-color: var(--error-color);
+  background-color: #ff3860;
   color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 1.125rem;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #dc3545;
-  }
 }
-
 .btn-google {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #4285F4;
+  background-color: #4285f4;
   color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 1rem;
-  transition: background-color 0.3s ease;
-  gap: 10px;
-
-  &:hover {
-    background-color: #357ae8;
-  }
-
-  .google-logo {
-    width: 20px;
-    height: 20px;
-  }
 }
-
 .btn-google-disabled {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #ddd;
-  color: #aaa;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  font-size: 1rem;
-  gap: 10px;
-
-  .google-logo {
-    width: 20px;
-    height: 20px;
-    opacity: 0.6;
-  }
+  background-color: #d3d3d3;
+  color: white;
+}
+.google-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
 }
 </style>

@@ -1,10 +1,10 @@
 import type { AreasRepositoryInterface } from "~/domain/repositories/AreaRepositoryInterface";
-import type { SubscribedArea } from "~/domain/models/Area";
+import type { SubscribedArea, Area } from "~/domain/models/Area";
 
 export class Areas implements AreasRepositoryInterface {
     private baseUrlAPI = useRuntimeConfig().public.baseUrlApi
     
-    async fetchSubscribedAreas(token: string): Promise<SubscribedArea[]> {
+    async fetchSubscribedAreas(token: string): Promise<Area[]> {
         try {
             const response = await fetch(`${this.baseUrlAPI}/area/get/subscribed`, {
                 method: 'GET',

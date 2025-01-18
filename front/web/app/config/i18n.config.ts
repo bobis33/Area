@@ -2,8 +2,13 @@ export default defineI18nConfig(() => ({
     legacy: false,
     messages: {
         en: {
-            action: 'Action',
+            My_areas: 'My areas',
+            Create: 'Create',
+            Create_area: 'Create AREA',
+            sharedAreas: 'Shared AREAS',
+            Action: 'Action',
             allAreas: 'All areas',
+            Service: 'Service',
             alreadyHaveAccount: 'Already have an account?',
             anErrorOccurred: 'An error occurred, please try again later',
             changeEmail: 'Change email',
@@ -60,10 +65,19 @@ export default defineI18nConfig(() => ({
             update: 'Update',
             username: 'Username',
             usernameUpdateMessage: 'If you change your username, you will need to log in again',
+            changeTheme: 'Change theme',
+            changeLanguage: 'Change language',
+            settings: 'Settings',
         },
         fr: {
-            action: 'Action',
+            My_areas: 'Mes areas',
+            cap_My_areas: 'MES AREAS',
+            Create: 'Créer',
+            Create_area: 'Créer AREA',
+            sharedAreas: 'Areas partagées',
+            Action: 'Action',
             allAreas: 'Toutes les areas',
+            Service: 'Service',
             alreadyHaveAccount: 'Vous avez déjà un compte ?',
             anErrorOccurred: 'Une erreur est survenue, veuillez réessayer plus tard',
             changeEmail: 'Changer l\'email',
@@ -120,6 +134,9 @@ export default defineI18nConfig(() => ({
             update: 'Mettre à jour',
             username: 'Nom d\'utilisateur',
             usernameUpdateMessage: 'Si vous changez votre nom d\'utilisateur, vous devrez vous reconnecter',
+            changeTheme: 'Changer de thème',
+            changeLanguage: 'Changer de langue',
+            settings: 'Paramètres',
         }
     }
 }))

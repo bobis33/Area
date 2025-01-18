@@ -4,5 +4,5 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-useRouter().replace('/home')
+useRouter().replace('/subscribedAreas')
 </script>

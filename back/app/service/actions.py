@@ -19,11 +19,11 @@ class MailRecvAction(IAction):
 
     async def is_triggered(self, user, params) -> bool:
         try:
-            google_infos = user['linked_to']['GOOGLE']
+            google_infos = await DAO.find(get_database().google_users, "_id", user['linked_to']['google'])
 
             creds = Credentials(
-                token=google_infos["access_token"],
-                refresh_token=google_infos["refresh_token"],
+                token=google_infos["token"]["access_token"],
+                refresh_token=google_infos["token"]["refresh_token"],
                 token_uri="https://oauth2.googleapis.com/token",
                 client_id=Config.GOOGLE_CLIENT_ID,
                 client_secret=Config.GOOGLE_CLIENT_SECRET,
