@@ -8,15 +8,14 @@
         </div>
         <div class="column is-4 has-text-right">
           <div style="display: flex; justify-content: flex-end; margin-right: 10%;">
-            <div style="display: flex; align-items: center; margin-right: 20px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
               <nuxt-link to="/subscribedAreas" class="link-button" style="color: white;">{{$t('My AREAS')}}</nuxt-link>
-            </div>
-            <div style="display: flex; align-items: center;">
               <nuxt-link to="/createAreas" class="link-button" style="color: white;">{{$t('Create')}}</nuxt-link>
+              <nuxt-link to="/areas" class="link-button has-text-primary" style="color: white;">{{$t('Shared AREAS')}}</nuxt-link>
+              <nuxt-link to="/profile" class="link-button" style="color: white;">
+              <img src="@/assets/icons/account.png" alt="Plus Icon" style="width: 30px; height: 30px; filter: invert(1); margin: 3px;"/>
+              </nuxt-link>
             </div>
-            <nuxt-link to="/profile" class="link-button" style="color: white;">
-              <img src="@/assets/icons/account.png" alt="Plus Icon" style="width: 30; height: 30px; filter: invert(1); margin: 3px; padding-left: 20px;"/>
-            </nuxt-link>
           </div>
         </div>
       </div>
