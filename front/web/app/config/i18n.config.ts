@@ -65,6 +65,9 @@ export default defineI18nConfig(() => ({
             update: 'Update',
             username: 'Username',
             usernameUpdateMessage: 'If you change your username, you will need to log in again',
+            changeTheme: 'Change theme',
+            changeLanguage: 'Change language',
+            settings: 'Settings',
         },
         fr: {
             My_areas: 'Mes areas',
@@ -131,6 +134,9 @@ export default defineI18nConfig(() => ({
             update: 'Mettre à jour',
             username: 'Nom d\'utilisateur',
             usernameUpdateMessage: 'Si vous changez votre nom d\'utilisateur, vous devrez vous reconnecter',
+            changeTheme: 'Changer de thème',
+            changeLanguage: 'Changer de langue',
+            settings: 'Paramètres',
         }
     }
 }))

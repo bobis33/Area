@@ -2,6 +2,11 @@
   <section :data-theme="$colorMode.preference" class="hero is-fullheight" :style="{ backgroundColor: 'var(--bg)' }">
     <div class="container">
       <div class="columns is-centered" style="padding-top: 5%;">
+        <div class="column is-4">
+          <nuxt-link to="/settings" class="link-button" :style="{color: 'var(--text-color)'}">
+            <img src="@/assets/icons/settings.png" alt="Plus Icon" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
+          </nuxt-link>
+        </div>
         <div class="column is-4 has-text-centered">
           <h1 class="title">{{ $t('login') }}</h1>
 
@@ -51,6 +56,7 @@
             </p>
           </div>
         </div>
+        <div class="column is-4"></div>
       </div>
     </div>
   </section>

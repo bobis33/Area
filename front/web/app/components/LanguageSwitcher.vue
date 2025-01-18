@@ -1,5 +1,5 @@
 <template>
-  <div class="language-switcher">
+  <div class="select">
     <select v-model="languageCookie" @change="updateLanguage" class="language-select">
       <option
           v-for="lang in Object.values(LanguagesEnum)"
@@ -32,25 +32,4 @@ if (languageCookie.value) {
 </script>
 
 <style scoped lang="scss">
-.language-switcher {
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-
-  .language-select {
-    margin-top: 15px;
-    padding: 10px;
-    font-weight: bold;
-    background-color: var(--bg);
-    color: var(--text-color);
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-
-    &:hover {
-      background-color: var(--dropdown-button-bg);
-    }
-  }
-}
 </style>
