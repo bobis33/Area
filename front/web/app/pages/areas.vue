@@ -4,14 +4,14 @@
       <div class="columns is-vcentered" style="padding-top: 5%; padding-bottom: 2%; color: white;">
         <div class="column is-4"></div>
         <div class="column is-4 has-text-centered">
-          <h1 class="title" :style="{color: 'var(--text-color)'}">{{ $t('Shared AREAS') }}</h1>
+          <h1 class="title" :style="{color: 'var(--text-color)'}">{{ $t('sharedAreas') }}</h1>
         </div>
         <div class="column is-4 has-text-right">
           <div style="display: flex; justify-content: flex-end; margin-right: 10%;">
             <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-              <nuxt-link to="/subscribedAreas" class="link-button" :style="{color: 'var(--text-color)'}">{{$t('My AREAS')}}</nuxt-link>
+              <nuxt-link to="/subscribedAreas" class="link-button" :style="{color: 'var(--text-color)'}">{{$t('My_areas')}}</nuxt-link>
               <nuxt-link to="/createAreas" class="link-button"  :style="{color: 'var(--text-color)'}">{{$t('Create')}}</nuxt-link>
-              <nuxt-link to="/areas" class="link-button has-text-primary"  :style="{color: 'var(--text-color)'}">{{$t('Shared AREAS')}}</nuxt-link>
+              <nuxt-link to="/areas" class="link-button has-text-primary"  :style="{color: 'var(--text-color)'}">{{$t('sharedAreas')}}</nuxt-link>
               <nuxt-link to="/profile" class="link-button" :style="{color: 'var(--text-color)'}">
               <img src="@/assets/icons/account.png" alt="Plus Icon" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
               </nuxt-link>
@@ -65,10 +65,11 @@ const config = useRuntimeConfig()
 
 interface Area {
   _id: string;
-  action: string;
+  action: Action;
   action_params: {};
-  reaction: string;
+  reaction: Reaction;
   reaction_params: {};
+  subscribed_users: string[];
 }
 
 interface params {
@@ -140,9 +141,11 @@ const getServiceClass = (service: string) => {
 
 const filteredAreas = computed(() => {
   if (!data.value || !data.value.areas) return []
+  const searchLower = searchQuery.value.toLowerCase()
   return data.value.areas.filter(area => {
-    const searchLower = searchQuery.value.toLowerCase()
-    return area.action.toLowerCase().includes(searchLower) || area.reaction.toLowerCase().includes(searchLower)
+    const actionName = area.action?.name?.toLowerCase() || ''
+    const reactionName = area.reaction?.name?.toLowerCase() || ''
+    return actionName.includes(searchLower) || reactionName.includes(searchLower)
   })
 })
 </script>

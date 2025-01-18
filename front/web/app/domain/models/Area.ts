@@ -22,4 +22,5 @@ export interface SubscribedArea {
     action_params: {},
     reaction_params: {},
     reaction: Reaction;
+    subscribed_users:string[];
 }
