@@ -15,17 +15,18 @@
   --error-color: #dc2626;
   --button-bg: #1d4ed8;
   --button-bg-hover: #1e40af;
-  --text-color: #1d4ed8;
+  --text-color: #181818;
   --text-on-primary: #ffffff;
   --dropdown-button-bg: #ffffff;
+  --filter: invert(0);
 }
 
 .dark-mode {
   --color: #9fb5e7;
   --color-primary: #3b82f6;
   --color-secondary: #2563eb;
-  --bg: #1e293b;
-  --bg-secondary: #0f172a;
+  --bg: #272727;
+  --bg-secondary: #343434;
   --border-color: #334155;
   --reverse-border-color: #d1d5db;
   --link-color: #60a5fa;
@@ -36,6 +37,7 @@
   --text-color: #d1d5db;
   --text-on-primary: #ffffff;
   --dropdown-button-bg: #1e293b;
+  --filter: invert(1);
 }
 
 body {

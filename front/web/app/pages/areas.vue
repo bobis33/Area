@@ -1,19 +1,19 @@
 <template>
-  <section class="hero is-fullheight" style="background-color: #272727;">
+  <section :data-theme="$colorMode.preference" class="hero is-fullheight" :style="{ backgroundColor: 'var(--bg)' }">
     <div class="container">
       <div class="columns is-vcentered" style="padding-top: 5%; padding-bottom: 2%; color: white;">
         <div class="column is-4"></div>
         <div class="column is-4 has-text-centered">
-          <h1 class="title">{{ $t('Shared AREAS') }}</h1>
+          <h1 class="title" :style="{color: 'var(--text-color)'}">{{ $t('Shared AREAS') }}</h1>
         </div>
         <div class="column is-4 has-text-right">
           <div style="display: flex; justify-content: flex-end; margin-right: 10%;">
             <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-              <nuxt-link to="/subscribedAreas" class="link-button" style="color: white;">{{$t('My AREAS')}}</nuxt-link>
-              <nuxt-link to="/createAreas" class="link-button" style="color: white;">{{$t('Create')}}</nuxt-link>
-              <nuxt-link to="/areas" class="link-button has-text-primary" style="color: white;">{{$t('Shared AREAS')}}</nuxt-link>
-              <nuxt-link to="/profile" class="link-button" style="color: white;">
-              <img src="@/assets/icons/account.png" alt="Plus Icon" style="width: 30px; height: 30px; filter: invert(1); margin: 3px;"/>
+              <nuxt-link to="/subscribedAreas" class="link-button" :style="{color: 'var(--text-color)'}">{{$t('My AREAS')}}</nuxt-link>
+              <nuxt-link to="/createAreas" class="link-button"  :style="{color: 'var(--text-color)'}">{{$t('Create')}}</nuxt-link>
+              <nuxt-link to="/areas" class="link-button has-text-primary"  :style="{color: 'var(--text-color)'}">{{$t('Shared AREAS')}}</nuxt-link>
+              <nuxt-link to="/profile" class="link-button" :style="{color: 'var(--text-color)'}">
+              <img src="@/assets/icons/account.png" alt="Plus Icon" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
               </nuxt-link>
             </div>
           </div>
@@ -22,7 +22,7 @@
       <div class="field">
         <div class="control">
           <div class="is-flex is-justify-content-center">
-            <input class="input is-normal" type="text" placeholder="Search by name or service" v-model="searchQuery" style="max-width: 30%;background-color: #343434">
+            <input class="input is-normal" type="text" placeholder="Search by name or service" v-model="searchQuery" style="max-width: 30%;">
           </div>
         </div>
       </div>
@@ -31,17 +31,17 @@
           <li v-for="area in filteredAreas" :key="area._id" class="column is-one-quarter">
             <div class="card is-flex is-flex-direction-column is-justify-content-space-between" style="height: 100%; background-color: #000000; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);">
               <div class="has-text-centered" style="padding-bottom: 5%; padding-top: 5%;">
-                <strong>{{ area.action }}</strong> <br>
-                <strong>{{ area.reaction }}</strong>
+              <strong>{{ area.action }}</strong> <br>
+              <strong>{{ area.reaction }}</strong>
               </div>
-              <div class="card-footer" style="background-color: #343434; padding: 0.3rem 1rem;">
-                <img src="@/assets/icons/download.png" alt="Download Icon" style="width: 17px; height: 17px; filter: invert(1); margin: 3px;"/>
-                <p style="margin-left: 7px;">
-                  {{ area.subscribed_users.length }}
-                </p>
-                <a style="margin-left: auto; color: white;" @click="subscribeUser(area._id)">
-                  <img src="@/assets/icons/plus.png" alt="Plus Icon" style="width: 17px; height: 17px; filter: invert(1); margin: 3px;"/>
-                </a>
+              <div class="card-footer" style="background-color: #343434; padding: 0.3rem 1rem; border-top: none;">
+              <img src="@/assets/icons/download.png" alt="Download Icon" style="width: 17px; height: 17px; filter: invert(1); margin: 3px;"/>
+              <p class="" style="margin-left: 7px; color: white;">
+                {{ area.subscribed_users.length }}
+              </p>
+              <a style="margin-left: auto; color: white;" @click="subscribeUser(area._id)">
+                <img src="@/assets/icons/plus.png" alt="Plus Icon" style="width: 17px; height: 17px; filter: invert(1); margin: 3px;"/>
+              </a>
               </div>
             </div>
           </li>

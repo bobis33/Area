@@ -1,21 +1,17 @@
 <template>
-  <section class="hero is-fullheight" style="background-color: #272727;">
+  <section :data-theme="$colorMode.preference" class="hero is-fullheight" :style="{ backgroundColor: 'var(--bg)' }">
     <div class="container">
-      <div class="columns is-vcentered" style="padding-top: 5%; padding-bottom: 2%; color: white;">
+      <div class="columns is-vcentered" style="padding-top: 5%; padding-bottom: 2%; color: var(--text);">
         <div class="column is-4"></div>
         <div class="column is-4 has-text-centered">
           <h1 class="title">{{ $t('My Account') }}</h1>
         </div>
         <div class="column is-4 has-text-right">
           <div style="display: flex; justify-content: flex-end; margin-right: 10%;">
-            <div style="display: flex; align-items: center; margin-right: 20px">
-              <nuxt-link to="/subscribedAreas" class="link-button" style="color: white;">{{$t('My AREAS')}}</nuxt-link>
-            </div>
-            <div style="display: flex; align-items: center; margin-right: 20px">
-              <nuxt-link to="/createAreas" class="link-button" style="color: white;">{{$t('Create')}}</nuxt-link>
-            </div>
-            <div style="display: flex; align-items: center;">
-              <nuxt-link to="/areas" class="link-button" style="color: white;">{{$t('Shared AREAS')}}</nuxt-link>
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+              <nuxt-link to="/subscribedAreas" class="link-button" :style="{color: 'var(--text-color)'}">{{$t('My AREAS')}}</nuxt-link>
+              <nuxt-link to="/createAreas" class="link-button"  :style="{color: 'var(--text-color)'}">{{$t('Create')}}</nuxt-link>
+              <nuxt-link to="/areas" class="link-button"  :style="{color: 'var(--text-color)'}">{{$t('Shared AREAS')}}</nuxt-link>
             </div>
           </div>
         </div>
@@ -23,7 +19,7 @@
 
       <div class="columns is-centered">
         <div class="column is-half">
-          <form @submit.prevent="changeUsername" class="box" style="background-color: #343434; color: white;box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);">
+          <form @submit.prevent="changeUsername" class="box" :style="{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text)', boxShadow: '#00000077 0px 4px 8px' }">
             <h2 class="title is-4">{{ $t('changeUsername') }}</h2>
             <div class="field">
               <label class="label" for="username">{{ $t('username') }}</label>
@@ -38,7 +34,7 @@
             </div>
           </form>
 
-          <form @submit.prevent="changePassword" class="box" style="background-color: #343434; color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);">
+          <form @submit.prevent="changePassword" class="box" :style="{ backgroundColor: 'var(--bg-secondary)', color: 'var(--text)', boxShadow: '#00000077 0px 4px 8px' }">
             <h2 class="title is-4">{{ $t('changePassword') }}</h2>
             <div class="field">
               <label class="label" for="password">{{ $t('password') }}</label>

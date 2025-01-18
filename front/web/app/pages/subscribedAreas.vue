@@ -1,19 +1,19 @@
 <template>
-  <section class="hero is-fullheight" style="background-color: #272727;">
+  <section :data-theme="$colorMode.preference" class="hero is-fullheight" :style="{ backgroundColor: 'var(--bg)' }">
     <div class="container">
       <div class="columns is-vcentered" style="padding-top: 5%; padding-bottom: 2%; color: white;">
         <div class="column is-4"></div>
         <div class="column is-4 has-text-centered">
-          <h1 class="title">{{ $t('My AREAS') }}</h1>
+          <h1 class="title" :style="{color: 'var(--text-color)'}">{{ $t('My AREAS') }}</h1>
         </div>
         <div class="column is-4 has-text-right">
           <div style="display: flex; justify-content: flex-end; margin-right: 10%;">
             <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-              <nuxt-link to="/subscribedAreas" class="link-button has-text-primary" style="color: white;">{{$t('My AREAS')}}</nuxt-link>
-              <nuxt-link to="/createAreas" class="link-button" style="color: white;">{{$t('Create')}}</nuxt-link>
-              <nuxt-link to="/areas" class="link-button" style="color: white;">{{$t('Shared AREAS')}}</nuxt-link>
-              <nuxt-link to="/profile" class="link-button" style="color: white;">
-              <img src="@/assets/icons/account.png" alt="Plus Icon" style="width: 30px; height: 30px; filter: invert(1); margin: 3px;"/>
+              <nuxt-link to="/subscribedAreas" class="link-button" :style="{color: 'var(--text-color)'}">{{$t('My AREAS')}}</nuxt-link>
+              <nuxt-link to="/createAreas" class="link-button" :style="{color: 'var(--text-color)'}">{{$t('Create')}}</nuxt-link>
+              <nuxt-link to="/areas" class="link-button" :style="{color: 'var(--text-color)'}">{{$t('Shared AREAS')}}</nuxt-link>
+              <nuxt-link to="/profile" class="link-button" :style="{color: 'var(--text-color)'}">
+                <img src="@/assets/icons/account.png" alt="Plus Icon" style="width: 30px; height: 30px;" :style="{filter: 'var(--filter)'}"/>
               </nuxt-link>
             </div>
           </div>
@@ -22,10 +22,10 @@
       <div v-if="filteredAreas.length" class="areas-container" style="padding-top: 2%">
         <ul class="columns is-multiline">
           <li v-for="area in filteredAreas" :key="area._id" class="column is-one-quarter">
-            <div class="card is-flex is-flex-direction-column is-justify-content-space-between" style="height: 100%; background-color: #000000; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);">
+            <div class="card is-flex is-flex-direction-column is-justify-content-space-between" :style="{ height: '100%', backgroundColor: 'black', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)' }">
               <div class="has-text-centered" style="padding-bottom: 5%; padding-top: 5%;">
-                <strong>{{ area.action }}</strong> <br>
-                <strong>{{ area.reaction }}</strong>
+                <strong :style="{color: 'white'}">{{ area.action }}</strong> <br>
+                <strong :style="{color: 'white'}">{{ area.reaction }}</strong>
               </div>
             </div>
           </li>

@@ -1,11 +1,11 @@
 <template>
-  <section class="hero is-fullheight" style="background-color: #272727;">
+  <section :data-theme="$colorMode.preference" class="hero is-fullheight" :style="{ backgroundColor: 'var(--bg)' }">
     <div class="container">
       <div class="columns is-centered" style="padding-top: 5%;">
         <div class="column is-4 has-text-centered">
-          <h1 class="title has-text-white">{{ $t('register') }}</h1>
+          <h1 class="title">{{ $t('register') }}</h1>
 
-          <form @submit.prevent="handleRegister" class="box" style="background-color: #343434; color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);">
+          <form @submit.prevent="handleRegister" class="box" :style="{ backgroundColor: 'var(--bg-secondary)', boxShadow: '#00000077 0px 4px 8px'}">
             <div class="field">
               <label for="username" class="label">{{ $t('username') }}</label>
               <div class="control">
@@ -34,7 +34,7 @@
           <p v-if="errorMessage" class="notification is-danger">{{ $t(errorMessage) }}</p>
 
           <div class="has-text-centered mt-4">
-            <p class="has-text-white">{{ $t('alreadyHaveAccount') }}
+            <p class="">{{ $t('alreadyHaveAccount') }}
               <a @click="router.push(RoutesEnum.LOGIN.toString())" class="is-text">{{ $t('loginHere') }}</a>
             </p>
           </div>

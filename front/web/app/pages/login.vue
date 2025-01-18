@@ -1,19 +1,19 @@
 <template>
-  <section class="hero is-fullheight" style="background-color: #272727;">
+  <section :data-theme="$colorMode.preference" class="hero is-fullheight" :style="{ backgroundColor: 'var(--bg)' }">
     <div class="container">
       <div class="columns is-centered" style="padding-top: 5%;">
         <div class="column is-4 has-text-centered">
           <h1 class="title">{{ $t('login') }}</h1>
 
-          <form @submit.prevent="handleSubmit" class="box" style="background-color: #343434; color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);">
+          <form @submit.prevent="handleSubmit" class="box" :style="{ backgroundColor: 'var(--bg-secondary)', boxShadow: '#00000077 0px 4px 8px'}">
             <div class="field">
-              <label for="username" class="label">{{ $t('username') }}</label>
+              <label for="username" class="">{{ $t('username') }}</label>
               <div class="control">
                 <input id="username" v-model="username" type="text" class="input" :placeholder="$t('username')" required />
               </div>
             </div>
             <div class="field">
-              <label for="password" class="label">{{ $t('password') }}</label>
+              <label for="password" class="">{{ $t('password') }}</label>
               <div class="control">
                 <input id="password" v-model="password" type="password" class="input" :placeholder="$t('password')" required />
               </div>
@@ -46,7 +46,7 @@
           </div>
 
           <div class="has-text-centered mt-4">
-            <p class="has-text-white">{{ $t('noAccount') }}
+            <p class="">{{ $t('noAccount') }}
               <a @click="router.push(RoutesEnum.REGISTER.toString())" class="is-text">{{ $t('registerHere') }}</a>
             </p>
           </div>
@@ -57,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useCookie, useRouter } from '#app'
 import ImageComponent from '~/components/Assets.vue'
 
