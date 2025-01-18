@@ -66,10 +66,10 @@ interface Reaction {
 
 interface Area {
   _id: string;
-  action: Action;
+  action: string;
   action_params: {};
   reaction_params: {};
-  reaction: Reaction;
+  reaction: string;
   subscribed_users: string[];
 }
 
@@ -103,8 +103,8 @@ const unsubscribeUser = async (area_id: string) => {
 
 const filteredAreas = computed(() => {
   return subscribedAreas.value.filter(area =>
-    area.action.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    area.reaction.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    area.action.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+    area.reaction.toLowerCase().includes(searchQuery.value.toLowerCase())
   )
 })
 

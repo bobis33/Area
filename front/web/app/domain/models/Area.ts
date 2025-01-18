@@ -16,6 +16,15 @@ interface params {
     params: params;
   }
 
+  export interface Area {
+    _id: string;
+    action: string;
+    action_params: {},
+    reaction_params: {},
+    reaction: string;
+    subscribed_users:string[];
+}
+
 export interface SubscribedArea {
     _id: string;
     action: Action;

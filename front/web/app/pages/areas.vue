@@ -65,9 +65,9 @@ const config = useRuntimeConfig()
 
 interface Area {
   _id: string;
-  action: Action;
+  action: string;
   action_params: {};
-  reaction: Reaction;
+  reaction: string;
   reaction_params: {};
   subscribed_users: string[];
 }
@@ -141,11 +141,9 @@ const getServiceClass = (service: string) => {
 
 const filteredAreas = computed(() => {
   if (!data.value || !data.value.areas) return []
-  const searchLower = searchQuery.value.toLowerCase()
   return data.value.areas.filter(area => {
-    const actionName = area.action?.name?.toLowerCase() || ''
-    const reactionName = area.reaction?.name?.toLowerCase() || ''
-    return actionName.includes(searchLower) || reactionName.includes(searchLower)
+    const searchLower = searchQuery.value.toLowerCase()
+    return area.action.toLowerCase().includes(searchLower) || area.reaction.toLowerCase().includes(searchLower)
   })
 })
 </script>
