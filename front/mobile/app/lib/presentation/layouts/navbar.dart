@@ -44,7 +44,6 @@ class MainLayoutState extends State<MainLayout> {
     return Scaffold(
       body: widget.child,
       bottomNavigationBar: Container(
-      height: 80,
       color: theme.colorScheme.surface,
         child: BottomNavigationBar(
           elevation: 0,
@@ -59,17 +58,17 @@ class MainLayoutState extends State<MainLayout> {
                 padding: EdgeInsets.all(5),
                 child: ImageIcon(
                   AssetImage('assets/images/puzzle.png'),
-                  size: 30,
+                  size: 20,
                 ),
               ),
               label: 'My AREAS',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.add, size: 42),
+              icon: Icon(Icons.add, size: 30),
               label: 'Create',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.search, size: 40),
+              icon: Icon(Icons.search, size: 26),
               label: 'Browse',
             ),
           ],
