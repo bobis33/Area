@@ -1,5 +1,6 @@
 {
   "alreadyHaveAccount": "Already have an account?",
+  "apiAddress": "API address",
   "anErrorOccurred": "An error occurred. Please try again.",
   "cancel": "Cancel",
   "changeAvatar": "Change avatar",
@@ -9,6 +10,7 @@
   "email": "Email",
   "emailInvalid": "Invalid email",
   "english": "English",
+  "enterApiAddress": "Enter API address",
   "errorLoading": "Error loading",
   "failedToLoadUser": "Failed to load user data",
   "french": "French",

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:go_router/go_router.dart';
 
+import '/config/api_config.dart';
 import '/config/constants.dart';
 import '/data/models/data.dart';
 import '/data/models/user.dart';
@@ -25,7 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-
+  final _apiUrl = ApiConfig().apiUrl;
   String _initialUsername = '';
 
   @override
@@ -36,12 +37,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> linkToGoogle(BuildContext context, String googleToken) async {
     const String endpoint = '/auth/link/google';
-    final _requestService = RequestService();
-    final _storageService = StorageService();
-    final token = await _storageService.getItem(StorageKeyEnum.authToken.name);
+    final requestService = RequestService();
+    final storageService = StorageService();
+    final token = await storageService.getItem(StorageKeyEnum.authToken.name);
 
     try {
-      final response = await _requestService.makeRequest<String>(
+      final response = await requestService.makeRequest<String>(
         endpoint: '$endpoint?google_token=$googleToken',
         method: 'POST',
         parse: (response) => response.body,
@@ -206,7 +207,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 Padding (padding: const EdgeInsets.only(top: 32.0), child:
                   CircleAvatar(
                     radius: 60,
-                    backgroundImage: NetworkImage('$apiUrl/assets/avatar.png'), // Replace with user avatar
+                    backgroundImage: NetworkImage('$_apiUrl/assets/avatar.png'), // Replace with user avatar
                     backgroundColor: theme.colorScheme.surface,
                   ),
                 ),
@@ -272,36 +273,36 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 OauthLinkButton(
-                  iconUrl: '$apiUrl/assets/discord.png',
+                  iconUrl: '$_apiUrl/assets/discord.png',
                   text: translate('linkDiscord'),
-                  authUrl: '$apiUrl/auth/login/to/discord',
+                  authUrl: '$_apiUrl/auth/login/to/discord',
                   callbackUrlScheme: 'myapp',
                   onAuthSuccess: linkToDiscord,
                   backgroundColor: Colors.purple
                 ),
                 const SizedBox(height: 16),
                 OauthLinkButton(
-                  iconUrl: '$apiUrl/assets/github.png',
+                  iconUrl: '$_apiUrl/assets/github.png',
                   text: translate('linkGithub'),
-                  authUrl: '$apiUrl/auth/login/to/github',
+                  authUrl: '$_apiUrl/auth/login/to/github',
                   callbackUrlScheme: 'myapp',
                   onAuthSuccess: linkToGithub,
                   backgroundColor: Colors.white24,
                 ),
                 const SizedBox(height: 16),
                 OauthLinkButton(
-                  iconUrl: '$apiUrl/assets/google.png',
+                  iconUrl: '$_apiUrl/assets/google.png',
                   text: translate('linkGoogle'),
-                  authUrl: '$apiUrl/auth/login/to/google',
+                  authUrl: '$_apiUrl/auth/login/to/google',
                   callbackUrlScheme: 'myapp',
                   onAuthSuccess: linkToGoogle,
                   backgroundColor: Colors.blueAccent,
                 ),
                 const SizedBox(height: 16),
                 OauthLinkButton(
-                  iconUrl: '$apiUrl/assets/microsoft.png',
+                  iconUrl: '$_apiUrl/assets/microsoft.png',
                   text: translate('linkMicrosoft'),
-                  authUrl: '$apiUrl/auth/login/to/microsoft',
+                  authUrl: '$_apiUrl/auth/login/to/microsoft',
                   callbackUrlScheme: 'myapp',
                   onAuthSuccess: linkToMicrosoft,
                   backgroundColor: Colors.green,

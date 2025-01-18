@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/config/constants.dart';
+import '/config/api_config.dart';
 import '/presentation/widgets/oauth_login_buttons.dart';
 import '/presentation/layouts/appbar.dart';
 
@@ -31,6 +31,7 @@ class AuthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final apiUrl = ApiConfig().apiUrl;
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surfaceTint,

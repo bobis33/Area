@@ -1,5 +1,6 @@
 {
   "alreadyHaveAccount": "Vous avez déjà un compte ?",
+  "apiAddress": "Adresse de l'API",
   "anErrorOccurred": "Une erreur s'est produite. Veuillez réessayer.",
   "cancel": "Annuler",
   "changeAvatar": "Changer d'avatar",
@@ -9,6 +10,7 @@
   "email": "Email",
   "emailInvalid": "Email invalide",
   "english": "Anglais",
+  "enterApiAddress": "Entrez l'adresse de l'API",
   "errorLoading": "Erreur de chargement",
   "failedToLoadUser": "Échec du chargement des données de l'utilisateur",
   "french": "Français",

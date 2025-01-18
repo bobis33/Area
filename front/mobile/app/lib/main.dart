@@ -10,6 +10,7 @@ import '/config/themes/themes.dart';
 import '/data/sources/storage_service.dart';
 import '/presentation/providers/language.dart';
 import '/presentation/providers/theme.dart';
+import '/presentation/providers/settings_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,9 +34,8 @@ Future<void> main() async {
                 : lightTheme,
           ),
         ),
-        ChangeNotifierProvider(
-          create: (_) => LanguageProvider(),
-        ),
+        ChangeNotifierProvider(create: (_) => LanguageProvider()),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
       child: LocalizedApp(
         delegate,

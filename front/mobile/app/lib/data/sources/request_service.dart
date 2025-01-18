@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter_translate/flutter_translate.dart';
 import 'package:http/http.dart' as http;
 
-import '/config/constants.dart';
+import '/config/api_config.dart';
 import '/data/models/data.dart';
 
 class RequestService {
@@ -17,6 +17,7 @@ class RequestService {
     required T Function(http.Response response) parse,
   }) async {
     try {
+      final apiUrl = ApiConfig().apiUrl;
       final url = Uri.parse('$apiUrl$endpoint');
       http.Response response;
 

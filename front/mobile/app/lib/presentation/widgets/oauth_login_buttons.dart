@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
 
-import '/config/constants.dart';
+import '/config/api_config.dart';
 
 Future<Map<String, String>> fetchSocialIcons() async {
+  final apiUrl = ApiConfig().apiUrl;
   return {
     'discord': '$apiUrl/assets/discord.png',
     'github': '$apiUrl/assets/github.png',
