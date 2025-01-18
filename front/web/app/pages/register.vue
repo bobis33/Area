@@ -5,7 +5,7 @@
         <div class="column is-4 has-text-centered">
           <h1 class="title has-text-white">{{ $t('register') }}</h1>
 
-          <form @submit.prevent="handleRegister" class="box" style="background-color: #343434; color: white;">
+          <form @submit.prevent="handleRegister" class="box" style="background-color: #343434; color: white; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);">
             <div class="field">
               <label for="username" class="label">{{ $t('username') }}</label>
               <div class="control">
