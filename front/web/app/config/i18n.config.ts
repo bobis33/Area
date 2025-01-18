@@ -68,6 +68,13 @@ export default defineI18nConfig(() => ({
             changeTheme: 'Change theme',
             changeLanguage: 'Change language',
             settings: 'Settings',
+            account: 'Account',
+            myAccount: 'My account',
+            sharedAreaSearch: 'Search by name or service',
+            selectService: 'Select a service',
+            selectAction: 'Select an action',
+            selectReaction: 'Select a reaction',
+            saveArea: 'Save area',
         },
         fr: {
             My_areas: 'Mes areas',
@@ -137,6 +144,14 @@ export default defineI18nConfig(() => ({
             changeTheme: 'Changer de thème',
             changeLanguage: 'Changer de langue',
             settings: 'Paramètres',
+            account: 'Compte',
+            myAccount: 'Mon compte',
+            sharedAreaSearch: 'Rechercher par nom ou service',
+            selectService: 'Sélectionner un service',
+            selectAction: 'Sélectionner une action',
+            selectReaction: 'Sélectionner une réaction',
+            saveArea: 'Enregistrer l\'area',
+
         }
     }
 }))

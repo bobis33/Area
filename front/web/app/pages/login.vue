@@ -4,7 +4,7 @@
       <div class="columns is-centered" style="padding-top: 5%;">
         <div class="column is-4">
           <nuxt-link to="/settings" class="link-button" :style="{color: 'var(--text-color)'}">
-            <img src="@/assets/icons/settings.png" alt="Plus Icon" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
+            <img src="@/assets/icons/settings.png" :alt="$t('settings')" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
           </nuxt-link>
         </div>
         <div class="column is-4 has-text-centered">
@@ -25,7 +25,7 @@
             </div>
             <div class="field">
               <div class="control">
-                <button type="submit" class="button is-link is-fullwidth">{{ $t('login') }}</button>
+                <button type="submit" class="button is-link is-fullwidth" :aria-label="$t('login')">{{ $t('login') }}</button>
               </div>
             </div>
           </form>
@@ -52,7 +52,7 @@
 
           <div class="has-text-centered mt-4">
             <p class="">{{ $t('noAccount') }}
-              <a @click="router.push(RoutesEnum.REGISTER.toString())" class="is-text">{{ $t('registerHere') }}</a>
+              <button @click="router.push(RoutesEnum.REGISTER.toString())" class="has-text-primary">{{ $t('registerHere') }}</button>
             </p>
           </div>
         </div>

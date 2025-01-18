@@ -4,11 +4,11 @@
       <div class="columns is-vcentered" style="padding-top: 5%; padding-bottom: 2%; color: var(--text);">
         <div class="column is-4">
           <nuxt-link to="/settings" class="link-button" :style="{color: 'var(--text-color)'}">
-            <img src="@/assets/icons/settings.png" alt="Plus Icon" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
+            <img src="@/assets/icons/settings.png" :alt="$t('settings')" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
           </nuxt-link>
         </div>
         <div class="column is-4 has-text-centered">
-          <h1 class="title">{{ $t('My Account') }}</h1>
+          <h1 class="title">{{ $t('myAccount') }}</h1>
         </div>
         <div class="column is-4 has-text-right">
           <div style="display: flex; justify-content: flex-end; margin-right: 10%;">
@@ -33,7 +33,7 @@
             </div>
             <div class="field">
               <div class="control">
-                <button class="button is-link" type="submit">{{ $t('update') }}</button>
+                <button class="button is-link" type="submit" :aria-label="$t('changeUsername')">{{ $t('update') }}</button>
               </div>
             </div>
           </form>
@@ -48,13 +48,13 @@
             </div>
             <div class="field">
               <div class="control">
-                <button class="button is-link" type="submit">{{ $t('update') }}</button>
+                <button class="button is-link" type="submit" :aria-label="$t('changePassword')">{{ $t('update') }}</button>
               </div>
             </div>
           </form>
 
           <div class="buttons is-centered">
-            <button @click="logout" class="button is-danger">{{ $t('logout') }}</button>
+            <button @click="logout" class="button is-danger" :aria-label="$t('logout')">{{ $t('logout') }}</button>
           </div>
 
           <div class="buttons is-centered">

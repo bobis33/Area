@@ -4,7 +4,7 @@
       <div class="columns is-vcentered" style="padding-top: 5%; padding-bottom: 2%; color: var(--text-color);">
         <div class="column is-4">
           <nuxt-link to="/settings" class="link-button" :style="{color: 'var(--text-color)'}">
-            <img src="@/assets/icons/settings.png" alt="Plus Icon" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
+            <img src="@/assets/icons/settings.png" :alt="$t('settings')" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
           </nuxt-link>
         </div>
         <div class="column is-4 has-text-centered">
@@ -17,7 +17,7 @@
               <nuxt-link to="/createAreas" class="link-button has-text-primary" :style="{color: 'var(--text-color)'}">{{$t('Create')}}</nuxt-link>
               <nuxt-link to="/areas" class="link-button" :style="{color: 'var(--text-color)'}">{{$t('sharedAreas')}}</nuxt-link>
               <nuxt-link to="/profile" class="link-button" :style="{color: 'var(--text-color)'}">
-                <img src="@/assets/icons/account.png" alt="Plus Icon" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
+                <img src="@/assets/icons/account.png" :alt="$t('account')" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
               </nuxt-link>
             </div>
           </div>
@@ -28,7 +28,7 @@
         <div v-if="actionsData && actionsData.actions.length" class="box action-box column is-3" :style="{ backgroundColor: '#B23737', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)' }">
           <h1 class="title is-6" :style="{color: 'white'}">{{ $t('Action') }}</h1>
           <div class="select is-fullwidth">
-            <select v-model="actionSelectedService">
+            <select v-model="actionSelectedService" :aria-label="$t('selectService')">
               <option disabled selected value="">{{ $t('Service') }}</option>
               <option v-for="service in services" :key="service" :value="service">
                 {{ service }}
@@ -36,7 +36,7 @@
             </select>
           </div>
           <div class="select is-fullwidth" v-if="actionSelectedService && filteredActions" style="margin-top: 10px;">
-            <select v-model="selectedAction">
+            <select v-model="selectedAction" :aria-label="$t('selectAction')">
               <option disabled selected value="">{{ $t('Action') }}</option>
               <option v-for="action in filteredActions" :key="action.name" :value="action">
                 {{ action.name }}
@@ -71,7 +71,7 @@
         <div v-if="reactionsData && reactionsData.reactions.length" class="box reaction-box column is-3" :style="{ backgroundColor: '#0F4FC7', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)' }">
           <h1 class="title is-6" :style="{color: 'white'}">{{ $t('Reaction') }}</h1>
           <div class="select is-fullwidth">
-            <select v-model="reactionSelectedService">
+            <select v-model="reactionSelectedService" :aria-label="$t('selectService')">
               <option disabled selected value="">{{ $t('Service') }}</option>
               <option v-for="service in services" :key="service" :value="service">
                 {{ service }}
@@ -79,7 +79,7 @@
             </select>
           </div>
           <div class="select is-fullwidth" v-if="reactionSelectedService && filteredReactions" style="margin-top: 10px;">
-            <select v-model="selectedReaction">
+            <select v-model="selectedReaction" :aria-label="$t('selectReaction')">
               <option disabled selected value="">{{ $t('reaction') }}</option>
               <option v-for="reaction in filteredReactions" :key="reaction.name" :value="reaction">
                 {{ reaction.name }}
@@ -109,7 +109,7 @@
         </div>
         <div class="column is-2"></div>
 
-        <button @click="createArea" class="button is-primary is-fixed-bottom-right">{{$t('save')}}</button>
+        <button @click="createArea" class="button is-primary is-fixed-bottom-right" :aria-label="$t('saveArea')">{{$t('save')}}</button>
       </div>
     </div>
   </section>

@@ -4,7 +4,7 @@
       <div class="columns is-vcentered" style="padding-top: 5%; padding-bottom: 2%; color: white;">
         <div class="column is-4">
           <nuxt-link to="/settings" class="link-button" :style="{color: 'var(--text-color)'}">
-            <img src="@/assets/icons/settings.png" alt="Plus Icon" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
+            <img src="@/assets/icons/settings.png" :alt="$t('settings')" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
           </nuxt-link>
         </div>
         <div class="column is-4 has-text-centered">
@@ -17,7 +17,7 @@
               <nuxt-link to="/createAreas" class="link-button"  :style="{color: 'var(--text-color)'}">{{$t('Create')}}</nuxt-link>
               <nuxt-link to="/areas" class="link-button has-text-primary"  :style="{color: 'var(--text-color)'}">{{$t('sharedAreas')}}</nuxt-link>
               <nuxt-link to="/profile" class="link-button" :style="{color: 'var(--text-color)'}">
-              <img src="@/assets/icons/account.png" alt="Plus Icon" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
+              <img src="@/assets/icons/account.png" :alt="$t('account')" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
               </nuxt-link>
             </div>
           </div>
@@ -26,7 +26,8 @@
       <div class="field">
         <div class="control">
           <div class="is-flex is-justify-content-center">
-            <input class="input is-normal" type="text" placeholder="Search by name or service" v-model="searchQuery" style="max-width: 30%;">
+            <label for="search" class="sr-only">{{$t('sharedAreaSearch')}}</label>
+            <input id="search" class="input is-normal" type="text" :placeholder="$t('sharedAreaSearch')" v-model="searchQuery" style="max-width: 30%;">
           </div>
         </div>
       </div>
@@ -43,9 +44,9 @@
               <p class="" style="margin-left: 7px; color: white;">
                 {{ area.subscribed_users.length }}
               </p>
-              <a style="margin-left: auto; color: white;" @click="subscribeUser(area._id)">
+              <button style="margin-left: auto; color: white;" @click="subscribeUser(area._id)">
                 <img src="@/assets/icons/plus.png" alt="Plus Icon" style="width: 17px; height: 17px; filter: invert(1); margin: 3px;"/>
-              </a>
+              </button>
               </div>
             </div>
           </li>

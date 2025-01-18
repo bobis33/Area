@@ -13,7 +13,7 @@
                 <nuxt-link to="/createAreas" class="link-button" :style="{color: 'var(--text-color)'}">{{$t('Create')}}</nuxt-link>
                 <nuxt-link to="/areas" class="link-button" :style="{color: 'var(--text-color)'}">{{$t('sharedAreas')}}</nuxt-link>
                 <nuxt-link to="/profile" class="link-button" :style="{color: 'var(--text-color)'}">
-                  <img src="@/assets/icons/account.png" alt="Plus Icon" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
+                  <img src="@/assets/icons/account.png" :alt="$t('account')" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
                 </nuxt-link>
               </div>
             </div>

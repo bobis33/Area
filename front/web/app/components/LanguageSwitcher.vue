@@ -1,6 +1,6 @@
 <template>
   <div class="select">
-    <select v-model="languageCookie" @change="updateLanguage" class="language-select">
+    <select v-model="languageCookie" @change="updateLanguage" class="language-select" :aria-label="$t('changeLanguage')">
       <option
           v-for="lang in Object.values(LanguagesEnum)"
           :key="lang"

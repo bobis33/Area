@@ -2,6 +2,11 @@
   <section :data-theme="$colorMode.preference" class="hero is-fullheight" :style="{ backgroundColor: 'var(--bg)' }">
     <div class="container">
       <div class="columns is-centered" style="padding-top: 5%;">
+        <div class="column is-4">
+          <nuxt-link to="/settings" class="link-button" :style="{color: 'var(--text-color)'}">
+            <img src="@/assets/icons/settings.png" :alt="$t('settings')" style="width: 30px; height: 30px; margin: 3px;" :style="{filter: 'var(--filter)'}"/>
+          </nuxt-link>
+        </div>
         <div class="column is-4 has-text-centered">
           <h1 class="title">{{ $t('register') }}</h1>
 
@@ -26,7 +31,7 @@
             </div>
             <div class="field">
               <div class="control">
-                <button type="submit" class="button is-link is-fullwidth">{{ $t('register') }}</button>
+                <button type="submit" class="button is-link is-fullwidth" :aria-label="$t('register')">{{ $t('register') }}</button>
               </div>
             </div>
           </form>
@@ -35,10 +40,11 @@
 
           <div class="has-text-centered mt-4">
             <p class="">{{ $t('alreadyHaveAccount') }}
-              <a @click="router.push(RoutesEnum.LOGIN.toString())" class="is-text">{{ $t('loginHere') }}</a>
+              <button @click="router.push(RoutesEnum.LOGIN.toString())" class="has-text-primary">{{ $t('loginHere') }}</button>
             </p>
           </div>
         </div>
+        <div class="column is-4"></div>
       </div>
     </div>
   </section>
