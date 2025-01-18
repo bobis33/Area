@@ -1,6 +1,3 @@
-import 'package:area_front_mobile/presentation/pages/areas.dart';
-import 'package:area_front_mobile/presentation/pages/browse.dart';
-import 'package:area_front_mobile/presentation/pages/create.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,10 +6,10 @@ class MainLayout extends StatefulWidget {
   final Widget child;
 
   @override
-  _MainLayoutState createState() => _MainLayoutState();
+  MainLayoutState createState() => MainLayoutState();
 }
 
-class _MainLayoutState extends State<MainLayout> {
+class MainLayoutState extends State<MainLayout> {
   int? _selectedIndex; // Null when no item is selected
 
   // Define the navbar routes

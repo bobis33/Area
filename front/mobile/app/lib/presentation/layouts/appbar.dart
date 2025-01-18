@@ -1,13 +1,14 @@
-import 'package:area_front_mobile/presentation/pages/profile.dart';
-import 'package:area_front_mobile/presentation/pages/settings.dart';
 import 'package:flutter/material.dart';
+
+import '/presentation/pages/profile.dart';
+import '/presentation/pages/settings.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool hideAccountButton;
   final bool hideSettingsButton;
 
-  CustomAppBar({
+  const CustomAppBar({
     required this.title,
     this.hideAccountButton = false,
     this.hideSettingsButton = false,
@@ -62,11 +63,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 icon: Icon(Icons.settings, color: theme.colorScheme.onSurface, size: 30),
                 onPressed: () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()));
-                },
-              ),
+                      context,
+                      MaterialPageRoute(builder: (context) => SettingsPage()));
+                }
             ),
+          ),
           ),
       ],
     );

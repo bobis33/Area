@@ -1,9 +1,9 @@
 import 'package:area_front_mobile/presentation/pages/create.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-import '../presentation/pages/browse.dart';
+import '/presentation/pages/browse.dart';
+import '/presentation/pages/settings.dart';
 import '/config/constants.dart';
 import '/presentation/layouts/navbar.dart';
 import '/presentation/pages/areas.dart';
@@ -29,6 +29,11 @@ final router = GoRouter(
       name: RouteEnum.login.name,
       path: '/login',
       builder: (context, state) => Scaffold(body: LoginPage()),
+    ),
+    GoRoute(
+      name: RouteEnum.settings.name,
+      path: '/settings',
+      builder: (context, state) => Scaffold(body: SettingsPage()),
     ),
     GoRoute(
       name: RouteEnum.profile.name,
