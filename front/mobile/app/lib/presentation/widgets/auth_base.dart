@@ -35,7 +35,7 @@ class AuthPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surfaceTint,
-      appBar: CustomAppBar(title: title, hideAccountButton: true, hideSettingsButton: true),
+      appBar: CustomAppBar(title: title, hideAccountButton: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
