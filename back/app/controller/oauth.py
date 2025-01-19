@@ -12,7 +12,7 @@ from app.config import Config
 from app.service import (
     area_oauth_google_login,
     area_oauth_discord_login,
-    area_oauth_spotify_login
+    area_oauth_spotify_login,
 )
 
 from .auth import oauth
@@ -68,7 +68,6 @@ async def google_callback(request: Request, authorize: AuthJWT = Depends()):
 @router.get("/login/with/spotify")
 async def login_spotify(request: Request):
     redirect_uri = request.url_for('spotify_token_callback')
-    print(redirect_uri, flush=True)
     return await oauth.spotify.authorize_redirect(request, redirect_uri)
 
 @router.get("/login/with/spotify/callback", include_in_schema=False)

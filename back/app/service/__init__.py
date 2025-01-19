@@ -9,11 +9,13 @@ from .auth import (
     link_to_discord,
     link_to_spotify,
     link_to_github,
+    link_to_gitlab,
 
     oauth_google_login,
     oauth_discord_login,
     oauth_spotify_login,
     oauth_github_login,
+    oauth_gitlab_login,
 
     area_oauth_google_login,
     area_oauth_discord_login,

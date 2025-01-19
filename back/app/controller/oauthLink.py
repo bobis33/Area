@@ -13,10 +13,13 @@ from app.service import (
     link_to_discord,
     link_to_spotify,
     link_to_github,
+    link_to_gitlab,
+
     oauth_google_login,
     oauth_discord_login,
     oauth_spotify_login,
     oauth_github_login,
+    oauth_gitlab_login
 )
 from app.common import secure_endpoint, TokenManager
 
@@ -147,6 +150,38 @@ async def spotify_callback(request: Request):
             return RedirectResponse(f"{Config.MOBILE_URL}?spotify_token={spotify_token}")
 
         return RedirectResponse(f"{Config.FRONTEND_URL}/?spotify_token={spotify_token}")
+    except Exception as e:
+        print("Exception occured:", e, flush=True)
+        return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
+
+
+# ----------------------------------------------------------------------- GITLAB -------------------------------------------------------------
+
+@router.post('/link/gitlab')
+@secure_endpoint
+async def link_gitlab(gitlab_token, token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    try:
+        await link_to_gitlab(TokenManager.get_token_subject(token), gitlab_token)
+        return {"message": "GitLab account linked successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.args) from e
+
+@router.get("/login/to/gitlab")
+async def get_gitlab_login(request: Request):
+    redirect_uri = request.url_for('gitlab_callback')
+    return await oauth.gitlab.authorize_redirect(request, redirect_uri)
+
+@router.get("/login/to/gitlab/callback", include_in_schema=False)
+async def gitlab_callback(request: Request):
+    try:
+        client_type = "mobile" if "mobile" in request.headers.get("User-Agent", "").lower() else "web"
+        gitlab_token = await oauth.gitlab.authorize_access_token(request)
+        await oauth_gitlab_login(gitlab_token)
+
+        if client_type == "mobile":
+            return RedirectResponse(f"{Config.MOBILE_URL}?gitlab_token={gitlab_token}")
+
+        return RedirectResponse(f"{Config.FRONTEND_URL}/?gitlab_token={gitlab_token}")
     except Exception as e:
         print("Exception occured:", e, flush=True)
         return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")

@@ -61,6 +61,17 @@ oauth.register(
     client_kwargs={'scope': 'user-read-email user-read-private user-read-playback-state user-modify-playback-state user-read-currently-playing user-library-read user-library-modify user-read-playback-position user-read-recently-played user-top-read playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private user-follow-read user-follow-modify user-read-email user-read-private'},
 )
 
+oauth.register(
+    name='gitlab',
+    client_id=Config.GITLAB_CLIENT_ID,
+    client_secret=Config.GITLAB_CLIENT_SECRET,
+    authorize_url='https://gitlab.com/oauth/authorize',
+    authorize_params=None,
+    access_token_url='https://gitlab.com/oauth/token',
+    access_token_params=None,
+    client_kwargs={'scope': 'read_user read_api read_repository read_registry write_repository write_registry'},
+)
+
 class Credentials(BaseModel):
     username: str
     password: str
