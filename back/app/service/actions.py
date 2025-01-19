@@ -57,8 +57,8 @@ class GithubRepoCreatedAction(IAction):
         """'github_repo_created' An action function that triggers when a GitHub repository is created
         """
         try:
-            github_infos = user['linked_to']['GITHUB']
-            access_token = github_infos["access_token"]
+            github_infos = await DAO.find(get_database().github_users, "_id", user['linked_to']['github'])
+            access_token = github_infos["token"]["access_token"]
             username = user['github_username']
 
             async with aiohttp.ClientSession() as session:
@@ -92,8 +92,8 @@ class NewIssueAssignedAction(IAction):
 
     async def is_triggered(self, user, params) -> bool:
         try:
-            github_infos = user['linked_to']['GITHUB']
-            access_token = github_infos["access_token"]
+            github_infos = await DAO.find(get_database().github_users, "_id", user['linked_to']['github'])
+            access_token = github_infos["token"]["access_token"]
             username = user['github_username']
 
             async with aiohttp.ClientSession() as session:
@@ -127,8 +127,8 @@ class RepoStarCountUpdatedAction(IAction):
 
     async def is_triggered(self, user, params) -> bool:
         try:
-            github_infos = user['linked_to']['GITHUB']
-            access_token = github_infos["access_token"]
+            github_infos = await DAO.find(get_database().github_users, "_id", user['linked_to']['github'])
+            access_token = github_infos["token"]["access_token"]
 
             repo_owner = "Asti0s"
             repo_name = "ok"
@@ -172,8 +172,8 @@ class RepoForkCountUpdatedAction(IAction):
 
     async def is_triggered(self, user, params) -> bool:
         try:
-            github_infos = user['linked_to']['GITHUB']
-            access_token = github_infos["access_token"]
+            github_infos = await DAO.find(get_database().github_users, "_id", user['linked_to']['github'])
+            access_token = github_infos["token"]["access_token"]
 
             repo_owner = "NASA-SW-VnV"
             repo_name = "ikos"
