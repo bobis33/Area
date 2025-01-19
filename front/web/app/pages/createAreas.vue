@@ -129,7 +129,8 @@ enum services {
   GitHub = 'Github',
   GMail = 'GMail',
   Gitlab = 'Gitlab',
-  Spotify = 'Spotify'
+  Spotify = 'Spotify',
+  Time = 'Time'
 }
 
 const actionSelectedService = ref<services | null>(null)

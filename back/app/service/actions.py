@@ -371,3 +371,30 @@ class GitlabNewIssueAssignedAction(IAction):
         except Exception as error:
             print(f"An error occurred: {error}", flush=True)
             return False
+
+
+# ----------------------------------------- Time Actions -----------------------------------------
+
+from datetime import datetime, timezone
+
+class EveryMinuteAction(IAction):
+    def __init__(self):
+        super().__init__()
+        self.name = "Every Minute"
+        self.description = "Triggers every minutes"
+        self.service = Service.TIME
+
+    async def is_triggered(self, user, params) -> bool:
+        try:
+            response = requests.get("http://worldclockapi.com/api/json/utc/now")
+            response.raise_for_status()
+            data = response.json()
+
+            current_time = datetime.strptime(data["currentDateTime"], "%Y-%m-%dT%H:%MZ").replace(tzinfo=timezone.utc)
+            now = datetime.now(timezone.utc)
+            diff_seconds = (now - current_time).total_seconds()
+
+            return diff_seconds >= 60 - Config.AREA_CHECK_INTERVAL
+        except requests.RequestException as e:
+            print(f"An error occurred while requesting time: {e}", flush=True)
+            return False
