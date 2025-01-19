@@ -24,61 +24,17 @@ async def register_user(username, password):
     await DAO.insert_user(username, hashed_password)
     return True
 
-async def oauth_discord_login(discord_token):
-    async with aiohttp.ClientSession() as session:
-        async with session.get('https://discord.com/api/users/@me', headers={'Authorization': f'Bearer {discord_token["access_token"]}'}) as response:
-            user_info = await response.json()
-            if not user_info:
-                raise RuntimeError("Failed to retrieve user info from Discord")
+async def is_linked_google_service(token):
+    user = await DAO.find_user_by_username(token)
+    if user is None:
+        return False
+    if "google" in user["linked_to"]:
+        return True
 
-            discord_username = user_info.get("username")
-            if not discord_username:
-                raise RuntimeError("Discord username not found in user info")
+    return False
 
-            user_email = user_info.get("email")
-            if not user_email:
-                raise RuntimeError("Email not found in user info")
 
-    user_account = await DAO.find(get_database().discord_users, "email", user_email)
-
-    if not user_account:
-        await DAO.insert(get_database().discord_users, {"email": user_info.get("email"), "user_info": user_info, "token": discord_token, "linked_to": None})
-
-async def area_oauth_discord_login(discord_token):
-    async with aiohttp.ClientSession() as session:
-        async with session.get('https://discord.com/api/users/@me', headers={'Authorization': f'Bearer {discord_token["access_token"]}'}) as response:
-            user_info = await response.json()
-            if not user_info:
-                raise RuntimeError("Failed to retrieve user info from Discord")
-
-            discord_username = user_info.get("username")
-            if not discord_username:
-                raise RuntimeError("Discord username not found in user info")
-
-            user_email = user_info.get("email")
-            if not user_email:
-                raise RuntimeError("Email not found in user info")
-
-    discord_account = await DAO.find(get_database().discord_users, "email", user_email)
-    linked_account = None
-
-    if discord_account is None:
-        await DAO.insert(get_database().discord_users, {"email": user_info.get("email"), "user_info": user_info, "token": discord_token, "linked_to": None})
-        discord_account = await DAO.find(get_database().discord_users, "email", user_info.get("email"))
-
-    elif discord_account["linked_to"] is not None:
-        linked_account = await DAO.find(get_database().users, "_id", discord_account["linked_to"])
-
-    if linked_account is None:
-        username = NameGenerator.generate_username_from_email(user_info["email"])
-        await DAO.insert(get_database().users, {"username": username, "password": None, "email": user_info["email"], "subscribed_areas": [],
-                                                      "created_at": datetime.datetime.now(), "updated_at": datetime.datetime.now(),
-                                                      "linked_to": {"discord" : discord_account["_id"]}})
-        linked_account = await DAO.find_user_by_username(username)
-        discord_account["linked_to"] = linked_account["_id"]
-        await DAO.update(get_database().discord_users, "email", user_info["email"], discord_account)
-
-    return linked_account["username"]
+# ------------------------------ LINKING SERVICES ------------------------------
 
 async def link_to_google(username, google_token):
     user = await DAO.find_user_by_username(username)
@@ -96,37 +52,6 @@ async def link_to_google(username, google_token):
     DAO.update(get_database().google_users,
                "email", google_token.get("userinfo")["email"], google_user)
 
-async def oauth_google_login(google_token):
-    user_info = google_token.get("userinfo")
-    user_account = await DAO.find(get_database().google_users, "email", user_info["email"])
-
-    if user_account is None:
-        await DAO.insert(get_database().google_users, {"email": user_info["email"], "token": google_token, "link_to": None})
-
-async def area_oauth_google_login(google_token):
-    user_info = google_token.get("userinfo")
-
-    google_account = await DAO.find(get_database().google_users, "email", user_info["email"])
-    linked_account = None
-
-    if google_account is None:
-        await DAO.insert(get_database().google_users, {"email": user_info["email"], "token": google_token, "linked_to": None})
-        google_account = await DAO.find(get_database().google_users, "email", user_info["email"])
-
-    elif google_account["linked_to"] != None:
-        linked_account = await DAO.find(get_database().users, "_id", google_account["linked_to"])
-
-    if linked_account is None:
-        username = NameGenerator.generate_username_from_email(user_info["email"])
-        await DAO.insert(get_database().users, {"username": username, "password": None, "email": user_info["email"], "subscribed_areas": [],
-                                                      "created_at": datetime.datetime.now(), "updated_at": datetime.datetime.now(),
-                                                      "linked_to": {"google" : google_account["_id"]}})
-        linked_account = await DAO.find_user_by_username(username)
-        google_account["linked_to"] = linked_account["_id"]
-        await DAO.update(get_database().google_users, "email", user_info["email"], google_account)
-
-
-    return linked_account["username"]
 
 async def link_to_discord(username, discord_token):
     user = await DAO.find_user_by_username(username)
@@ -176,6 +101,36 @@ async def link_to_github(username, github_token):
     DAO.update(get_database().github_users,
                "email", github_token.get("userinfo")["email"], github_user)
 
+
+# ------------------------------ OAUTH SERVICES ------------------------------
+
+async def oauth_google_login(google_token):
+    user_info = google_token.get("userinfo")
+    user_account = await DAO.find(get_database().google_users, "email", user_info["email"])
+
+    if user_account is None:
+        await DAO.insert(get_database().google_users, {"email": user_info["email"], "token": google_token, "link_to": None})
+
+async def oauth_discord_login(discord_token):
+    async with aiohttp.ClientSession() as session:
+        async with session.get('https://discord.com/api/users/@me', headers={'Authorization': f'Bearer {discord_token["access_token"]}'}) as response:
+            user_info = await response.json()
+            if not user_info:
+                raise RuntimeError("Failed to retrieve user info from Discord")
+
+            discord_username = user_info.get("username")
+            if not discord_username:
+                raise RuntimeError("Discord username not found in user info")
+
+            user_email = user_info.get("email")
+            if not user_email:
+                raise RuntimeError("Email not found in user info")
+
+    user_account = await DAO.find(get_database().discord_users, "email", user_email)
+
+    if not user_account:
+        await DAO.insert(get_database().discord_users, {"email": user_info.get("email"), "user_info": user_info, "token": discord_token, "linked_to": None})
+
 async def oauth_spotify_login(spotify_token):
     async with aiohttp.ClientSession() as session:
         async with session.get('https://api.spotify.com/v1/me', headers={'Authorization': f'Bearer {spotify_token["access_token"]}'}) as response:
@@ -195,6 +150,86 @@ async def oauth_spotify_login(spotify_token):
 
     if not user_account:
         await DAO.insert(get_database().spotify_users, {"email": user_info.get("email"), "user_info": user_info, "token": spotify_token, "linked_to": None})
+
+async def oauth_github_login(github_token):
+    async with aiohttp.ClientSession() as session:
+        async with session.get('https://api.github.com/user', headers={'Authorization': f'Bearer {github_token["access_token"]}'}) as response:
+            user_info = await response.json()
+            if not user_info:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Failed to retrieve user info from GitHub")
+
+            async with session.get('https://api.github.com/user/emails', headers={'Authorization': f'Bearer {github_token["access_token"]}'}) as email_response:
+                emails = await email_response.json()
+                user_email = next((email["email"] for email in emails if email["primary"]), None)
+                if not user_email:
+                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email not found in user info")
+
+    user_account = await DAO.find(get_database().github_users, "email", user_email)
+    if not user_account:
+        await DAO.insert(get_database().github_users, {"email": user_info.get("email"), "user_info": user_info, "token": github_token, "linked_to": None})
+
+
+# ------------------------------ AREA OAUTH SERVICES ------------------------------
+
+async def area_oauth_google_login(google_token):
+    user_info = google_token.get("userinfo")
+
+    google_account = await DAO.find(get_database().google_users, "email", user_info["email"])
+    linked_account = None
+
+    if google_account is None:
+        await DAO.insert(get_database().google_users, {"email": user_info["email"], "token": google_token, "linked_to": None})
+        google_account = await DAO.find(get_database().google_users, "email", user_info["email"])
+
+    elif google_account["linked_to"] != None:
+        linked_account = await DAO.find(get_database().users, "_id", google_account["linked_to"])
+
+    if linked_account is None:
+        username = NameGenerator.generate_username_from_email(user_info["email"])
+        await DAO.insert(get_database().users, {"username": username, "password": None, "email": user_info["email"], "subscribed_areas": [],
+                                                      "created_at": datetime.datetime.now(), "updated_at": datetime.datetime.now(),
+                                                      "linked_to": {"google" : google_account["_id"]}})
+        linked_account = await DAO.find_user_by_username(username)
+        google_account["linked_to"] = linked_account["_id"]
+        await DAO.update(get_database().google_users, "email", user_info["email"], google_account)
+
+    return linked_account["username"]
+
+async def area_oauth_discord_login(discord_token):
+    async with aiohttp.ClientSession() as session:
+        async with session.get('https://discord.com/api/users/@me', headers={'Authorization': f'Bearer {discord_token["access_token"]}'}) as response:
+            user_info = await response.json()
+            if not user_info:
+                raise RuntimeError("Failed to retrieve user info from Discord")
+
+            discord_username = user_info.get("username")
+            if not discord_username:
+                raise RuntimeError("Discord username not found in user info")
+
+            user_email = user_info.get("email")
+            if not user_email:
+                raise RuntimeError("Email not found in user info")
+
+    discord_account = await DAO.find(get_database().discord_users, "email", user_email)
+    linked_account = None
+
+    if discord_account is None:
+        await DAO.insert(get_database().discord_users, {"email": user_info.get("email"), "user_info": user_info, "token": discord_token, "linked_to": None})
+        discord_account = await DAO.find(get_database().discord_users, "email", user_info.get("email"))
+
+    elif discord_account["linked_to"] is not None:
+        linked_account = await DAO.find(get_database().users, "_id", discord_account["linked_to"])
+
+    if linked_account is None:
+        username = NameGenerator.generate_username_from_email(user_info["email"])
+        await DAO.insert(get_database().users, {"username": username, "password": None, "email": user_info["email"], "subscribed_areas": [],
+                                                      "created_at": datetime.datetime.now(), "updated_at": datetime.datetime.now(),
+                                                      "linked_to": {"discord" : discord_account["_id"]}})
+        linked_account = await DAO.find_user_by_username(username)
+        discord_account["linked_to"] = linked_account["_id"]
+        await DAO.update(get_database().discord_users, "email", user_info["email"], discord_account)
+
+    return linked_account["username"]
 
 async def area_oauth_spotify_login(spotify_token):
     async with aiohttp.ClientSession() as session:
@@ -231,29 +266,3 @@ async def area_oauth_spotify_login(spotify_token):
         await DAO.update(get_database().spotify_users, "email", user_info["email"], spotify_account)
 
     return linked_account["username"]
-
-async def oauth_github_login(github_token):
-    async with aiohttp.ClientSession() as session:
-        async with session.get('https://api.github.com/user', headers={'Authorization': f'Bearer {github_token["access_token"]}'}) as response:
-            user_info = await response.json()
-            if not user_info:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Failed to retrieve user info from GitHub")
-
-            async with session.get('https://api.github.com/user/emails', headers={'Authorization': f'Bearer {github_token["access_token"]}'}) as email_response:
-                emails = await email_response.json()
-                user_email = next((email["email"] for email in emails if email["primary"]), None)
-                if not user_email:
-                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email not found in user info")
-
-    user_account = await DAO.find(get_database().github_users, "email", user_email)
-    if not user_account:
-        await DAO.insert(get_database().github_users, {"email": user_info.get("email"), "user_info": user_info, "token": github_token, "linked_to": None})
-
-async def is_linked_google_service(token):
-    user = await DAO.find_user_by_username(token)
-    if user is None:
-        return False
-    if "google" in user["linked_to"]:
-        return True
-
-    return False
