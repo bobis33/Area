@@ -16,12 +16,7 @@ from app.database import DAO, get_database
 
 
 # ------------------------------------- Discord Bot -------------------------------------
-intents = Intents.default()
-intents.messages = True
-intents.guilds = True
-intents.message_content = True
-
-bot = commands.Bot(command_prefix="!", intents=intents)
+bot = commands.Bot(command_prefix="!", intents=Intents.all())
 
 @app.on_event("startup")
 async def start_bot():
@@ -191,3 +186,80 @@ class SendDiscordMessageReaction(IReaction):
     async def react(self, user, params):
         channel = bot.get_channel(int(params["Channel ID"]))
         await channel.send(params["Message"])
+
+class SendDiscordDMReaction(IReaction):
+    def __init__(self):
+        super().__init__()
+        self.name = "Send discord DM"
+        self.description = "Send a direct message to a discord user"
+        self.service = Service.DISCORD
+
+    async def get_params(self):
+        return {"User ID": "None", "Message": "None"}
+
+    async def react(self, user, params):
+        user = bot.get_user(int(params["User ID"]))
+        await user.send(params["Message"])
+
+class KickDiscordUserReaction(IReaction):
+    def __init__(self):
+        super().__init__()
+        self.name = "Kick discord user"
+        self.description = "Kick a user from a discord server"
+        self.service = Service.DISCORD
+
+    async def get_params(self):
+        return {"User ID": "None", "Guild ID": "None"}
+
+    async def react(self, user, params):
+        guild = bot.get_guild(int(params["Guild ID"]))
+        member = guild.get_member(int(params["User ID"]))
+        await member.kick()
+
+class BanDiscordUserReaction(IReaction):
+    def __init__(self):
+        super().__init__()
+        self.name = "Ban discord user"
+        self.description = "Ban a user from a discord server"
+        self.service = Service.DISCORD
+
+    async def get_params(self):
+        return {"User ID": "None", "Guild ID": "None"}
+
+    async def react(self, user, params):
+        guild = bot.get_guild(int(params["Guild ID"]))
+        member = guild.get_member(int(params["User ID"]))
+        await member.ban()
+
+class AddRoleToDiscordUserReaction(IReaction):
+    def __init__(self):
+        super().__init__()
+        self.name = "Add role to discord user"
+        self.description = "Add a role to a user in a discord server"
+        self.service = Service.DISCORD
+
+    async def get_params(self):
+        return {"User ID": "None", "Guild ID": "None", "Role ID": "None"}
+
+    async def react(self, user, params):
+        guild = bot.get_guild(int(params["Guild ID"]))
+        member = guild.get_member(int(params["User ID"]))
+        role = guild.get_role(int(params["Role ID"]))
+        await member.add_roles(role)
+
+class RemoveRoleFromDiscordUserReaction(IReaction):
+    def __init__(self):
+        super().__init__()
+        self.name = "Remove role from discord user"
+        self.description = "Remove a role from a user in a discord server"
+        self.service = Service.DISCORD
+
+    async def get_params(self):
+        return {"User ID": "None", "Guild ID": "None", "Role ID": "None"}
+
+    async def react(self, user, params):
+        guild = bot.get_guild(int(params["Guild ID"]))
+        member = guild.get_member(int(params["User ID"]))
+        role = guild.get_role(int(params["Role ID"]))
+        print(role, member, flush=True)
+        await member.remove_roles(role)
