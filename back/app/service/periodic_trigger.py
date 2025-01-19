@@ -22,7 +22,7 @@ async def update_actions():
                     if await action_func(user, area["action_params"]):
                         await reaction_func(user, area["reaction_params"])
                 except Exception as e:
-                    print(f"Error triggering a/rea for user {username}: {e}\n", flush=True)
+                    print(f"Error triggering area for user {username}: {e}\n", flush=True)
 
         except AttributeError:
             print(f"Reaction {area['reaction']} not found\n", flush=True)
