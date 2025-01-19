@@ -6,6 +6,7 @@ class Service(Enum):
     DISCORD = "Discord"
     GITHUB = "Github"
     SPOTIFY = "Spotify"
+    GITLAB = "Gitlab"
 
 class IAction:
     def __init__(self):

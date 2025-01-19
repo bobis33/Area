@@ -128,7 +128,7 @@ enum services {
   Discord = 'Discord',
   GitHub = 'Github',
   GMail = 'GMail',
-  Microsoft = 'Microsoft',
+  Gitlab = 'Gitlab',
   Spotify = 'Spotify'
 }
 

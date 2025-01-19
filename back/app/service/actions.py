@@ -10,6 +10,9 @@ from .areaComponents import IAction, Service
 from app.config import Config
 from app.database import DAO, get_database
 
+
+# ----------------------------------------- Google Actions -----------------------------------------
+
 class MailRecvAction(IAction):
     def __init__(self):
         super().__init__()
@@ -46,10 +49,13 @@ class MailRecvAction(IAction):
             print(f"An error occurred: {error}", flush=True)
             return False
 
+
+# ----------------------------------------- Github Actions -----------------------------------------
+
 class GithubRepoCreatedAction(IAction):
     def __init__(self):
         super().__init__()
-        self.name = "Github repo created"
+        self.name = "New Repo Created (Github)"
         self.description = "Triggered when a repo is created"
         self.service = Service.GITHUB
 
@@ -59,7 +65,7 @@ class GithubRepoCreatedAction(IAction):
         try:
             github_infos = await DAO.find(get_database().github_users, "_id", user['linked_to']['github'])
             access_token = github_infos["token"]["access_token"]
-            username = user['github_username']
+            username = github_infos['user_info']['login']
 
             async with aiohttp.ClientSession() as session:
                 headers = {'Authorization': f'Bearer {access_token}'}
@@ -83,10 +89,10 @@ class GithubRepoCreatedAction(IAction):
             print(f"An error occurred: {error}", flush=True)
             return False
 
-class NewIssueAssignedAction(IAction):
+class GithubNewIssueAssignedAction(IAction):
     def __init__(self):
         super().__init__()
-        self.name = "New Issue Assigned"
+        self.name = "New Issue Assigned (Github)"
         self.description = "Triggers when a new issue is assigned to the user"
         self.service = Service.GITHUB
 
@@ -94,7 +100,7 @@ class NewIssueAssignedAction(IAction):
         try:
             github_infos = await DAO.find(get_database().github_users, "_id", user['linked_to']['github'])
             access_token = github_infos["token"]["access_token"]
-            username = user['github_username']
+            username = github_infos['user_info']['login']
 
             async with aiohttp.ClientSession() as session:
                 headers = {'Authorization': f'Bearer {access_token}'}
@@ -118,20 +124,23 @@ class NewIssueAssignedAction(IAction):
             print(f"An error occurred: {error}", flush=True)
             return False
 
-class RepoStarCountUpdatedAction(IAction):
+class GithubRepoStarCountUpdatedAction(IAction):
     def __init__(self):
         super().__init__()
-        self.name = "Repo Star Count Updated"
+        self.name = "Repo Star Count Updated (Github)"
         self.description = "Triggers when the star count of a specific repository changes"
         self.service = Service.GITHUB
+
+    async def get_params(self):
+        return {"Repo Owner": "None", "Repo name": "None"}
 
     async def is_triggered(self, user, params) -> bool:
         try:
             github_infos = await DAO.find(get_database().github_users, "_id", user['linked_to']['github'])
             access_token = github_infos["token"]["access_token"]
 
-            repo_owner = "Asti0s"
-            repo_name = "ok"
+            repo_owner = params["Repo Owner"]
+            repo_name = params["Repo name"]
 
             last_star_count = await DAO.get_user_github_repo_star_count(user['email'], repo_name)
             new_star_count = 0
@@ -163,20 +172,23 @@ class RepoStarCountUpdatedAction(IAction):
             print(f"An error occurred: {error}", flush=True)
             return False
 
-class RepoForkCountUpdatedAction(IAction):
+class GithubRepoForkCountUpdatedAction(IAction):
     def __init__(self):
         super().__init__()
-        self.name = "Repo Fork Count Updated"
+        self.name = "Repo Fork Count Updated (Github)"
         self.description = "Triggers when the fork count of a specific repository changes"
         self.service = Service.GITHUB
+
+    async def get_params(self):
+        return {"Repo Owner": "None", "Repo name": "None"}
 
     async def is_triggered(self, user, params) -> bool:
         try:
             github_infos = await DAO.find(get_database().github_users, "_id", user['linked_to']['github'])
             access_token = github_infos["token"]["access_token"]
 
-            repo_owner = "NASA-SW-VnV"
-            repo_name = "ikos"
+            repo_owner = params["Repo Owner"]
+            repo_name = params["Repo name"]
 
             last_fork_count = await DAO.get_user_github_repo_fork_count(user['email'], repo_name)
             new_fork_count = 0
@@ -208,7 +220,10 @@ class RepoForkCountUpdatedAction(IAction):
             print(f"An error occurred: {error}", flush=True)
             return False
 
-class NewLikedTrackAction(IAction):
+
+# ----------------------------------------- Spotify Actions -----------------------------------------
+
+class SpotifyNewLikedTrackAction(IAction):
     def __init__(self):
         super().__init__()
         self.name = "New Liked Track"
@@ -283,4 +298,76 @@ class NewLikedTrackAction(IAction):
             return False
         except Exception as e:
             print(f"An error occurred: {e}", flush=True)
+            return False
+
+
+# ----------------------------------------- Gitlab Actions -----------------------------------------
+
+class GitlabRepoCreatedAction(IAction):
+    def __init__(self):
+        super().__init__()
+        self.name = "New Repo Created (Gitlab)"
+        self.description = "Triggered when a repo is created"
+        self.service = Service.GITLAB
+
+    async def is_triggered(self, user, params) -> bool:
+        try:
+            gitlab_infos = await DAO.find(get_database().gitlab_users, "_id", user['linked_to']['gitlab'])
+            access_token = gitlab_infos["token"]["access_token"]
+            username = gitlab_infos['user_info']['username']
+
+            async with aiohttp.ClientSession() as session:
+                headers = {'Authorization': f'Bearer {access_token}'}
+                async with session.get(f'https://gitlab.com/api/v4/projects?owned=true', headers=headers) as response:
+                    if response.status != 200:
+                        raise Exception(f"Gitlab API request failed with status {response.status}")
+                    result = await response.json()
+                    repos = result
+
+            now = datetime.now(timezone.utc)
+
+            for repo in repos:
+                repo_creation_date = datetime.strptime(repo['created_at'], "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=timezone.utc)
+                diff_seconds = (now - repo_creation_date).total_seconds()
+                if diff_seconds < Config.AREA_CHECK_INTERVAL:
+                    return True
+
+            return False
+
+        except Exception as error:
+            print(f"An error occurred: {error}", flush=True)
+            return False
+
+class GitlabNewIssueAssignedAction(IAction):
+    def __init__(self):
+        super().__init__()
+        self.name = "New Issue Assigned (Gitlab)"
+        self.description = "Triggers when a new issue is assigned to the user"
+        self.service = Service.GITLAB
+
+    async def is_triggered(self, user, params) -> bool:
+        try:
+            gitlab_infos = await DAO.find(get_database().gitlab_users, "_id", user['linked_to']['gitlab'])
+            access_token = gitlab_infos["token"]["access_token"]
+            username = gitlab_infos['user_info']['username']
+
+            async with aiohttp.ClientSession() as session:
+                headers = {'Authorization': f'Bearer {access_token}'}
+                async with session.get(f'https://gitlab.com/api/v4/issues?assignee_username={username}', headers=headers) as response:
+                    if response.status != 200:
+                        raise Exception(f"Gitlab API request failed with status {response.status}")
+                    issues = await response.json()
+
+            now = datetime.now(timezone.utc)
+
+            for issue in issues:
+                issue_creation_date = datetime.strptime(issue['created_at'], "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=timezone.utc)
+                diff_seconds = (now - issue_creation_date).total_seconds()
+                if diff_seconds < Config.AREA_CHECK_INTERVAL:
+                    return True
+
+            return False
+
+        except Exception as error:
+            print(f"An error occurred: {error}", flush=True)
             return False
