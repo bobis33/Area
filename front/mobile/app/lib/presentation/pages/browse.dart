@@ -104,7 +104,7 @@ class _BrowsePageState extends State<BrowsePage> {
       builder: (context, languageProvider, child) {
         return Scaffold(
           backgroundColor: theme.colorScheme.surfaceTint,
-          appBar: CustomAppBar(title: "Shared Areas"),
+          appBar: CustomAppBar(title: translate('sharedAreas')),
           body: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -118,7 +118,7 @@ class _BrowsePageState extends State<BrowsePage> {
                       TextField(
                         controller: _searchController,
                         decoration: InputDecoration(
-                          hintText: 'Search by name or service',
+                          hintText: translate('searchAreas'),
                           hintStyle: TextStyle(color: theme.colorScheme.outline),
                           prefixIcon: Icon(Icons.search, color: theme.colorScheme.outline),
                           filled: true,
