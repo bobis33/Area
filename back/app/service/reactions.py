@@ -216,21 +216,6 @@ class KickDiscordUserReaction(IReaction):
         member = guild.get_member(int(params["User ID"]))
         await member.kick()
 
-class BanDiscordUserReaction(IReaction):
-    def __init__(self):
-        super().__init__()
-        self.name = "Ban discord user"
-        self.description = "Ban a user from a discord server"
-        self.service = Service.DISCORD
-
-    async def get_params(self):
-        return {"User ID": "None", "Guild ID": "None"}
-
-    async def react(self, user, params):
-        guild = bot.get_guild(int(params["Guild ID"]))
-        member = guild.get_member(int(params["User ID"]))
-        await member.ban()
-
 class AddRoleToDiscordUserReaction(IReaction):
     def __init__(self):
         super().__init__()
