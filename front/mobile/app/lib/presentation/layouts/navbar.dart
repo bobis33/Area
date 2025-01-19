@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_translate/flutter_translate.dart';
 import 'package:go_router/go_router.dart';
 
 class MainLayout extends StatefulWidget {
@@ -52,7 +53,7 @@ class MainLayoutState extends State<MainLayout> {
           backgroundColor: Colors.transparent,
           currentIndex: _selectedIndex ?? 0,
           onTap: _onItemTapped,
-          items: const <BottomNavigationBarItem>[
+          items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Padding(
                 padding: EdgeInsets.all(5),
@@ -61,15 +62,15 @@ class MainLayoutState extends State<MainLayout> {
                   size: 20,
                 ),
               ),
-              label: 'My AREAS',
+              label: translate('myAreas'),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.add, size: 30),
-              label: 'Create',
+              label: translate('create')
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.search, size: 26),
-              label: 'Browse',
+              label: translate('browse'),
             ),
           ],
           selectedLabelStyle: _selectedIndex == null

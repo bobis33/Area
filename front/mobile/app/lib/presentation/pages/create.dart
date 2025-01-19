@@ -152,7 +152,7 @@ class _CreatePageState extends State<CreatePage> {
       builder: (context, languageProvider, child) {
         return Scaffold(
           backgroundColor: theme.colorScheme.surfaceTint,
-          appBar: CustomAppBar(title: "Create Area", hideAccountButton: true),
+          appBar: CustomAppBar(title: translate('createAreas'), hideAccountButton: true),
           body: SingleChildScrollView(
             child: Column(
               children: [
@@ -170,7 +170,7 @@ class _CreatePageState extends State<CreatePage> {
                       padding: const EdgeInsets.only(
                         top: 16.0, left: 32.0, right: 32.0),
                       child: Text(
-                        "Action",
+                        translate('action'),
                         style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'IstokWeb',
@@ -187,7 +187,7 @@ class _CreatePageState extends State<CreatePage> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: DropdownButton<String>(
-                            hint: Text("Select Service", style: TextStyle(color: Colors.white)),
+                            hint: Text(translate('selectService'), style: TextStyle(color: Colors.white)),
                             value: selectedActionService,
                             dropdownColor: Colors.black,
                             onChanged: (String? newValue) {
@@ -209,7 +209,7 @@ class _CreatePageState extends State<CreatePage> {
                           Align(
                           alignment: Alignment.centerLeft,
                           child: DropdownButton<ActionReaction>(
-                            hint: Text("Select Action", style: TextStyle(color: Colors.white)),
+                            hint: Text(translate('selectAction'), style: TextStyle(color: Colors.white)),
                             value: selectedAction,
                             dropdownColor: Colors.black,
                             onChanged: (ActionReaction? newValue) {
@@ -264,7 +264,7 @@ class _CreatePageState extends State<CreatePage> {
                       padding: const EdgeInsets.only(
                         top: 16.0, left: 32.0, right: 32.0),
                       child: Text(
-                        "Reaction",
+                        translate('reaction'),
                         style: TextStyle(
                         color: Colors.white,
                         fontFamily: 'IstokWeb',
@@ -281,7 +281,7 @@ class _CreatePageState extends State<CreatePage> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: DropdownButton<String>(
-                          hint: Text("Select Service", style: TextStyle(color: Colors.white)),
+                          hint: Text(translate('selectService'), style: TextStyle(color: Colors.white)),
                           value: selectedReactionService,
                           dropdownColor: Colors.black,
                           onChanged: (String? newValue) {
@@ -303,7 +303,7 @@ class _CreatePageState extends State<CreatePage> {
                           Align(
                           alignment: Alignment.centerLeft,
                           child: DropdownButton<ActionReaction>(
-                            hint: Text("Select Reaction", style: TextStyle(color: Colors.white)),
+                            hint: Text(translate('selectReaction'), style: TextStyle(color: Colors.white)),
                             value: selectedReaction,
                             dropdownColor: Colors.black,
                             onChanged: (ActionReaction? newValue) {
@@ -337,7 +337,7 @@ class _CreatePageState extends State<CreatePage> {
                             labelStyle: TextStyle(color: Colors.grey[400]),
                             ),
                           );
-                          }).toList(),
+                          }),
                         ],
                       ),
                       ),
@@ -349,14 +349,14 @@ class _CreatePageState extends State<CreatePage> {
           ),
 
           floatingActionButton: Semantics(
-            label: 'Create Area',
+            label: translate('createArea'),
             button: true,
             enabled: true,
             excludeSemantics: true,
             child: FloatingActionButton(
-            onPressed: () {
-              createArea();
-            },
+              onPressed: () {
+                createArea();
+              },
             backgroundColor: theme.colorScheme.primary,
             child: Icon(Icons.done, color: Colors.white),
             ),

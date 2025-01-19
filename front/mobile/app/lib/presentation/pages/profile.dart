@@ -7,7 +7,6 @@ import '/config/constants.dart';
 import '/data/models/data.dart';
 import '/data/models/user.dart';
 import '/data/repositories/user.dart';
-import '/data/sources/request_service.dart';
 import '/data/sources/storage_service.dart';
 import '/domain/use-cases/user.dart';
 import '/presentation/widgets/oauth_link_button.dart';
@@ -34,33 +33,6 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     _initializeUserData();
   }
-
-  Future<void> linkToGoogle(BuildContext context, String googleToken) async {
-    const String endpoint = '/auth/link/google';
-    final requestService = RequestService();
-    final storageService = StorageService();
-    final token = await storageService.getItem(StorageKeyEnum.authToken.name);
-
-    try {
-      final response = await requestService.makeRequest<String>(
-        endpoint: '$endpoint?google_token=$googleToken',
-        method: 'POST',
-        parse: (response) => response.body,
-        headers: {'Authorization': 'Bearer $token'},
-      );
-
-      if (response is DataSuccess) {
-        snackBar(context, translate('linkGoogleSuccess'), Theme.of(context).colorScheme.secondary);
-      } else if (response is DataError) {
-        snackBar(context, response.error ?? translate('anErrorOccurred'), Theme.of(context).colorScheme.error);
-      }
-    } catch (error) {
-      debugPrint('Erreur lors de la requête: $error');
-    }
-  }
-  Future<void> linkToDiscord(BuildContext context, String googleToken) async {}
-  Future<void> linkToGithub(BuildContext context, String googleToken) async {}
-  Future<void> linkToSpotify(BuildContext context, String googleToken) async {}
 
     void _initializeUserData() async {
     await _loadUserData();
@@ -197,7 +169,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: theme.colorScheme.surfaceTint,
-      appBar: CustomAppBar(title: 'My Account', hideAccountButton: true, hideSettingsButton: true),
+      appBar: CustomAppBar(title: translate('myAccount'), hideAccountButton: true, hideSettingsButton: true),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -260,6 +232,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   text: translate('linkGithub'),
                   authUrl: '$_apiUrl/auth/login/to/github',
                   backgroundColor: Colors.white24,
+                ),
+                const SizedBox(height: 16),
+                OauthLinkButton(
+                  iconUrl: '$_apiUrl/assets/gitlab.png',
+                  text: translate('linkGitlab'),
+                  authUrl: '$_apiUrl/auth/login/to/gitlab',
+                  backgroundColor: Colors.orangeAccent,
                 ),
                 const SizedBox(height: 16),
                 OauthLinkButton(

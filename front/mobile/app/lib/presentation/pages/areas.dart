@@ -154,7 +154,7 @@ class _AreasPageState extends State<AreasPage> {
                           padding: const EdgeInsets.only(
                               top: 16.0, bottom: 16.0, right: 32.0),
                           child: Text(
-                            'Create New Area',
+                            translate('createNewArea'),
                             style: TextStyle(
                               color: theme.colorScheme.tertiary,
                               fontFamily: 'IstokWeb',
