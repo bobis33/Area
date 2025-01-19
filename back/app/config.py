@@ -30,6 +30,9 @@ class Config:
     GITLAB_CLIENT_ID = os.getenv('GITLAB_CLIENT_ID', 'None')
     GITLAB_CLIENT_SECRET = os.getenv('GITLAB_CLIENT_SECRET', 'None')
 
+    TWITCH_CLIENT_ID = os.getenv('TWITCH_CLIENT_ID', 'None')
+    TWITCH_CLIENT_SECRET = os.getenv('TWITCH_CLIENT_SECRET', 'None')
+
     YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY', 'None')
 
     MIDDLEWARE_SECRET_KEY = os.getenv('MIDDLEWARE_SECRET_KEY', 'Default')
