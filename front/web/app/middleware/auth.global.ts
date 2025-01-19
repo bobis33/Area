@@ -30,7 +30,7 @@ const handleGoogleLogin = (token: string) => {
 }
 
 export default defineNuxtRouteMiddleware(async (to) => {
-    const isPublicRoute = [RoutesEnum.LOGIN.toString(), RoutesEnum.REGISTER.toString(), RoutesEnum.SETTINGS.toString()].includes(to.path)
+    const isPublicRoute = [RoutesEnum.LOGIN.toString(), RoutesEnum.REGISTER.toString()].includes(to.path)
     const token = useCookie(CookiesEnum.TOKEN.toString()).value ?? ''
     const query = to.query
 
@@ -43,7 +43,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     }
 
 
-    if (!token && !isPublicRoute) {
+    if (!token && !isPublicRoute  && to.path !== RoutesEnum.SETTINGS.toString()) {
         return window.location.href = RoutesEnum.LOGIN.toString()
     }
 
