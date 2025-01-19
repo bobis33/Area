@@ -47,3 +47,9 @@ For more information, please refer to the documentation of each service:
 | style       | Change that does not affect functionality or semantics (indentation, formatting, adding space, renaming a variable, etc.) |
 | docs        | Writing or updating documentation                                                                                         |
 | test        | Addition or modification of tests                                                                                         |
+
+## Architecture
+
+The architecture of the project is as follows:
+
+![alt text](diagram.png)
