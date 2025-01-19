@@ -36,10 +36,6 @@
               <ImageComponent fileName="discord.png" altText="Discord logo" class="oauth-logo" />
               {{ $t('loginWithDiscord') }}
             </button>
-            <button class="button is-link is-fullwidth" @click="handleOAuth('github')">
-              <ImageComponent fileName="github.png" altText="GitHub logo" class="oauth-logo" />
-              {{ $t('loginWithGithub') }}
-            </button>
             <button class="button is-link is-fullwidth" @click="handleOAuth('google')">
               <ImageComponent fileName="google.png" altText="Google logo" class="oauth-logo" />
               {{ $t('loginWithGoogle') }}
