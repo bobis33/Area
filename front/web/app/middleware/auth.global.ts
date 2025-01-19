@@ -17,7 +17,7 @@ const handleGoogleLink = async (googleToken: string) => {
         } catch (error) {
             console.error('Error linking to Google:', error);
         }
-        return window.location.href = RoutesEnum.AREAS.toString()
+        return navigateTo(RoutesEnum.AREAS.toString())
     }
 }
 
@@ -32,7 +32,7 @@ const handleDiscordLink = async (discordToken: string) => {
         } catch (error) {
             console.error('Error linking to Discord:', error);
         }
-        return window.location.href = RoutesEnum.AREAS.toString()
+        return navigateTo(RoutesEnum.AREAS.toString())
     }
 }
 
@@ -47,7 +47,7 @@ const handleGithubLink = async (githubToken: string) => {
         } catch (error) {
             console.error('Error linking to Github:', error);
         }
-        return window.location.href = RoutesEnum.AREAS.toString()
+        return navigateTo(RoutesEnum.AREAS.toString())
     }
 }
 
@@ -62,14 +62,14 @@ const handleSpotifyLink = async (spotifyToken: string) => {
         } catch (error) {
             console.error('Error linking to Spotify:', error);
         }
-        return window.location.href = RoutesEnum.AREAS.toString()
+        return navigateTo(RoutesEnum.AREAS.toString())
     }
 }
 
 const handleGoogleLogin = (token: string) => {
     const tokenCookie = useCookie(CookiesEnum.TOKEN.toString(), { path: '/', maxAge: 60 * 60 * 24 * 7 })
     tokenCookie.value = token
-    return window.location.href = RoutesEnum.AREAS.toString()
+    return navigateTo(RoutesEnum.AREAS.toString())
 }
 
 export default defineNuxtRouteMiddleware(async (to) => {
@@ -97,13 +97,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
         handleGoogleLogin(query.token as string)
     }
 
-
     if (!token && !isPublicRoute  && to.path !== RoutesEnum.SETTINGS.toString()) {
-        return window.location.href = RoutesEnum.LOGIN.toString()
+        return navigateTo(RoutesEnum.LOGIN.toString())
     }
 
     if (token && isPublicRoute) {
-        return window.location.href = RoutesEnum.AREAS.toString()
+        return navigateTo(RoutesEnum.AREAS.toString())
     }
 
     if (token) {
@@ -112,12 +111,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
             if (!response) {
                 useCookie(CookiesEnum.TOKEN.toString()).value = null
-                return window.location.href = RoutesEnum.LOGIN.toString()
+                return navigateTo(RoutesEnum.LOGIN.toString())
             }
         } catch (error) {
             console.error('Error verifying token:', error)
             useCookie(CookiesEnum.TOKEN.toString()).value = null
-            return window.location.href = RoutesEnum.LOGIN.toString()
+            return navigateTo(RoutesEnum.LOGIN.toString())
         }
     }
 })
