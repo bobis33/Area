@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_translate/flutter_translate.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '/config/api_config.dart';
 
-Future<Map<String, String>> fetchSocialIcons() async {
+Future<Map<String, String>> _fetchSocialIcons() async {
   final apiUrl = ApiConfig().apiUrl;
   return {
     'discord': '$apiUrl/assets/discord.png',
     'github': '$apiUrl/assets/github.png',
     'google': '$apiUrl/assets/google.png',
-    'microsoft': '$apiUrl/assets/microsoft.png',
+    'spotify': '$apiUrl/assets/spotify.png',
   };
+}
+
+Future<void> _handleAuth(BuildContext context, String url) async {
+  try {
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw Exception('Impossible de lancer l\'URL');
+    }
+  } catch (error) {
+    debugPrint('Erreur lors de la connexion : $error');
+  }
 }
 
 Widget _button({
@@ -35,10 +48,10 @@ Widget _button({
   );
 }
 
-
 Widget loginOauthButtons() {
+  final apiUrl = ApiConfig().apiUrl;
   return FutureBuilder<Map<String, String>>(
-    future: fetchSocialIcons(),
+    future: _fetchSocialIcons(),
     builder: (context, snapshot) {
       if (snapshot.connectionState == ConnectionState.waiting) {
         return const CircularProgressIndicator();
@@ -52,22 +65,22 @@ Widget loginOauthButtons() {
             _button(
               imageUrl: icons['discord']!,
               label: 'Discord',
-              onPressed: () {},
+              onPressed: () { _handleAuth(context, '$apiUrl/auth/login/with/discord'); },
             ),
             _button(
               imageUrl: icons['github']!,
               label: 'GitHub',
-              onPressed: () {},
+              onPressed: () { _handleAuth(context, '$apiUrl/auth/login/with/github'); },
             ),
             _button(
               imageUrl: icons['google']!,
               label: 'Google',
-              onPressed: () {},
+              onPressed: () { _handleAuth(context, '$apiUrl/auth/login/with/google'); },
             ),
             _button(
-              imageUrl: icons['microsoft']!,
-              label: 'Microsoft',
-              onPressed: () {},
+              imageUrl: icons['spotify']!,
+              label: 'Spotify',
+              onPressed: () { _handleAuth(context, '$apiUrl/auth/login/with/spotify'); },
             ),
           ],
         );

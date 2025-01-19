@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,10 +9,12 @@ import 'package:provider/provider.dart';
 import '/config/constants.dart';
 import '/config/router.dart';
 import '/config/themes/themes.dart';
+import '/data/listeners/deep_link.dart';
 import '/data/sources/storage_service.dart';
 import '/presentation/providers/language.dart';
 import '/presentation/providers/theme.dart';
 import '/presentation/providers/settings_provider.dart';
+import 'package:app_links/app_links.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,14 +43,26 @@ Future<void> main() async {
       ],
       child: LocalizedApp(
         delegate,
-        const App(),
+        _App(),
       ),
     ),
   );
 }
 
-class App extends StatelessWidget {
-  const App({super.key});
+class _App extends StatefulWidget {
+  const _App();
+
+  @override
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends State<_App> {
+
+  @override
+  void initState() {
+    super.initState();
+    DeepLinkListener().initDeepLinkListener(context);
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class OauthLinkButton extends StatelessWidget {
   final String iconUrl;
   final String text;
   final String authUrl;
-  final String callbackUrlScheme;
-  final Future<void> Function(BuildContext context, String token) onAuthSuccess;
   final Color backgroundColor;
 
   const OauthLinkButton({
@@ -14,23 +12,15 @@ class OauthLinkButton extends StatelessWidget {
     required this.iconUrl,
     required this.text,
     required this.authUrl,
-    required this.callbackUrlScheme,
-    required this.onAuthSuccess,
     this.backgroundColor = Colors.blue,
   });
 
   Future<void> _handleAuth(BuildContext context) async {
     try {
-      final String result = await FlutterWebAuth2.authenticate(
-        url: authUrl,
-        callbackUrlScheme: callbackUrlScheme,
-      );
-      final Uri resultUri = Uri.parse(result);
-      final String? token = resultUri.queryParameters['token']; // Change "token" if your backend uses a different query parameter
-      if (token != null) {
-        await onAuthSuccess(context, token);
+      if (await canLaunchUrl(Uri.parse(authUrl))) {
+        await launchUrl(Uri.parse(authUrl));
       } else {
-        throw Exception('Token manquant');
+        throw Exception('Impossible de lancer l\'URL');
       }
     } catch (error) {
       debugPrint('Erreur lors de la connexion : $error');

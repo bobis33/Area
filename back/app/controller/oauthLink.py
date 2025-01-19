@@ -53,9 +53,9 @@ async def github_callback(request: Request):
         await oauth_github_login(github_token)
 
         if client_type == "mobile":
-            return RedirectResponse(f"{Config.MOBILE_URL}?spotify_token={github_token}")
+            return RedirectResponse(f"{Config.MOBILE_URL}?github_token={github_token}")
 
-        return RedirectResponse(f"{Config.FRONTEND_URL}/?spotify_token={github_token}")
+        return RedirectResponse(f"{Config.FRONTEND_URL}/?github_token={github_token}")
     except Exception as e:
         print("Exception occured:", e, flush=True)
         return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
@@ -83,9 +83,9 @@ async def discord_callback(request: Request):
         await oauth_discord_login(discord_token)
 
         if client_type == "mobile":
-            return RedirectResponse(f"{Config.MOBILE_URL}?spotify_token={discord_token}")
+            return RedirectResponse(f"{Config.MOBILE_URL}?discord_token={discord_token}")
 
-        return RedirectResponse(f"{Config.FRONTEND_URL}/?spotify_token={discord_token}")
+        return RedirectResponse(f"{Config.FRONTEND_URL}/?discord_token={discord_token}")
     except Exception as e:
         print("Exception occured:", e, flush=True)
         return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")

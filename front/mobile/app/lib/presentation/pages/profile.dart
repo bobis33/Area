@@ -60,7 +60,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
   Future<void> linkToDiscord(BuildContext context, String googleToken) async {}
   Future<void> linkToGithub(BuildContext context, String googleToken) async {}
-  Future<void> linkToMicrosoft(BuildContext context, String googleToken) async {}
+  Future<void> linkToSpotify(BuildContext context, String googleToken) async {}
 
     void _initializeUserData() async {
     await _loadUserData();
@@ -248,36 +248,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   obscureText: true,
                 ),
                 const SizedBox(height: 32),
-                ElevatedButton(
-                  onPressed: () async => {
-                  await StorageService().clearItem(StorageKeyEnum.authToken.name),
-                  snackBar(context, translate('logoutSuccess'), Theme.of(context).colorScheme.secondary),
-                  context.go(context.namedLocation(RouteEnum.root.name)),
-                  },
-                  style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  backgroundColor: Theme.of(context).colorScheme.error,
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text(
-                      translate('Disconnect'),
-                      style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ),
                 OauthLinkButton(
                   iconUrl: '$_apiUrl/assets/discord.png',
                   text: translate('linkDiscord'),
                   authUrl: '$_apiUrl/auth/login/to/discord',
-                  callbackUrlScheme: 'myapp',
-                  onAuthSuccess: linkToDiscord,
                   backgroundColor: Colors.purple
                 ),
                 const SizedBox(height: 16),
@@ -285,8 +259,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   iconUrl: '$_apiUrl/assets/github.png',
                   text: translate('linkGithub'),
                   authUrl: '$_apiUrl/auth/login/to/github',
-                  callbackUrlScheme: 'myapp',
-                  onAuthSuccess: linkToGithub,
                   backgroundColor: Colors.white24,
                 ),
                 const SizedBox(height: 16),
@@ -294,17 +266,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   iconUrl: '$_apiUrl/assets/google.png',
                   text: translate('linkGoogle'),
                   authUrl: '$_apiUrl/auth/login/to/google',
-                  callbackUrlScheme: 'myapp',
-                  onAuthSuccess: linkToGoogle,
                   backgroundColor: Colors.blueAccent,
                 ),
                 const SizedBox(height: 16),
                 OauthLinkButton(
-                  iconUrl: '$_apiUrl/assets/microsoft.png',
-                  text: translate('linkMicrosoft'),
-                  authUrl: '$_apiUrl/auth/login/to/microsoft',
-                  callbackUrlScheme: 'myapp',
-                  onAuthSuccess: linkToMicrosoft,
+                  iconUrl: '$_apiUrl/assets/spotify.png',
+                  text: translate('linkSpotify'),
+                  authUrl: '$_apiUrl/auth/login/to/spotify',
                   backgroundColor: Colors.green,
                 ),
                 const SizedBox(height: 16),
