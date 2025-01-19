@@ -45,11 +45,11 @@ class SendMailReaction(IReaction):
         return {"To": "None", "Subject": "None", "Content": "None"}
 
     async def react(self, user, params):
-        google_infos = user['external_tokens']['GOOGLE']
+        google_infos = await DAO.find(get_database().google_users, "_id", user['linked_to']['google'])
 
         creds = Credentials(
-            token=google_infos["access_token"],
-            refresh_token=google_infos["refresh_token"],
+            token=google_infos["token"]["access_token"],
+            refresh_token=google_infos["token"]["refresh_token"],
             token_uri="https://oauth2.googleapis.com/token",
             client_id=Config.GOOGLE_CLIENT_ID,
             client_secret=Config.GOOGLE_CLIENT_SECRET,
@@ -89,8 +89,8 @@ class RepoCreationReaction(IReaction):
     async def react(self, user, params):
         """Create a private GitHub repository named 'ok'"""
         try:
-            github_infos = user['external_tokens']['GITHUB']
-            access_token = github_infos["access_token"]
+            github_infos = await DAO.find(get_database().github_users, "_id", user['linked_to']['github'])
+            access_token = github_infos["token"]["access_token"]
 
             async with aiohttp.ClientSession() as session:
                 headers = {
