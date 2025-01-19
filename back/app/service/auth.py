@@ -33,6 +33,32 @@ async def is_linked_google_service(token):
 
     return False
 
+async def is_linked_discord_service(token):
+    user = await DAO.find_user_by_username(token)
+    if user is None:
+        return False
+    if "discord" in user["linked_to"]:
+        return True
+
+    return False
+
+async def is_linked_spotify_service(token):
+    user = await DAO.find_user_by_username(token)
+    if user is None:
+        return False
+    if "spotify" in user["linked_to"]:
+        return True
+
+    return False
+
+async def is_linked_github_service(token):
+    user = await DAO.find_user_by_username(token)
+    if user is None:
+        return False
+    if "github" in user["linked_to"]:
+        return True
+
+    return False
 
 # ------------------------------ LINKING SERVICES ------------------------------
 

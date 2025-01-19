@@ -13,9 +13,9 @@
         <div class="column is-4 has-text-right">
           <div style="display: flex; justify-content: flex-end; margin-right: 10%;">
             <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-              <nuxt-link to="/subscribedAreas" class="link-button" :style="{color: 'var(--text-color)'}">{{$t('My AREAS')}}</nuxt-link>
+              <nuxt-link to="/subscribedAreas" class="link-button" :style="{color: 'var(--text-color)'}">{{$t('myAreas')}}</nuxt-link>
               <nuxt-link to="/createAreas" class="link-button"  :style="{color: 'var(--text-color)'}">{{$t('Create')}}</nuxt-link>
-              <nuxt-link to="/areas" class="link-button"  :style="{color: 'var(--text-color)'}">{{$t('Shared AREAS')}}</nuxt-link>
+              <nuxt-link to="/areas" class="link-button"  :style="{color: 'var(--text-color)'}">{{$t('sharedAreas')}}</nuxt-link>
             </div>
           </div>
         </div>
@@ -66,28 +66,29 @@
               <ImageComponent fileName="google.png" altText="Google logo" class="google-logo" />
               {{ $t('googleAccountLinked') }}
             </button>
-            <button @click="linkDiscordAccount" class="button is-link">
+            <button v-if="!isLinkedDiscord" @click="linkDiscordAccount" class="button is-link">
               <ImageComponent fileName="discord.png" altText="Discord logo" class="google-logo" />
               {{ $t('linkDiscordAccount') }}
             </button>
-            <button @click="linkGithubAccount" class="button is-link">
-              <ImageComponent fileName="github.png" altText="Github logo" class="google-logo" />
-              {{ $t('linkGithubAccount') }}
+            <button v-else class="button is-link is-disabled" disabled>
+              <ImageComponent fileName="discord.png" altText="Discord logo" class="google-logo" />
+              {{ $t('discordAccountLinked') }}
             </button>
-            <button @click="linkSpotifyAccount" class="button is-link">
+            <button v-if="!isLinkedSpotify" @click="linkSpotifyAccount" class="button is-link">
               <ImageComponent fileName="spotify.png" altText="Spotify logo" class="google-logo" />
               {{ $t('linkSpotifyAccount') }}
             </button>
-          </div>
-
-          <div class="buttons is-centered">
-            <button class="button is-link is-disabled" disabled>
-              <ImageComponent fileName="github.png" altText="Github logo" class="google-logo" />
-              {{ $t('disabled') }}
-            </button>
-            <button class="button is-link is-disabled" disabled>
+            <button v-else class="button is-link is-disabled" disabled>
               <ImageComponent fileName="spotify.png" altText="Spotify logo" class="google-logo" />
-              {{ $t('disabled') }}
+              {{ $t('spotifyAccountLinked') }}
+            </button>
+            <button v-if="!isLinkedGithub" @click="linkGithubAccount" class="button is-link">
+              <ImageComponent fileName="github.png" altText="Github logo" class="google-logo" />
+              {{ $t('linkGithubAccount') }}
+            </button>
+            <button v-else class="button is-link is-disabled" disabled>
+              <ImageComponent fileName="github.png" altText="Github logo" class="google-logo" />
+              {{ $t('githubAccountLinked') }}
             </button>
           </div>
         </div>
@@ -124,6 +125,9 @@ const router = useRouter()
 const { showSnackbar } = useSnackbar()
 const config = useRuntimeConfig()
 const isLinkedGoogle = ref<boolean | null>(null)
+const isLinkedDiscord = ref<boolean | null>(null)
+const isLinkedSpotify = ref<boolean | null>(null)
+const isLinkedGithub = ref<boolean | null>(null)
 
 async function changeUsername() {
   if (!username.value) {
@@ -194,6 +198,90 @@ async function fetchIsLinkedGoogle() {
   }
 }
 
+async function fetchIsLinkedDiscord() {
+  const JWTToken = useCookie(CookiesEnum.TOKEN.toString()).value
+  if (!JWTToken) {
+    isLinkedDiscord.value = false
+    return
+  }
+
+  try {
+    const response = await fetch(`${config.public.baseUrlApi}/auth/is/linked/discord`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${JWTToken}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch Discord link status')
+    }
+
+    const data = await response.json()
+    isLinkedDiscord.value = data.linked
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error)
+    isLinkedDiscord.value = false
+  }
+}
+
+async function fetchIsLinkedSpotify() {
+  const JWTToken = useCookie(CookiesEnum.TOKEN.toString()).value
+  if (!JWTToken) {
+    isLinkedSpotify.value = false
+    return
+  }
+
+  try {
+    const response = await fetch(`${config.public.baseUrlApi}/auth/is/linked/spotify`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${JWTToken}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch Spotify link status')
+    }
+
+    const data = await response.json()
+    isLinkedSpotify.value = data.linked
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error)
+    isLinkedSpotify.value = false
+  }
+}
+
+async function fetchIsLinkedGithub() {
+  const JWTToken = useCookie(CookiesEnum.TOKEN.toString()).value
+  if (!JWTToken) {
+    isLinkedGithub.value = false
+    return
+  }
+
+  try {
+    const response = await fetch(`${config.public.baseUrlApi}/auth/is/linked/github`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${JWTToken}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch Github link status')
+    }
+
+    const data = await response.json()
+    isLinkedGithub.value = data.linked
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error)
+    isLinkedGithub.value = false
+  }
+}
+
 async function linkGoogleAccount() {
   try {
     window.location.href = `${config.public.baseUrlApi}/auth/login/to/google`
@@ -226,7 +314,6 @@ async function linkGithubAccount() {
   }
 }
 
-
 async function user() {
   try {
     return await new getUser(new UserRepository()).execute()
@@ -238,6 +325,9 @@ async function user() {
 
 onMounted(async () => {
   await fetchIsLinkedGoogle()
+  await fetchIsLinkedDiscord()
+  await fetchIsLinkedSpotify()
+  await fetchIsLinkedGithub()
   const userData = await user();
   if (userData) {
     username.value = userData['username'] || "";

@@ -4,6 +4,9 @@ from .auth import (
     login_user,
     register_user,
     is_linked_google_service,
+    is_linked_discord_service,
+    is_linked_spotify_service,
+    is_linked_github_service,
 
     link_to_google,
     link_to_discord,
