@@ -68,11 +68,6 @@ Widget loginOauthButtons() {
               onPressed: () { _handleAuth(context, '$apiUrl/auth/login/with/discord'); },
             ),
             _button(
-              imageUrl: icons['github']!,
-              label: 'GitHub',
-              onPressed: () { _handleAuth(context, '$apiUrl/auth/login/with/github'); },
-            ),
-            _button(
               imageUrl: icons['google']!,
               label: 'Google',
               onPressed: () { _handleAuth(context, '$apiUrl/auth/login/with/google'); },
