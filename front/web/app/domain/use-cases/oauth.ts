@@ -51,3 +51,16 @@ export class LinkToGithub {
         }
     }
 }
+
+export class LinkToGitlab {
+    constructor(private oauthRepository: OauthRepositoryInterface) {}
+
+    async execute(jwtToken: string, oauthToken: string): Promise<boolean> {
+        try {
+            return await this.oauthRepository.linkToGitlab(jwtToken, oauthToken)
+        } catch (error) {
+            console.error('Error linking to Gitlab:', error)
+            throw new Error('linkToGitlabError')
+        }
+    }
+}

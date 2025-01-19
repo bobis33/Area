@@ -13,7 +13,8 @@ from app.service import (
     is_linked_google_service,
     is_linked_discord_service,
     is_linked_spotify_service,
-    is_linked_github_service
+    is_linked_github_service,
+    is_linked_gitlab_service,
 )
 
 from app.common import secure_endpoint, TokenManager
@@ -137,6 +138,16 @@ async def is_linked_spotify(token: HTTPAuthorizationCredentials = Depends(auth_s
 async def is_linked_github(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     username = TokenManager.get_token_subject(token)
     response = await is_linked_github_service(username)
+    if response == True:
+        return {"linked": True}
+    else:
+        return {"linked": False}
+
+@router.get("/is/linked/gitlab")
+@secure_endpoint
+async def is_linked_gitlab(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    username = TokenManager.get_token_subject(token)
+    response = await is_linked_gitlab_service(username)
     if response == True:
         return {"linked": True}
     else:

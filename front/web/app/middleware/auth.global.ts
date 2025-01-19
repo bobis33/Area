@@ -2,7 +2,7 @@ import { defineNuxtRouteMiddleware, useCookie } from '#app'
 
 import { CookiesEnum, RoutesEnum } from '~/config/constants'
 import { VerifyToken } from '~/domain/use-cases/auth'
-import {LinkToDiscord, LinkToGithub, LinkToGoogle, LinkToSpotify} from "~/domain/use-cases/oauth";
+import {LinkToDiscord, LinkToGithub, LinkToGitlab, LinkToGoogle, LinkToSpotify} from "~/domain/use-cases/oauth";
 import { AuthRepository } from '~/infrastructure/repositories/AuthRepository'
 import { OauthRepository } from "~/infrastructure/repositories/OauthRepository";
 
@@ -17,7 +17,7 @@ const handleGoogleLink = async (googleToken: string) => {
         } catch (error) {
             console.error('Error linking to Google:', error);
         }
-        return navigateTo(RoutesEnum.AREAS.toString())
+        return window.location.href = `${RoutesEnum.AREAS.toString()}`
     }
 }
 
@@ -32,7 +32,7 @@ const handleDiscordLink = async (discordToken: string) => {
         } catch (error) {
             console.error('Error linking to Discord:', error);
         }
-        return navigateTo(RoutesEnum.AREAS.toString())
+        return window.location.href = `${RoutesEnum.AREAS.toString()}`
     }
 }
 
@@ -47,7 +47,22 @@ const handleGithubLink = async (githubToken: string) => {
         } catch (error) {
             console.error('Error linking to Github:', error);
         }
-        return navigateTo(RoutesEnum.AREAS.toString())
+        return window.location.href = `${RoutesEnum.AREAS.toString()}`
+    }
+}
+
+const handleGitlabLink = async (gitlabToken: string) => {
+    const decodedToken = decodeURIComponent(gitlabToken)
+
+    console.log('decodedToken: ', decodedToken)
+    const accessTokenMatch = decodedToken.match(/'access_token':\s*\+?'([^']+)'/)
+    if (accessTokenMatch) {
+        try {
+            await new LinkToGitlab(new OauthRepository()).execute(useCookie(CookiesEnum.TOKEN.toString()).value!, accessTokenMatch[1]);
+        } catch (error) {
+            console.error('Error linking to Gitlab:', error);
+        }
+        return window.location.href = `${RoutesEnum.AREAS.toString()}`
     }
 }
 
@@ -62,14 +77,14 @@ const handleSpotifyLink = async (spotifyToken: string) => {
         } catch (error) {
             console.error('Error linking to Spotify:', error);
         }
-        return navigateTo(RoutesEnum.AREAS.toString())
+        return window.location.href = `${RoutesEnum.AREAS.toString()}`
     }
 }
 
 const handleGoogleLogin = (token: string) => {
     const tokenCookie = useCookie(CookiesEnum.TOKEN.toString(), { path: '/', maxAge: 60 * 60 * 24 * 7 })
     tokenCookie.value = token
-    return navigateTo(RoutesEnum.AREAS.toString())
+    return window.location.href = `${RoutesEnum.AREAS.toString()}`
 }
 
 export default defineNuxtRouteMiddleware(async (to) => {
@@ -89,6 +104,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
         await handleGithubLink(query.github_token as string)
     }
 
+    if (query.gitlab_token) {
+        await handleGitlabLink(query.gitlab_token as string)
+    }
+
     if (query.spotify_token) {
         await handleSpotifyLink(query.spotify_token as string)
     }
@@ -98,11 +117,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
     }
 
     if (!token && !isPublicRoute  && to.path !== RoutesEnum.SETTINGS.toString()) {
-        return navigateTo(RoutesEnum.LOGIN.toString())
+        return window.location.href = `${RoutesEnum.LOGIN.toString()}`
     }
 
     if (token && isPublicRoute) {
-        return navigateTo(RoutesEnum.AREAS.toString())
+        return window.location.href = `${RoutesEnum.AREAS.toString()}`
     }
 
     if (token) {
@@ -111,12 +130,12 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
             if (!response) {
                 useCookie(CookiesEnum.TOKEN.toString()).value = null
-                return navigateTo(RoutesEnum.LOGIN.toString())
+                return window.location.href = `${RoutesEnum.LOGIN.toString()}`
             }
         } catch (error) {
             console.error('Error verifying token:', error)
             useCookie(CookiesEnum.TOKEN.toString()).value = null
-            return navigateTo(RoutesEnum.LOGIN.toString())
+            return window.location.href = `${RoutesEnum.LOGIN.toString()}`
         }
     }
 })

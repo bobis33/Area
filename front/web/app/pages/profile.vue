@@ -90,6 +90,15 @@
               <ImageComponent fileName="github.png" altText="Github logo" class="google-logo" />
               {{ $t('githubAccountLinked') }}
             </button>
+
+            <button v-if="!isLinkedGitlab" @click="linkGitlabAccount" class="button is-link">
+              <ImageComponent fileName="gitlab.png" altText="Gitlab logo" class="google-logo" />
+              {{ $t('linkGitlabAccount') }}
+            </button>
+            <button v-else class="button is-link is-disabled" disabled>
+              <ImageComponent fileName="gitlab.png" altText="Gitlab logo" class="google-logo" />
+              {{ $t('gitlabAccountLinked') }}
+            </button>
           </div>
         </div>
       </div>
@@ -128,6 +137,7 @@ const isLinkedGoogle = ref<boolean | null>(null)
 const isLinkedDiscord = ref<boolean | null>(null)
 const isLinkedSpotify = ref<boolean | null>(null)
 const isLinkedGithub = ref<boolean | null>(null)
+const isLinkedGitlab = ref<boolean | null>(null)
 
 async function changeUsername() {
   if (!username.value) {
@@ -282,6 +292,34 @@ async function fetchIsLinkedGithub() {
   }
 }
 
+async function fetchIsLinkedGitlab() {
+  const JWTToken = useCookie(CookiesEnum.TOKEN.toString()).value
+  if (!JWTToken) {
+    isLinkedGitlab.value = false
+    return
+  }
+
+  try {
+    const response = await fetch(`${config.public.baseUrlApi}/auth/is/linked/gitlab`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${JWTToken}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch Gitlab link status')
+    }
+
+    const data = await response.json()
+    isLinkedGitlab.value = data.linked
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error)
+    isLinkedGitlab.value = false
+  }
+}
+
 async function linkGoogleAccount() {
   try {
     window.location.href = `${config.public.baseUrlApi}/auth/login/to/google`
@@ -314,6 +352,14 @@ async function linkGithubAccount() {
   }
 }
 
+async function linkGitlabAccount() {
+  try {
+    window.location.href = `${config.public.baseUrlApi}/auth/login/to/gitlab`
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error)
+  }
+}
+
 async function user() {
   try {
     return await new getUser(new UserRepository()).execute()
@@ -328,6 +374,7 @@ onMounted(async () => {
   await fetchIsLinkedDiscord()
   await fetchIsLinkedSpotify()
   await fetchIsLinkedGithub()
+  await fetchIsLinkedGitlab()
   const userData = await user();
   if (userData) {
     username.value = userData['username'] || "";

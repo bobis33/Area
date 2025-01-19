@@ -60,6 +60,15 @@ async def is_linked_github_service(token):
 
     return False
 
+async def is_linked_gitlab_service(token):
+    user = await DAO.find_user_by_username(token)
+    if user is None:
+        return False
+    if "gitlab" in user["linked_to"]:
+        return True
+
+    return False
+
 # ------------------------------ LINKING SERVICES ------------------------------
 
 async def link_to_google(username, google_token):
