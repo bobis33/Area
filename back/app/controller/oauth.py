@@ -42,27 +42,6 @@ async def discord_token_callback(request: Request, authorize: AuthJWT = Depends(
         return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
 
 
-# ----------------------------------------------------------------------- GITHUB -------------------------------------------------------------
-@router.get("/login/with/github")
-async def login_github(request: Request):
-    redirect_uri = request.url_for('github_callback')
-    return await oauth.github.authorize_redirect(request, redirect_uri)
-
-@router.get("/login/with/github/callback", include_in_schema=False)
-async def github_callback(request: Request, authorize: AuthJWT = Depends()):
-    try:
-        client_type = "mobile" if "mobile" in request.headers.get("User-Agent", "").lower() else "web"
-        github_token = await oauth.github.authorize_access_token(request)
-        access_token = authorize.create_access_token(await area_oauth_github_login(github_token))
-
-        if client_type == "mobile":
-            return RedirectResponse(f"{Config.MOBILE_URL}?token={access_token}")
-
-        return RedirectResponse(f"{Config.FRONTEND_URL}/?token={access_token}")
-    except Exception as e:
-        print("Exception occured:", e, flush=True)
-        return RedirectResponse(f"{Config.FRONTEND_URL}/?error=OAuthFailed")
-
 # ----------------------------------------------------------------------- GOOGLE -------------------------------------------------------------
 @router.get("/login/with/google")
 async def login_google(request: Request):
