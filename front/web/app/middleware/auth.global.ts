@@ -30,7 +30,7 @@ const handleGoogleLogin = (token: string) => {
 }
 
 export default defineNuxtRouteMiddleware(async (to) => {
-    const isPublicRoute = [RoutesEnum.LOGIN.toString(), RoutesEnum.REGISTER.toString()].includes(to.path)
+    const isPublicRoute = [RoutesEnum.LOGIN.toString(), RoutesEnum.REGISTER.toString(), RoutesEnum.SETTINGS.toString()].includes(to.path)
     const token = useCookie(CookiesEnum.TOKEN.toString()).value ?? ''
     const query = to.query
 

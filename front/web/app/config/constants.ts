@@ -16,4 +16,5 @@ export enum RoutesEnum {
     LOGIN = '/login',
     PROFILE = '/profile',
     REGISTER = '/register',
+    SETTINGS = '/settings',
 }
