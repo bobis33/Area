@@ -270,7 +270,7 @@ class SpotifyNewLikedTrackAction(IAction):
 
             if response.status_code == 401:  # Access token expired
                 print("Access token expired, refreshing token...", flush=True)
-                new_access_token = await NewLikedTrackAction.refresh_access_token(refresh_token)
+                new_access_token = await SpotifyNewLikedTrackAction.refresh_access_token(refresh_token)
                 if new_access_token:
                     # Update access token in the database
                     await DAO.update(

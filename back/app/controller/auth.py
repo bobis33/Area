@@ -102,7 +102,6 @@ async def register(credentials: Credentials, authorize: AuthJWT = Depends()):
 async def is_login(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     return {"detail": "Connected"}
 
-# OAuth
 @router.get("/is/linked/google")
 @secure_endpoint
 async def is_linked_google(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):

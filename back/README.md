@@ -80,6 +80,102 @@ The API is built with [FastAPI](https://fastapi.tiangolo.com/) and uses [Swagger
 }
 ```
 
-## Oauth2
+### Environment Variables
 
-### GET `/login/with/google`
+The application uses several environment variables for configuration. Below are the key variables:
+
+```dotenv
+GOOGLE_CLIENT_ID=<your-google-client-id>
+GOOGLE_CLIENT_SECRET=<your-google-client-secret>
+GITHUB_CLIENT_ID=<your-github-client-id>
+GITHUB_CLIENT_SECRET=<your-github-client-secret>
+DISCORD_CLIENT_ID=<your-discord-client-id>
+DISCORD_CLIENT_SECRET=<your-discord-client-secret>
+SPOTIFY_CLIENT_ID=<your-spotify-client-id>
+SPOTIFY_CLIENT_SECRET=<your-spotify-client-secret>
+GITLAB_CLIENT_ID=<your-gitlab-client-id>
+GITLAB_CLIENT_SECRET=<your-gitlab-client-secret>
+FRONTEND_URL=http://localhost:8081
+MOBILE_URL=myapp://oauth
+```
+
+---
+
+
+## API Endpoints
+
+### Authentication
+
+- `POST /login`: User login.
+- `POST /register`: User registration.
+- `GET /me`: Check if the user is logged in.
+
+### Service Linking Status
+
+- `GET /is/linked/google`: Check if Google is linked.
+- `GET /is/linked/discord`: Check if Discord is linked.
+- `GET /is/linked/spotify`: Check if Spotify is linked.
+- `GET /is/linked/github`: Check if GitHub is linked.
+- `GET /is/linked/gitlab`: Check if GitLab is linked.
+
+### OAuth Integration
+
+- **Google**:
+  - `GET /login/with/google`: OAuth login.
+  - `POST /link/google`: Link Google account.
+- **Discord**:
+  - `GET /login/with/discord`: OAuth login.
+  - `POST /link/discord`: Link Discord account.
+- **Spotify**:
+  - `GET /login/with/spotify`: OAuth login.
+  - `POST /link/spotify`: Link Spotify account.
+- **GitHub**:
+  - `GET /login/to/github`: OAuth login.
+  - `POST /link/github`: Link GitHub account.
+- **GitLab**:
+  - `GET /login/to/gitlab`: OAuth login.
+  - `POST /link/gitlab`: Link GitLab account.
+
+### Example Response
+
+For a successful OAuth link, the API returns:
+```json
+{
+  "message": "<Service> account linked successfully"
+}
+```
+
+---
+
+## Supported Services
+
+| Service  | Actions                             | Reactions                            |
+|----------|-------------------------------------|---------------------------------------|
+| Gmail    | `Mail Received`                    | `Send Mail`                          |
+| Discord  | None                               | `Add Role`, `Kick User`, `Send DM`   |
+| GitHub   | `New Issue`, `Repo Created`        | `Create Repo`                        |
+| Spotify  | `New Liked Track`                  | `Add to Playlist`, `Play Song`       |
+| GitLab   | `New Issue`, `Repo Created`        | None                                 |
+
+---
+
+## About
+
+- **Server Details**:
+  - Host: `127.0.0.1:8080`
+  - Current Version: `0.0.0+1`
+
+- **Client Details**:
+  - Host: `172.18.0.1`
+
+### Example Configuration
+
+- **GMail**: Triggers when new mail is received or sends emails.
+- **Spotify**: Adds a song to your playlist or plays a track.
+- **GitHub**: Tracks issue assignments and repository updates.
+
+---
+
+## External ressources:
+- **SPOTIFY**:
+  - How to get device uri: https://developer.spotify.com/documentation/web-api/reference/get-a-users-available-devices
